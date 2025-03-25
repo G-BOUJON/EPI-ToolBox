@@ -1,0 +1,39 @@
+﻿@page
+@model ToolBox.Pages.LicenseManagerProd.HomeModel
+@{
+    ViewData["Title"] = "License Manager - Production";
+}
+
+<h1 class="mb-5">License Manager - production</h1>
+
+<div class="parent">
+    <div class="child">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Liste</h5>
+                <p class="card-text">Liste des licences à supprimer</p>
+                <a asp-page="/LicenseManagerProd/UsersList" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="child">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Historique</h5>
+                <p class="card-text">Historique des actions effecuées</p>
+                <a asp-page="/LicenseManagerProd/History" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="child">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Configuration</h5>
+                <p class="card-text">Configuration des paramètres</p>
+                <a asp-page="/LicenseManagerProd/Configuration" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+</div>

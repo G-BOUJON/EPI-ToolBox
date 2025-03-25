@@ -1,0 +1,43 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Menu";
+}
+
+<h1 class="mb-5">ToolBox</h1>
+
+<div class="parent">
+    @*License Manager test*@
+    <div class="child">
+        <div class="card" style="width: 20rem;">
+            <div class="card-body">
+                <h5 class="card-title">License Manager - test</h5>
+                <p class="card-text">Gestion des licences des utilisateurs qui ont quitté les EPI</p>
+                <a asp-page="/LicenseManagerTest/Home" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+    @*Fin License Manager test*@
+    @*License Manager certification*@
+    <div class="child">
+        <div class="card" style="width: 20rem;">
+            <div class="card-body">
+                <h5 class="card-title">License Manager - certification</h5>
+                <p class="card-text">Gestion des licences des utilisateurs qui ont quitté les EPI</p>
+                <a asp-page="/LicenseManagerCert/Home" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+    @*Fin License Manager certification*@
+    @*License Manager production*@
+    <div class="child">
+        <div class="card" style="width: 20rem;">
+            <div class="card-body">
+                <h5 class="card-title">License Manager - production</h5>
+                <p class="card-text">Gestion des licences des utilisateurs qui ont quitté les EPI</p>
+                <a asp-page="/LicenseManagerProd/Home" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+    @*Fin License Manager production*@
+</div>

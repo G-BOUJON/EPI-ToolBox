@@ -1,0 +1,36 @@
+{
+  "active": false,
+  "frequence": 0,
+  "hour": "01:01",
+  "groups": [
+    {
+      "name": "GRPD_Comptes_Equipes_MFiles"
+    },
+    {
+      "name": "GRP_Users_Mfiles_NONSTD"
+    },
+    {
+      "name": "GRPD_Liferay"
+    }
+  ],
+  "maintainedAccounts": [
+    "MLEMONTAGNER",
+    "INTRATEST03"
+  ],
+  "vaultCredentials": {
+    "username": "intratest01",
+    "password": "Epi2020.",
+    "domain": "EPI",
+    "protocolSequence": "ncacn_ip_tcp",
+    "networkAddress": "epi-srv-mfil-t",
+    "endPoint": "2266",
+    "guid": "{02606AF0-494D-4A29-B3CE-7DED1AF06536}"
+  },
+  "activeDirectoryCredentials": {
+    "username": "EPI\\S_MFiles_T",
+    "password": "Epi2@22",
+    "domain": "epi-srv-dc.epidom.ch",
+    "container": "DC=epidom,DC=ch"
+  },
+  "apiKey": "Tb0i8QemXE7uoqTDse32h6g3z"
+}

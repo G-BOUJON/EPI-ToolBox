@@ -1,0 +1,37 @@
+﻿@page
+@using ToolBox.Models;
+@model ToolBox.Pages.LicenseManagerCert.HistoryModel
+@{
+    ViewData["Title"] = "Historique";
+    History history = Model.getHistory();
+}
+
+<h1>Historique des tâches effectuées</h1>
+
+@{
+    foreach (Date date in history.dates)
+    {
+        <div style="margin-top: 50px;" class="panel panel-default">
+            <div class="panel-heading" style="text-align: left;">Tâche du @date.date</div>
+            <div class="panel-body" style="text-align: left;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Licence supprimée</th>
+                            <th>Heure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            for (int i = date.deletedAccounts.Count-1; i >= 0; i--)
+                            {
+                                <tr><td>@date.deletedAccounts[i].UserName</td><td>@date.deletedAccounts[i].translateLicenseName()</td><td>@date.hour[i]</td></tr>
+                            }
+                        }    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}

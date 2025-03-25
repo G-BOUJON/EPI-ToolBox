@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ToolBox</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ToolBox.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm  navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Toolbox</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav mr-auto">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            // Liens pour le gestionnaire de licences
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    M-Files
+                                </a>
+                                
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    @*Coffre de test*@
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-page="/LicenseManagerTest/Home">
+                                            License Manager - test &raquo;
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-submenu">
+                                            <li>
+                                                <a class="text-dark dropdown-item" asp-page="/LicenseManagerTest/UsersList">Liste des utilisateurs</a>
+                                            </li>
+                                            <li>
+                                                <a class="text-dark dropdown-item" asp-page="/LicenseManagerTest/History">Historique</a>
+                                            </li>
+                                            <li>
+                                                <a class="text-dark dropdown-item" asp-page="/LicenseManagerTest/Configuration">Configuration</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    @*Coffre de certification*@
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-page="/LicenseManagerCert/Home">
+                                            License Manager - certification &raquo;
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-submenu">
+                                            <li>
+                                                <a class="text-dark dropdown-item" asp-page="/LicenseManagerCert/UsersList">Liste des utilisateurs</a>
+                                            </li>
+                                            <li>
+                                                <a class="text-dark dropdown-item" asp-page="/LicenseManagerCert/History">Historique</a>
+                                            </li>
+                                            <li>
+                                                <a class="text-dark dropdown-item" asp-page="/LicenseManagerCert/Configuration">Configuration</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    @*Coffre de production*@
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-page="/LicenseManagerProd/Home">
+                                            License Manager - production &raquo;
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-submenu">
+                                            <li>
+                                                <a class="text-dark dropdown-item" asp-page="/LicenseManagerProd/UsersList">Liste des utilisateurs</a>
+                                            </li>
+                                            <li>
+                                                <a class="text-dark dropdown-item" asp-page="/LicenseManagerProd/History">Historique</a>
+                                            </li>
+                                            <li>
+                                                <a class="text-dark dropdown-item" asp-page="/LicenseManagerProd/Configuration">Configuration</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            // Fin des liens pour le gestionnaire de licences
+                        }
+                    </ul>
+                </div>
+
+                <div class="mr-2">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a class="btn btn-link" asp-page="Logout">Log out</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-link" asp-page="Login">Login</a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - ToolBox
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

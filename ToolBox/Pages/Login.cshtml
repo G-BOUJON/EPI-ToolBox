@@ -1,0 +1,21 @@
+﻿@page
+@model ToolBox.Pages.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="align-content-center" style="width:100%; display:flex; align-items:center; justify-content:center; ">
+    <form style="width: 40%;" method="post">
+        <div style="margin-top: 30px;">
+            <label for="nomUtilisateur">Nom d'utilisateur</label>
+            <input type="text" class="form-control" asp-for="Credential.Username" placeholder="Nom d'utilisateur" id="nomUtilisateur" />
+            <span class="text-danger" asp-validation-for="Credential.Username"></span>
+        </div>
+        <div style="margin-top: 30px;">
+            <label for="mdp">Mot de passe</label>
+            <input type="password" class="form-control" asp-for="Credential.Password" placeholder="Mot de passe" id="mdp" />
+            <span class="text-danger" asp-validation-for="Credential.Password"></span>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 30px;">Se connecter</button>
+    </form>
+</div>

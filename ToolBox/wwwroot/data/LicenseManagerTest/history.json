@@ -1,0 +1,122 @@
+{
+  "dates": [
+    {
+      "date": "05.06.2023",
+      "deletedAccounts": [
+        {
+          "AccountName": "EPI\\trainer",
+          "AccountType": "MFLoginAccountTypeWindows",
+          "DomainName": "EPI",
+          "EmailAddress": "",
+          "Enabled": "True",
+          "FullName": "TRAINER",
+          "LicenseType": "MFLicenseTypeNamedUserLicense",
+          "ServerRoles": "9",
+          "UserName": "trainer"
+        },
+        {
+          "AccountName": "EPI\\trainer",
+          "AccountType": "MFLoginAccountTypeWindows",
+          "DomainName": "EPI",
+          "EmailAddress": "",
+          "Enabled": "True",
+          "FullName": "TRAINER",
+          "LicenseType": "MFLicenseTypeNamedUserLicense",
+          "ServerRoles": "9",
+          "UserName": "trainer"
+        }
+      ],
+      "hour": [
+        "8:22:40 AM",
+        "9:25:07 AM"
+      ]
+    },
+    {
+      "date": "01.06.2023",
+      "deletedAccounts": [
+        {
+          "AccountName": "EPI\\DBRUCOLI",
+          "AccountType": "MFLoginAccountTypeWindows",
+          "DomainName": "EPI",
+          "EmailAddress": "David.BRUCOLI@epi.ge.ch",
+          "Enabled": "True",
+          "FullName": "BRUCOLI David",
+          "LicenseType": "MFLicenseTypeNamedUserLicense",
+          "ServerRoles": "MFLoginServerRoleLogIn",
+          "UserName": "DBRUCOLI"
+        },
+        {
+          "AccountName": "EPI\\VBAUSSAND",
+          "AccountType": "MFLoginAccountTypeWindows",
+          "DomainName": "EPI",
+          "EmailAddress": "Valentin.BAUSSAND@epi.ge.ch",
+          "Enabled": "True",
+          "FullName": "BAUSSAND Valentin",
+          "LicenseType": "MFLicenseTypeNamedUserLicense",
+          "ServerRoles": "MFLoginServerRoleLogIn",
+          "UserName": "VBAUSSAND"
+        },
+        {
+          "AccountName": "EPI\\emalartre",
+          "AccountType": "MFLoginAccountTypeWindows",
+          "DomainName": "EPI",
+          "EmailAddress": "",
+          "Enabled": "True",
+          "FullName": "Emmanuel MALARTRE",
+          "LicenseType": "MFLicenseTypeNamedUserLicense",
+          "ServerRoles": "9",
+          "UserName": "emalartre"
+        }
+      ],
+      "hour": [
+        "1:56:05 PM",
+        "1:56:05 PM",
+        "2:41:15 PM",
+        "2:50:54 PM"
+      ]
+    },
+    {
+      "date": "25.05.2023",
+      "deletedAccounts": [
+        {
+          "AccountName": "EPI\\emalartre",
+          "AccountType": "MFLoginAccountTypeWindows",
+          "DomainName": "EPI",
+          "EmailAddress": "",
+          "Enabled": "True",
+          "FullName": "Emmanuel MALARTRE",
+          "LicenseType": "MFLicenseTypeNamedUserLicense",
+          "ServerRoles": "9",
+          "UserName": "emalartre"
+        },
+        {
+          "AccountName": "EPI\\mpinho",
+          "AccountType": "MFLoginAccountTypeWindows",
+          "DomainName": "EPI",
+          "EmailAddress": "m.pinho@neurones.pro",
+          "Enabled": "True",
+          "FullName": "Mario PINHO",
+          "LicenseType": "MFLicenseTypeNamedUserLicense",
+          "ServerRoles": "9",
+          "UserName": "mpinho"
+        },
+        {
+          "AccountName": "EPI\\MSCHLINGER",
+          "AccountType": "MFLoginAccountTypeWindows",
+          "DomainName": "EPI",
+          "EmailAddress": "Marie.SCHLINGER@epi.ge.ch",
+          "Enabled": "True",
+          "FullName": "SCHLINGER Marie",
+          "LicenseType": "MFLicenseTypeNamedUserLicense",
+          "ServerRoles": "MFLoginServerRoleLogIn",
+          "UserName": "MSCHLINGER"
+        }
+      ],
+      "hour": [
+        "1:55:41 PM",
+        "1:55:41 PM",
+        "1:55:41 PM"
+      ]
+    }
+  ]
+}
