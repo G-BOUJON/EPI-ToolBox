@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<ToolBox.Services.LicenseManagerTest.MFilesUsersService>();
 builder.Services.AddTransient<ToolBox.Services.LicenseManagerCert.MFilesUsersService>();
 builder.Services.AddTransient<ToolBox.Services.LicenseManagerProd.MFilesUsersService>();
@@ -58,5 +59,8 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
