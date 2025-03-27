@@ -30,8 +30,13 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapAreaControllerRoute(
+    name: "licenseManager_route",
+    areaName: "LicenseManager",
+    pattern: "LicenseManager/{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
-    name: "default",
+    name: "default_route",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

@@ -1,100 +1,61 @@
-﻿namespace ToolBox.Models
+﻿using MFilesAPI;
+
+namespace ToolBox.Models
 {
+    public enum MaintainedAccountType
+    {
+        Maintained,
+        Unmaintained
+    }
     public class AccountFilter
     {
-        public List<string> LicenseType { get; set; }
-        public List<string> AccountType { get; set; }
-        public bool Maintained { get; set; }
-        public bool UnMaintained { get; set; }
+        public List<MFLicenseType> LicenseTypes { get; set; }
+        public List<MFLoginAccountType> AccountTypes { get; set; }
+        public List<MaintainedAccountType> MaintainedTypes { get; set; }
 
-        public AccountFilter()
+        public AccountFilter() : this(
+            new List<MFLicenseType>()
+            {
+                MFLicenseType.MFLicenseTypeNamedUserLicense,
+                MFLicenseType.MFLicenseTypeConcurrentUserLicense,
+                MFLicenseType.MFLicenseTypeReadOnlyLicense
+            },
+            new List<MFLoginAccountType>
+            {
+                MFLoginAccountType.MFLoginAccountTypeWindows,
+                MFLoginAccountType.MFLoginAccountTypeMFiles
+            },
+            new List<MaintainedAccountType>
+            {
+                MaintainedAccountType.Maintained,
+                MaintainedAccountType.Unmaintained
+            }
+        ){ }
+
+        public AccountFilter(List<MFLicenseType> licenseTypes, List<MFLoginAccountType> accountTypes, List<MaintainedAccountType> maintainedTypes)
         {
-            LicenseType = new List<string>();
-            AccountType = new List<string>();
-            UnMaintained = false;
-            Maintained = false;
+            LicenseTypes = licenseTypes;
+            AccountTypes = accountTypes;
+            MaintainedTypes = maintainedTypes;
         }
 
-        public List<Account> filterAccounts(List<Account> accounts, List<string> maintainedAccounts)
+        public List<LoginAccount> filterAccounts(List<LoginAccount> accounts, List<string> maintainedAccounts)
         {
             // Initialisation
-            List<Account> filteredAccounts = new List<Account>();
-            bool addAccount = true;
-            bool satistfiesFilter = false;
+            List<LoginAccount> filteredAccounts = new List<LoginAccount>();
 
-            // Traitement 
-            if (this.LicenseType.Count == 0 && this.AccountType.Count == 0 && this.Maintained && this.UnMaintained)
+            // Traitement
+            foreach (LoginAccount account in accounts)
             {
-                return accounts;
+                if (this.LicenseTypes.Contains(account.LicenseType) && this.AccountTypes.Contains(account.AccountType))
+                {
+                    if ((MaintainedTypes.Contains(MaintainedAccountType.Maintained) && maintainedAccounts.Contains(account.UserName))
+                        || (MaintainedTypes.Contains(MaintainedAccountType.Unmaintained) && !maintainedAccounts.Contains(account.UserName)))
+                    {
+                        filteredAccounts.Add(account);
+                    }
+                }
             }
-
-            foreach (Account account in accounts)
-            {
-                foreach (string licenseType in this.LicenseType)
-                {
-                    if (account.LicenseType == licenseType)
-                    {
-                        satistfiesFilter = true;
-                    }
-                }
-                if (!(satistfiesFilter && addAccount) && this.LicenseType.Count > 0)
-                {
-                    addAccount = false;
-                }
-                satistfiesFilter = false;
-
-                foreach (string accountType in this.AccountType)
-                {
-                    if (account.AccountType == accountType)
-                    {
-                        satistfiesFilter = true;
-                    }
-                }
-                if (!(satistfiesFilter && addAccount) && this.AccountType.Count > 0)
-                {
-                    addAccount = false;
-                }
-                satistfiesFilter = false;
-
-                if ((this.Maintained && this.UnMaintained) || (!this.Maintained && !this.UnMaintained))
-                {
-                    satistfiesFilter = true;
-                }
-                if (this.Maintained && !this.UnMaintained)
-                {
-                    foreach (string maintainedAccount in maintainedAccounts)
-                    {
-                        if (maintainedAccount == account.UserName)
-                        {
-                            satistfiesFilter = true; break;
-                        }
-                    }
-                }
-                if (this.UnMaintained && !this.Maintained)
-                {
-                    satistfiesFilter = true;
-                    foreach (string maintainedAccount in maintainedAccounts)
-                    {
-                        if (maintainedAccount == account.UserName)
-                        {
-                            satistfiesFilter = false; break;
-                        }
-                    }
-                }
-                if (!satistfiesFilter)
-                {
-                    addAccount = false;
-                }
-                satistfiesFilter = false;
-
-                if (addAccount)
-                {
-                    filteredAccounts.Add(account);
-                }
-
-                addAccount = true;
-            }
-
             // Sortie
 
             return filteredAccounts;
@@ -104,16 +65,9 @@
         {
             int total = 0;
 
-            total += this.LicenseType.Count();
-            total += this.AccountType.Count();
-            if (this.Maintained)
-            {
-                total++;
-            }
-            if (this.UnMaintained)
-            {
-                total++;
-            }
+            total += this.LicenseTypes.Count();
+            total += this.AccountTypes.Count();
+            total += this.MaintainedTypes.Count();
 
             return total;
         }
