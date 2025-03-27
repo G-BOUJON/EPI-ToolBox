@@ -1,4 +1,6 @@
-﻿using MFilesAPI;
+﻿/* Modified by GBOUJON - Date : 2025-03-27 */
+
+using MFilesAPI;
 
 namespace ToolBox.Models
 {
