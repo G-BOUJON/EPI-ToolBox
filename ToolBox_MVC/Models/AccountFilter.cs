@@ -41,13 +41,13 @@ namespace ToolBox.Models
             MaintainedTypes = maintainedTypes;
         }
 
-        public List<LoginAccount> filterAccounts(List<LoginAccount> accounts, List<string> maintainedAccounts)
+        public List<Account> filterAccounts(List<Account> accounts, List<string> maintainedAccounts)
         {
             // Initialisation
-            List<LoginAccount> filteredAccounts = new List<LoginAccount>();
+            List<Account> filteredAccounts = new List<Account>();
 
             // Traitement
-            foreach (LoginAccount account in accounts)
+            foreach (Account account in accounts)
             {
                 if (this.LicenseTypes.Contains(account.LicenseType) && this.AccountTypes.Contains(account.AccountType))
                 {

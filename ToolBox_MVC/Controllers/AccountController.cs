@@ -29,7 +29,7 @@ namespace ToolBox_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                MFilesUsersService mf = new MFilesUsersService(ServerType.Prod);
+                MFilesUsersService mf = new MFilesUsersService(new JsonConfService(ServerType.Prod).getConf());
                 if (mf.areValidCredentials(credentials.Username, credentials.Password) || (credentials.Username == "gab" && credentials.Password == "1234"))
                 {
                     var claims = new List<Claim> {

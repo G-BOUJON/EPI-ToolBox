@@ -11,12 +11,10 @@ namespace ToolBox.Services
         public Vault vault { get; set; }
         public PrincipalContext pc { get; set; }
         public ServerType serverType { get; set; }
-        public MFilesUsersService(ServerType server)
+        public Config Configuration { get; set; }
+        public MFilesUsersService(Config config)
         {
-            JsonConfService jsonConfService = new JsonConfService(server);
-            Config config = jsonConfService.getConf();
-            serverType = server;
-
+            Configuration = config;
             mfServerApplication = new MFilesServerApplication();
             mfServerApplication.Connect(
                 AuthType: MFAuthType.MFAuthTypeSpecificWindowsUser,
@@ -31,9 +29,10 @@ namespace ToolBox.Services
             pc = new(contextType: ContextType.Domain, name: config.activeDirectoryCredentials.domain, container: config.activeDirectoryCredentials.container, userName: config.activeDirectoryCredentials.username, password: config.activeDirectoryCredentials.password);
         }
 
-        public List<LoginAccount> getList(List<Group> groupNames)
+        public List<LoginAccount> getList()
         {
             // Initialisation
+            List<Group> groupNames = Configuration.groups.ToList();
             List<LoginAccount> nonExistingAccounts = new List<LoginAccount>();
 
             LoginAccounts loginAccounts = getLoginAccounts();

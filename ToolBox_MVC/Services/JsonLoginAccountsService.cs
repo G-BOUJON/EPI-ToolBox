@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿/* Modified by GBOUJON 2025-03-27*/
+using System.Collections.Generic;
+using System.Text.Json;
 using MFilesAPI;
 using ToolBox.Models;
 

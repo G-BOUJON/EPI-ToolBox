@@ -22,9 +22,9 @@
     "password": "Epi2020.",
     "domain": "EPI",
     "protocolSequence": "ncacn_ip_tcp",
-    "networkAddress": "epi-srv-mfil-t",
+    "networkAddress": "epi-srv-mf-ft",
     "endPoint": "2266",
-    "guid": "{E6D4E916-9F80-4BA2-8EC1-AF81BF1AB85B}"
+    "guid": "{26282E76-C66E-4BD0-8772-AA70B6B91B2F}"
   },
   "activeDirectoryCredentials": {
     "username": "EPI\\S_MFiles_T",

@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\LicenseManager\Data\" />
-    <Folder Include="Areas\LicenseManager\Models\" />
     <Folder Include="Controllers\" />
     <Folder Include="Data\" />
     <Folder Include="Models\" />
