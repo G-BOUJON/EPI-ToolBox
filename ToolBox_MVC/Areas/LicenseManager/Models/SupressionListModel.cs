@@ -16,7 +16,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models
         {
             Server = server;
             this.Filter = filter;
-            Configuration = new JsonConfService(server).GetConf();
+            Configuration = new JsonConfService(Server).GetConf();
 
         }
 

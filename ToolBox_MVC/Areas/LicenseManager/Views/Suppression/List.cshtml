@@ -1,11 +1,27 @@
 ﻿@using MFilesAPI
+@using ToolBox.Services
 @using ToolBox_MVC.Services
 @model ToolBox_MVC.Areas.LicenseManager.Models.SupressionListModel
 
 @{
     ViewData["Title"] = Model.Server.ToString() + " - Suppression";
 }
-<h1>Utilisateurs à supprimer</h1>
+<form id="changeServer" asp-controller="Suppression" asp-action="List" asp-route-id="" method="get">
+    <select class="form-select form-select-lg mb-3" id="selectServer" onchange="changeServer()">
+        @foreach (ServerType server in Enum.GetValues<ServerType>())
+        {
+            if (server == Model.Server)
+            {
+                <option selected value="@server">@server</option>
+            }
+            else
+            {
+                <option value="@server">@server</option>
+            }
+        }
+    </select>
+</form>
+<h1>Utilisateurs à supprimer - Environnement @Model.Server</h1>
 <div class="text-center">
     <div class="d-flex justify-content-between">
 
@@ -464,5 +480,17 @@
             }
             document.getElementById(this.value).checked = !document.getElementById(this.value).checked
         }
+    }
+</script>
+
+@*Script pour selection de serveur*@
+<script>
+    function changeServer() {
+        let currentForm = document.getElementById("changeServer");
+        let currentSelect = document.getElementById("selectServer");
+        let newServer = currentSelect.options[currentSelect.selectedIndex].value;
+
+        currentForm.getAttributeNode("action").value += "/" + newServer;
+        currentForm.submit();
     }
 </script>
