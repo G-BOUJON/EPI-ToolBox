@@ -83,9 +83,6 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
                 JSfilter = JSfilter,
             });
         }
-                
-            
-
 
         [HttpPost]
         public IActionResult RefreshList(ServerType id)
@@ -119,13 +116,36 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 
             foreach (Account account in new JsonLoginAccountsService(id).GetAccounts().ToList())
             {
-                if (!string.IsNullOrEmpty(Request.Form[account.UserName]) && !confService.GetMaintainedAccounts().Contains(account.UserName))
+                if (!string.IsNullOrEmpty(Request.Form[account.AccountName]) && !confService.GetMaintainedAccounts().Contains(account.UserName))
                 {
                     confService.addMaintainedAccount(account.UserName);
                 }
             }
             return RedirectToAction("List", id);
+        }
 
+        [HttpPost]
+        public IActionResult DeleteLicense(ServerType id, string accountName)
+        {
+            MFilesUsersService mfUserSevice = new MFilesUsersService(new JsonConfService(id).GetConf());
+            mfUserSevice.DeleteLicense(accountName);
+            return RedirectToAction("List", id);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteAllSelected(ServerType id)
+        {
+            MFilesUsersService mfUserService = new MFilesUsersService(new JsonConfService(id).GetConf());
+            JsonLoginAccountsService accountService = new JsonLoginAccountsService(id);
+
+            foreach (Account account in accountService.GetAccounts().ToList())
+            {
+                if (!string.IsNullOrEmpty(Request.Form[account.AccountName]))
+                {
+                    mfUserService.DeleteLicense(account.AccountName);
+                }
+            }
+            return RedirectToAction("List",id);
         }
 
 

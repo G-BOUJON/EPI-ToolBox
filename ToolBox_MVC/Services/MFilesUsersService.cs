@@ -131,58 +131,45 @@ namespace ToolBox.Services
 
         public LoginAccount convertToLoginAccount(Account account)
         {
-            // Initialisation
-            LoginAccounts accounts = getLoginAccounts();
-            LoginAccount convertedAccount = new LoginAccount();
-
-            // Traitement
-            foreach (LoginAccount lgAccount in accounts)
-            {
-                if (lgAccount.UserName == account.UserName)
-                {
-                    convertedAccount = lgAccount; break;
-                }
-            }
-
-            // Sortie
-            return convertedAccount;
+            return mfServerApplication.LoginAccountOperations.GetLoginAccount(account.AccountName);
         }
 
-        public bool deleteLicence(LoginAccount account)
+        /// <summary>
+        /// Removes the license of a M-Files login account that is not in the maintained account list
+        /// </summary>
+        /// <param name="account">The login account whose license to remove</param>
+        /// <returns>>True if operations was succeful (license was removed or account is protected), false otherwise</returns>
+        public bool DeleteLicense(LoginAccount account)
         {
-            // Initialisation
+            ServerLoginAccountOperations loginOperations = mfServerApplication.LoginAccountOperations;
             bool success = true;
-            JsonHistoryService historyService = new JsonHistoryService(serverType);
-            JsonConfService jsonConfService = new JsonConfService(serverType);
-            ServerLoginAccountOperations loginAccountOps = mfServerApplication.LoginAccountOperations;
-            bool maintainedAccount = false;
 
-            foreach (string acnt in jsonConfService.GetConf().maintainedAccounts)
+            if (!this.Configuration.maintainedAccounts.Contains(account.UserName))
             {
-                if (acnt.Equals(account.UserName))
+                try
                 {
-                    maintainedAccount = true;
-                    Console.WriteLine("La licence pour ce compte est maintenue");
-                }
-            }
-
-            // Traitement
-            try
-            {
-                if (!maintainedAccount)
-                {
-                    historyService.addDeletedAccount(new Account(account));
+                    new JsonHistoryService(serverType).addDeletedAccount(new Account(account));
                     account.LicenseType = MFLicenseType.MFLicenseTypeNone;
-                    loginAccountOps.ModifyLoginAccount(account);
+                    loginOperations.ModifyLoginAccount(account);
+                }
+                catch (Exception e)
+                {
+                    success = false;
                 }
             }
-            catch (Exception e)
-            {
-                success = false;
-            }
-
-            // Sortie
             return success;
+        }
+
+
+        /// <summary>
+        /// Removes the license of a M-Files login account that is not in the maintained account list
+        /// </summary>
+        /// <param name="accountName">The name of the account to remove</param>
+        /// <returns>True if operations was succeful (license was removed or account is protected), false otherwise</returns>
+        public bool DeleteLicense(string accountName)
+        {
+            LoginAccount account = mfServerApplication.LoginAccountOperations.GetLoginAccount(accountName);
+            return this.DeleteLicense(account);
         }
 
         List<LoginAccount> getLicencedAccounts(LoginAccounts loginAccounts)

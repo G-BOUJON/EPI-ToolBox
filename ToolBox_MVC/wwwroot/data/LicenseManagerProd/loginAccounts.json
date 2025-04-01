@@ -22,17 +22,6 @@
     "UserName": "INTRATEST02"
   },
   {
-    "AccountName": "EPI\\COPYSHOP",
-    "AccountType": 2,
-    "DomainName": "EPI",
-    "EmailAddress": "COPYSHOP.GRANDPRE@epi.ge.ch",
-    "Enabled": true,
-    "FullName": "COPYSHOP GRANDPRE",
-    "LicenseType": 3,
-    "ServerRoles": 8,
-    "UserName": "COPYSHOP"
-  },
-  {
     "AccountName": "EPI\\RECEPTION-LACOMBE",
     "AccountType": 2,
     "DomainName": "EPI",

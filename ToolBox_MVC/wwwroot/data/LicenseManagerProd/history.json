@@ -1,3 +1,47 @@
 {
-  "dates": []
+  "dates": [
+    {
+      "date": "01.04.2025",
+      "deletedAccounts": [
+        {
+          "AccountName": "EPI\\INTRATEST03",
+          "AccountType": 2,
+          "DomainName": "EPI",
+          "EmailAddress": "INTRA.TEST03@epi.ge.ch",
+          "Enabled": true,
+          "FullName": "TEST03 INTRA",
+          "LicenseType": 3,
+          "ServerRoles": 8,
+          "UserName": "INTRATEST03"
+        },
+        {
+          "AccountName": "EPI\\INTRATEST03",
+          "AccountType": 2,
+          "DomainName": "EPI",
+          "EmailAddress": "INTRA.TEST03@epi.ge.ch",
+          "Enabled": true,
+          "FullName": "TEST03 INTRA",
+          "LicenseType": 3,
+          "ServerRoles": 8,
+          "UserName": "INTRATEST03"
+        },
+        {
+          "AccountName": "EPI\\INVENTAIRE",
+          "AccountType": 2,
+          "DomainName": "EPI",
+          "EmailAddress": "",
+          "Enabled": true,
+          "FullName": "Inventaire",
+          "LicenseType": 3,
+          "ServerRoles": 8,
+          "UserName": "INVENTAIRE"
+        }
+      ],
+      "hour": [
+        "12:12:39 PM",
+        "12:31:54 PM",
+        "12:31:54 PM"
+      ]
+    }
+  ]
 }

@@ -80,7 +80,7 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button asp-page-handler="DeleteAllSelectedLicenses" class="btn btn-danger">Supprimer</button>
+                                <button asp-action="DeleteAllSelected" class="btn btn-danger">Supprimer</button>
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                         string modalName = "#" + "modal" + i.ToString();
                     <tr>
 
-                        <td><input type="checkbox" class="select form-check-input" name="@loginaccount.UserName" value="true" /></td>
+                        <td><input type="checkbox" class="select form-check-input" name="@loginaccount.AccountName" value="true" /></td>
                         <td>
                                 @{
 
@@ -243,7 +243,7 @@
                                         <div class="modal-body">
                                             <p>Confirmer la suppression de la licence pour <b>@loginaccount.UserName</b></p>
 
-                                            <button type="submit" asp-page-handler="DeleteLicense" name="deleteLicense" value="@loginaccount.UserName" class="btn btn-danger">
+                                            <button type="submit" asp-action="DeleteLicense" asp-route-id="@Model.Server" asp-route-accountName="@loginaccount.AccountName" class="btn btn-danger">
                                                 Supprimer la licence
                                             </button>
                                         </div>
