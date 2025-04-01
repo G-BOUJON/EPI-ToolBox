@@ -95,6 +95,38 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             return RedirectToAction("List",id);
         }
 
+        [HttpPost]
+        public IActionResult Maintain(ServerType id, string username)
+        {
+            JsonConfService confService = new JsonConfService(id);
+
+            if (confService.GetMaintainedAccounts().Contains(username))
+            {
+                confService.deleteMaintainedAccount(username);
+            }
+            else
+            {
+                confService.addMaintainedAccount(username);
+            }
+
+            return RedirectToAction("List", id);
+        }
+
+        [HttpPost]
+        public IActionResult MaintainAllSelected(ServerType id)
+        {
+            JsonConfService confService = new JsonConfService(id);
+
+            foreach (Account account in new JsonLoginAccountsService(id).GetAccounts().ToList())
+            {
+                if (!string.IsNullOrEmpty(Request.Form[account.UserName]) && !confService.GetMaintainedAccounts().Contains(account.UserName))
+                {
+                    confService.addMaintainedAccount(account.UserName);
+                }
+            }
+            return RedirectToAction("List", id);
+
+        }
 
 
        

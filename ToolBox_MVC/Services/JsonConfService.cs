@@ -142,5 +142,10 @@ namespace ToolBox.Services
                 );
             }
         }
+
+        public List<string> GetMaintainedAccounts()
+        {
+            return this.GetConf().maintainedAccounts;
+        }
     }
 }

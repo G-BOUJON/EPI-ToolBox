@@ -15,7 +15,10 @@
   ],
   "maintainedAccounts": [
     "MLEMONTAGNER",
-    "INTRATEST03"
+    "INTRATEST03",
+    "INTRATEST02",
+    "INTRATEST01",
+    "COPYSHOP"
   ],
   "vaultCredentials": {
     "username": "intratest01",

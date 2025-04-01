@@ -63,7 +63,7 @@
             </tr>
         </thead>
         <tbody>
-            <form method="post">
+            <form asp-controller="Suppression" method="post">
                 @*Boites modales*@
                 <div class="modal fade" id="suppressValidation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -101,7 +101,7 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button asp-page-handler="MaintainAllSelectedLicenses" class="btn btn-success">Maintenir</button>
+                                <button asp-action="MaintainAllSelected" class="btn btn-success">Maintenir</button>
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                         string modalName = "#" + "modal" + i.ToString();
                     <tr>
 
-                        <td><input type="checkbox" class="select form-check-input" name="@loginaccount.UserName" value="@loginaccount.UserName" /></td>
+                        <td><input type="checkbox" class="select form-check-input" name="@loginaccount.UserName" value="true" /></td>
                         <td>
                                 @{
 
@@ -197,7 +197,7 @@
                                                     if (Model.Configuration.maintainedAccounts.Contains(loginaccount.UserName))
                                                     {
 
-                                                    <button type="submit" asp-page-handler="UnMaintain" name="unmaintain" value="@loginaccount.UserName" class="btn btn-danger">
+                                                    <button type="submit" asp-controller="Suppression" asp-action="Maintain" asp-route-id="@Model.Server" asp-route-username="@loginaccount.UserName" class="btn btn-danger">
                                                         Ne plus maintenir la licence
                                                     </button>
 
@@ -205,7 +205,7 @@
                                                     else
                                                     {
 
-                                                    <button type="submit" asp-page-handler="Maintain" name="maintain" value="@loginaccount.UserName" class="btn btn-success">
+                                                    <button type="submit" asp-controller="Suppression" asp-action="Maintain" asp-route-id="@Model.Server" asp-route-username="@loginaccount.UserName" class="btn btn-success">
                                                         Maintenir la licence
                                                     </button>
 
