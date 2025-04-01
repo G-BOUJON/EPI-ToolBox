@@ -15,24 +15,25 @@ namespace ToolBox.Models
         public List<MFLoginAccountType> AccountTypes { get; set; }
         public List<MaintainedAccountType> MaintainedTypes { get; set; }
 
-        public AccountFilter() : this(
-            new List<MFLicenseType>()
+        public AccountFilter() 
+        {
+            LicenseTypes = new List<MFLicenseType>()
             {
                 MFLicenseType.MFLicenseTypeNamedUserLicense,
                 MFLicenseType.MFLicenseTypeConcurrentUserLicense,
                 MFLicenseType.MFLicenseTypeReadOnlyLicense
-            },
-            new List<MFLoginAccountType>
+            };
+            AccountTypes = new List<MFLoginAccountType>
             {
                 MFLoginAccountType.MFLoginAccountTypeWindows,
                 MFLoginAccountType.MFLoginAccountTypeMFiles
-            },
-            new List<MaintainedAccountType>
+            };
+            MaintainedTypes = new List<MaintainedAccountType>
             {
                 MaintainedAccountType.Maintained,
                 MaintainedAccountType.Unmaintained
-            }
-        ){ }
+            };
+        }
 
         public AccountFilter(List<MFLicenseType> licenseTypes, List<MFLoginAccountType> accountTypes, List<MaintainedAccountType> maintainedTypes)
         {

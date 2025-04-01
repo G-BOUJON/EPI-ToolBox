@@ -19,7 +19,7 @@ namespace ToolBox.Services
             JsonFileName = FilePathService.LicenseManagerPath(server) + "loginAccounts.json";
         }
 
-        public IEnumerable<Account> getAccounts()
+        public IEnumerable<Account> GetAccounts()
         {
             using (var jsonFileReader = File.OpenText(JsonFileName))
             {
@@ -31,7 +31,7 @@ namespace ToolBox.Services
             }
         }
 
-        public void updateList(List<LoginAccount> accounts)
+        public void UpdateList(List<LoginAccount> accounts)
         {
             List<Account> list = new List<Account>();
             foreach (LoginAccount account in accounts)

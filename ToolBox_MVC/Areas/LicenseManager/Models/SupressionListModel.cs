@@ -16,19 +16,19 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models
         {
             Server = server;
             this.Filter = filter;
-            Configuration = new JsonConfService(server).getConf();
+            Configuration = new JsonConfService(server).GetConf();
 
         }
 
         public List<Account> GetNonExistingAccounts()
         {
-            return new JsonLoginAccountsService(Server).getAccounts().ToList();
+            return Filter.filterAccounts(new JsonLoginAccountsService(Server).GetAccounts().ToList() , Configuration.maintainedAccounts);
         }
 
         public void UpdateList()
         {
             MFilesUsersService mf = new MFilesUsersService(Configuration);
-            new JsonLoginAccountsService(Server).updateList(mf.getList());
+            new JsonLoginAccountsService(Server).UpdateList(mf.GetSuppressionList());
         }
 
         public bool FilterContains(MFLicenseType licenseType)

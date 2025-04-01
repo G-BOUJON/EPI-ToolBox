@@ -271,7 +271,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post">
+            <form asp-controller="Suppression" asp-action="ChangeFilter" asp-route-id="@Model.Server" method="post">
                 <div class="modal-body">
                     <h5>Type de licence</h5>
                     <hr class="hr" />
@@ -279,34 +279,34 @@
                         @{
                             if (Model.FilterContains(MFLicenseType.MFLicenseTypeNamedUserLicense))
                             {
-                                <input type="checkbox" name="nominative" class="invisibleCheckBox" id="nominative" checked />
+                                <input type="checkbox" name="@MFLicenseType.MFLicenseTypeNamedUserLicense" class="invisibleCheckBox" id="nominative" checked />
                                 <button type="button" value="nominative" class="btn btn-primary m-2 filterButton">Nominative</button>
                             }
                             else
                             {
-                                <input type="checkbox" name="nominative" class="invisibleCheckBox" id="nominative" />
+                                <input type="checkbox" name="@MFLicenseType.MFLicenseTypeNamedUserLicense" class="invisibleCheckBox" id="nominative" />
                                 <button type="button" value="nominative" class="btn btn-light m-2 filterButton">Nominative</button>
                             }
 
                             if (Model.FilterContains(MFLicenseType.MFLicenseTypeReadOnlyLicense))
                             {
-                                <input type="checkbox" name="lectureSeule" class="invisibleCheckBox" id="lectureSeule" checked />
+                                <input type="checkbox" name="@MFLicenseType.MFLicenseTypeReadOnlyLicense" class="invisibleCheckBox" id="lectureSeule" checked />
                                 <button type="button" value="lectureSeule" class="btn btn-primary m-2 filterButton">Lecture seule</button>
                             }
                             else
                             {
-                                <input type="checkbox" name="lectureSeule" class="invisibleCheckBox" id="lectureSeule" />
+                                <input type="checkbox" name="@MFLicenseType.MFLicenseTypeReadOnlyLicense" class="invisibleCheckBox" id="lectureSeule" />
                                 <button type="button" value="lectureSeule" class="btn btn-light m-2 filterButton">Lecture seule</button>
                             }
 
                             if (Model.FilterContains(MFLicenseType.MFLicenseTypeConcurrentUserLicense))
                             {
-                                <input type="checkbox" name="concurrente" class="invisibleCheckBox" id="concurrente" checked />
+                                <input type="checkbox" name="@MFLicenseType.MFLicenseTypeConcurrentUserLicense" class="invisibleCheckBox" id="concurrente" checked />
                                 <button type="button" value="concurrente" class="btn btn-primary m-2 filterButton">Concurrente</button>
                             }
                             else
                             {
-                                <input type="checkbox" name="concurrente" class="invisibleCheckBox" id="concurrente" />
+                                <input type="checkbox" name="@MFLicenseType.MFLicenseTypeConcurrentUserLicense" class="invisibleCheckBox" id="concurrente" />
                                 <button type="button" value="concurrente" class="btn btn-light m-2 filterButton">Concurrente</button>
                             }
                         }
@@ -318,22 +318,22 @@
                         @{
                             if (Model.FilterContains(MFLoginAccountType.MFLoginAccountTypeWindows))
                             {
-                                <input type="checkbox" name="windows" class="invisibleCheckBox" id="windows" checked />
+                                <input type="checkbox" name="@MFLoginAccountType.MFLoginAccountTypeWindows" class="invisibleCheckBox" id="windows" checked />
                                 <button type="button" value="windows" class="btn btn-primary m-2 filterButton">Windows</button>
                             }
                             else
                             {
-                                <input type="checkbox" name="windows" class="invisibleCheckBox" id="windows" />
+                                <input type="checkbox" name="@MFLoginAccountType.MFLoginAccountTypeWindows" class="invisibleCheckBox" id="windows" />
                                 <button type="button" value="windows" class="btn btn-light m-2 filterButton">Windows</button>
                             }
                             if (Model.FilterContains(MFLoginAccountType.MFLoginAccountTypeMFiles))
                             {
-                                <input type="checkbox" name="mfiles" class="invisibleCheckBox" id="mfiles" checked />
+                                <input type="checkbox" name="@MFLoginAccountType.MFLoginAccountTypeMFiles" class="invisibleCheckBox" id="mfiles" checked />
                                 <button type="button" value="mfiles" class="btn btn-primary m-2 filterButton">M-Files</button>
                             }
                             else
                             {
-                                <input type="checkbox" name="mfiles" class="invisibleCheckBox" id="mfiles" />
+                                <input type="checkbox" name="@MFLoginAccountType.MFLoginAccountTypeMFiles" class="invisibleCheckBox" id="mfiles" />
                                 <button type="button" value="mfiles" class="btn btn-light m-2 filterButton">M-Files</button>
                             }
                         }
@@ -345,30 +345,30 @@
                         @{
                             if (Model.FilterContains(ToolBox.Models.MaintainedAccountType.Maintained))
                             {
-                                <input type="checkbox" name="maintenue" class="invisibleCheckBox" id="maintenue" checked />
+                                <input type="checkbox" name="@ToolBox.Models.MaintainedAccountType.Maintained" class="invisibleCheckBox" id="maintenue" checked />
                                 <button type="button" value="maintenue" class="btn btn-primary m-2 filterButton">Licence maintenue</button>
                             }
                             else
                             {
-                                <input type="checkbox" name="maintenue" class="invisibleCheckBox" id="maintenue" />
+                                <input type="checkbox" name="@ToolBox.Models.MaintainedAccountType.Maintained" class="invisibleCheckBox" id="maintenue" />
                                 <button type="button" value="maintenue" class="btn btn-light m-2 filterButton">Licence maintenue</button>
                             }
 
                             if (Model.FilterContains(ToolBox.Models.MaintainedAccountType.Unmaintained))
                             {
-                                <input type="checkbox" name="nonMaintenue" class="invisibleCheckBox" id="nonMaintenue" checked />
+                                <input type="checkbox" name="@ToolBox.Models.MaintainedAccountType.Unmaintained" class="invisibleCheckBox" id="nonMaintenue" checked />
                                 <button type="button" value="nonMaintenue" class="btn btn-primary m-2 filterButton">Licence non maintenue</button>
                             }
                             else
                             {
-                                <input type="checkbox" name="nonMaintenue" class="invisibleCheckBox" id="nonMaintenue" />
+                                <input type="checkbox" name="@ToolBox.Models.MaintainedAccountType.Unmaintained" class="invisibleCheckBox" id="nonMaintenue" />
                                 <button type="button" value="nonMaintenue" class="btn btn-light m-2 filterButton">Licence non maintenue</button>
                             }
                         }
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" asp-page-handler="ChangeFilter" class="btn btn-primary">Filtrer</button>
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
                 </div>
             </form>
         </div>

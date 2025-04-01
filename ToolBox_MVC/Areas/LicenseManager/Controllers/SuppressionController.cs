@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MFilesAPI;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using ToolBox.Models;
 using ToolBox.Services;
 using ToolBox_MVC.Areas.LicenseManager.Models;
 
@@ -14,10 +19,73 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             return View();
         }
 
-        public IActionResult List(ServerType id)
+        
+
+        public IActionResult List(ServerType id, string? JSfilter)
         {
-            return View(new SupressionListModel(id));
+            AccountFilter filter;
+            if (JSfilter != null)
+            {
+                filter = JsonSerializer.Deserialize<AccountFilter>(JSfilter);
+            }
+            else
+            {
+                filter = new AccountFilter();
+            }
+            return View(new SupressionListModel(id, filter));
         }
+
+        [HttpPost]
+        public IActionResult ChangeFilter(ServerType id) 
+        {
+            AccountFilter filter = new AccountFilter();
+
+            List<MFLicenseType> licenseTypes = new List<MFLicenseType>();
+            List<MFLoginAccountType> loginTypes = new List<MFLoginAccountType>();
+            List<MaintainedAccountType> maintainedTypes = new List<MaintainedAccountType>();
+
+            foreach (MFLicenseType licenseType in filter.LicenseTypes)
+            {
+                if (Request.Form[licenseType.ToString()] == "on")
+                {
+                    licenseTypes.Add(licenseType);
+                }
+            }
+            if (licenseTypes.Count > 0)
+                filter.LicenseTypes = licenseTypes;
+            
+
+            foreach (MFLoginAccountType loginType in filter.AccountTypes)
+            {
+                if (Request.Form[loginType.ToString()] == "on")
+                {
+                    loginTypes.Add(loginType);
+                }
+            }
+            if (loginTypes.Count > 0)
+                filter.AccountTypes = loginTypes;
+
+            foreach (MaintainedAccountType maintainedType in filter.MaintainedTypes)
+            {
+                if (Request.Form[maintainedType.ToString()] == "on")
+                {
+                    maintainedTypes.Add(maintainedType);
+                }
+            }
+            if (maintainedTypes.Count > 0)
+                filter.MaintainedTypes = maintainedTypes;
+
+            string JSfilter = JsonSerializer.Serialize(filter);
+
+            return RedirectToAction("List", new
+            {
+                id = id,
+                JSfilter = JSfilter,
+            });
+        }
+                
+            
+
 
         [HttpPost]
         public IActionResult RefreshList(ServerType id)
@@ -26,6 +94,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             list.UpdateList();
             return RedirectToAction("List",id);
         }
+
 
 
        

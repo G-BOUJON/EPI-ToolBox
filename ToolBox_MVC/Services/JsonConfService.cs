@@ -13,7 +13,7 @@ namespace ToolBox.Services
             ConfigurationJsonFileName = FilePathService.LicenseManagerPath(server) + "configuration.json";
         }
 
-        public Config getConf()
+        public Config GetConf()
         {
             using (var jsonFileReader = File.OpenText(ConfigurationJsonFileName))
             {
@@ -23,7 +23,7 @@ namespace ToolBox.Services
 
         public void changeHour(string hour)
         {
-            Config configuration = getConf();
+            Config configuration = GetConf();
 
             configuration.hour = hour;
 
@@ -32,7 +32,7 @@ namespace ToolBox.Services
 
         public void changeActivity(bool activity)
         {
-            Config configuration = getConf();
+            Config configuration = GetConf();
 
             configuration.active = activity;
 
@@ -41,7 +41,7 @@ namespace ToolBox.Services
 
         public void changeFrequence(int frequence)
         {
-            Config configuration = getConf();
+            Config configuration = GetConf();
 
             configuration.frequence = frequence;
 
@@ -51,7 +51,7 @@ namespace ToolBox.Services
         public void deleteGroup(string groupName)
         {
             List<Group> updatedGroups = new List<Group>();
-            Config configuration = getConf();
+            Config configuration = GetConf();
             IEnumerable<Group> groups = configuration.groups;
             groups = groups.ToList();
 
@@ -70,7 +70,7 @@ namespace ToolBox.Services
         public bool addGroup(Group group)
         {
             // Initialisation
-            Config configuration = getConf();
+            Config configuration = GetConf();
             List<Group> groups = configuration.groups;
             bool existingGroup = false;
 
@@ -98,7 +98,7 @@ namespace ToolBox.Services
         {
 
             // Initialisation
-            Config configuration = getConf();
+            Config configuration = GetConf();
 
             // Traitement
             configuration.maintainedAccounts.Add(username);
@@ -110,7 +110,7 @@ namespace ToolBox.Services
         public void deleteMaintainedAccount(string username)
         {
             // Initialisation
-            Config configuration = getConf();
+            Config configuration = GetConf();
             List<string> maintainedAccounts = new List<string>();
 
             // Traitement

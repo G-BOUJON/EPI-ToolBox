@@ -29,7 +29,7 @@ namespace ToolBox.Services
             pc = new(contextType: ContextType.Domain, name: config.activeDirectoryCredentials.domain, container: config.activeDirectoryCredentials.container, userName: config.activeDirectoryCredentials.username, password: config.activeDirectoryCredentials.password);
         }
 
-        public List<LoginAccount> getList()
+        public List<LoginAccount> GetSuppressionList()
         {
             // Initialisation
             List<Group> groupNames = Configuration.groups.ToList();
@@ -157,7 +157,7 @@ namespace ToolBox.Services
             ServerLoginAccountOperations loginAccountOps = mfServerApplication.LoginAccountOperations;
             bool maintainedAccount = false;
 
-            foreach (string acnt in jsonConfService.getConf().maintainedAccounts)
+            foreach (string acnt in jsonConfService.GetConf().maintainedAccounts)
             {
                 if (acnt.Equals(account.UserName))
                 {
