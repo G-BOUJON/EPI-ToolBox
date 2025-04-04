@@ -1,11 +1,17 @@
 ﻿using System.Configuration;
 using System.Text.Json;
-using ToolBox.Models;
+using ToolBox_MVC.Models;
+using ToolBox_MVC.Services.JsonConverters;
 
-namespace ToolBox.Services
+namespace ToolBox_MVC.Services
 {
     public class JsonConfService
     {
+        private JsonSerializerOptions serializerOptions = new JsonSerializerOptions
+        {
+            Converters = { new TimeOnlyConverter() },
+            WriteIndented = true
+        };
         public string ConfigurationJsonFileName { get; private set; }
 
         public JsonConfService(ServerType server) 
@@ -17,15 +23,15 @@ namespace ToolBox.Services
         {
             using (var jsonFileReader = File.OpenText(ConfigurationJsonFileName))
             {
-                return JsonSerializer.Deserialize<Config>(jsonFileReader.ReadToEnd());
+                return JsonSerializer.Deserialize<Config>(jsonFileReader.ReadToEnd(),serializerOptions);
             }
         }
 
-        public void changeHour(string hour)
+        public void changeHour(TimeOnly hour)
         {
             Config configuration = GetConf();
 
-            configuration.hour = hour;
+            configuration.Hour = hour;
 
             serializeConfig(configuration);
         }
@@ -34,7 +40,7 @@ namespace ToolBox.Services
         {
             Config configuration = GetConf();
 
-            configuration.active = activity;
+            configuration.ActiveSuppression = activity;
 
             serializeConfig(configuration);
         }
@@ -43,7 +49,7 @@ namespace ToolBox.Services
         {
             Config configuration = GetConf();
 
-            configuration.frequence = frequence;
+            configuration.Frequence = frequence;
 
             serializeConfig(configuration);
         }
@@ -52,7 +58,7 @@ namespace ToolBox.Services
         {
             List<Group> updatedGroups = new List<Group>();
             Config configuration = GetConf();
-            IEnumerable<Group> groups = configuration.groups;
+            IEnumerable<Group> groups = configuration.Groups;
             groups = groups.ToList();
 
             foreach (Group grp in groups)
@@ -62,7 +68,7 @@ namespace ToolBox.Services
                     updatedGroups.Add(grp);
                 }
             }
-            configuration.groups = updatedGroups;
+            configuration.Groups = updatedGroups;
 
             serializeConfig(configuration);
         }
@@ -71,7 +77,7 @@ namespace ToolBox.Services
         {
             // Initialisation
             Config configuration = GetConf();
-            List<Group> groups = configuration.groups;
+            List<Group> groups = configuration.Groups;
             bool existingGroup = false;
 
             // Traitement
@@ -86,7 +92,7 @@ namespace ToolBox.Services
             if (!existingGroup)
             {
                 groups.Add(group);
-                configuration.groups = groups;
+                configuration.Groups = groups;
                 serializeConfig(configuration);
             }
 
@@ -101,7 +107,7 @@ namespace ToolBox.Services
             Config configuration = GetConf();
 
             // Traitement
-            configuration.maintainedAccounts.Add(username);
+            configuration.MaintainedAccounts.Add(username);
 
             // Sortie
             serializeConfig(configuration);
@@ -114,14 +120,14 @@ namespace ToolBox.Services
             List<string> maintainedAccounts = new List<string>();
 
             // Traitement
-            foreach (string acct in configuration.maintainedAccounts)
+            foreach (string acct in configuration.MaintainedAccounts)
             {
                 if (acct != username)
                 {
                     maintainedAccounts.Add(acct);
                 }
             }
-            configuration.maintainedAccounts = maintainedAccounts;
+            configuration.MaintainedAccounts = maintainedAccounts;
 
             // Sortie
             serializeConfig(configuration);
@@ -138,14 +144,15 @@ namespace ToolBox.Services
                         SkipValidation = true,
                         Indented = true
                     }),
-                    configuration
+                    configuration,
+                    serializerOptions
                 );
             }
         }
 
         public List<string> GetMaintainedAccounts()
         {
-            return this.GetConf().maintainedAccounts;
+            return GetConf().MaintainedAccounts;
         }
     }
 }

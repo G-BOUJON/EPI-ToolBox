@@ -1,7 +1,7 @@
 ﻿using MFilesAPI;
 using ToolBox_MVC.Services;
 
-namespace ToolBox.Models
+namespace ToolBox_MVC.Models
 {
     public class Account
     {
@@ -35,7 +35,7 @@ namespace ToolBox.Models
         public string TranslateLicenseType()
         {
 
-            return TranslatorService.TranslateMFLicense(this.LicenseType);
+            return TranslatorService.TranslateMFLicense(LicenseType);
            
            
         }

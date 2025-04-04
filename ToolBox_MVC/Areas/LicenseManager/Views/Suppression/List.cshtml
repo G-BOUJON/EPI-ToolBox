@@ -1,27 +1,30 @@
 ﻿@using MFilesAPI
-@using ToolBox.Services
 @using ToolBox_MVC.Services
-@model ToolBox_MVC.Areas.LicenseManager.Models.SupressionListModel
+@model ToolBox_MVC.Areas.LicenseManager.Models.SuppressionListModel
 
 @{
     ViewData["Title"] = Model.Server.ToString() + " - Suppression";
+    ViewData["Server"] = Model.Server;
 }
-<form id="changeServer" asp-controller="Suppression" asp-action="List" asp-route-id="" method="get">
-    <select class="form-select form-select-lg mb-3" id="selectServer" onchange="changeServer()">
-        @foreach (ServerType server in Enum.GetValues<ServerType>())
-        {
-            if (server == Model.Server)
+
+<div class="d-inline-flex gap-3">
+    <h1>Utilisateurs à supprimer - Environnement : </h1>
+    <form id="changeServer" asp-controller="Suppression" asp-action="List" asp-route-id="" method="get">
+        <select class="form-select form-select-lg mb-0 mb-3" id="selectServer" onchange="changeServer()">
+            @foreach (ServerType server in Enum.GetValues<ServerType>())
             {
-                <option selected value="@server">@server</option>
+                if (server == Model.Server)
+                {
+                    <option selected value="@server">@server</option>
+                }
+                else
+                {
+                    <option value="@server">@server</option>
+                }
             }
-            else
-            {
-                <option value="@server">@server</option>
-            }
-        }
-    </select>
-</form>
-<h1>Utilisateurs à supprimer - Environnement @Model.Server</h1>
+        </select>
+    </form>
+</div>
 <div class="text-center">
     <div class="d-flex justify-content-between">
 
@@ -126,7 +129,7 @@
 
                 @{
                     int i = 0;
-                    foreach (ToolBox.Models.Account loginaccount in Model.GetNonExistingAccounts())
+                    foreach (Account loginaccount in Model.GetNonExistingAccounts())
                     {
                         string modalName = "#" + "modal" + i.ToString();
                     <tr>
@@ -135,7 +138,7 @@
                         <td>
                                 @{
 
-                                    if (Model.Configuration.maintainedAccounts.Contains(loginaccount.UserName))
+                                    if(Model.Configuration.MaintainedAccounts.Contains(loginaccount.UserName))
                                     {
                                     <div title="Licence maintenue">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-exclamation-circle-fill" viewBox="0 0 16 16" title="Licence maintenue">
@@ -210,7 +213,7 @@
                                                 </tbody>
                                             </table>
                                                 @{
-                                                    if (Model.Configuration.maintainedAccounts.Contains(loginaccount.UserName))
+                                                    if(Model.Configuration.MaintainedAccounts.Contains(loginaccount.UserName))
                                                     {
 
                                                     <button type="submit" asp-controller="Suppression" asp-action="Maintain" asp-route-id="@Model.Server" asp-route-username="@loginaccount.UserName" class="btn btn-danger">
@@ -359,25 +362,25 @@
                     <hr class="hr" />
                     <div class="d-flex justify-content-center mb-4">
                         @{
-                            if (Model.FilterContains(ToolBox.Models.MaintainedAccountType.Maintained))
+                            if (Model.FilterContains(MaintainedAccountType.Maintained))
                             {
-                                <input type="checkbox" name="@ToolBox.Models.MaintainedAccountType.Maintained" class="invisibleCheckBox" id="maintenue" checked />
+                                <input type="checkbox" name="@ToolBox_MVC.Models.MaintainedAccountType.Maintained" class="invisibleCheckBox" id="maintenue" checked />
                                 <button type="button" value="maintenue" class="btn btn-primary m-2 filterButton">Licence maintenue</button>
                             }
                             else
                             {
-                                <input type="checkbox" name="@ToolBox.Models.MaintainedAccountType.Maintained" class="invisibleCheckBox" id="maintenue" />
+                                <input type="checkbox" name="@ToolBox_MVC.Models.MaintainedAccountType.Maintained" class="invisibleCheckBox" id="maintenue" />
                                 <button type="button" value="maintenue" class="btn btn-light m-2 filterButton">Licence maintenue</button>
                             }
 
-                            if (Model.FilterContains(ToolBox.Models.MaintainedAccountType.Unmaintained))
+                            if (Model.FilterContains(MaintainedAccountType.Unmaintained))
                             {
-                                <input type="checkbox" name="@ToolBox.Models.MaintainedAccountType.Unmaintained" class="invisibleCheckBox" id="nonMaintenue" checked />
+                                <input type="checkbox" name="@ToolBox_MVC.Models.MaintainedAccountType.Unmaintained" class="invisibleCheckBox" id="nonMaintenue" checked />
                                 <button type="button" value="nonMaintenue" class="btn btn-primary m-2 filterButton">Licence non maintenue</button>
                             }
                             else
                             {
-                                <input type="checkbox" name="@ToolBox.Models.MaintainedAccountType.Unmaintained" class="invisibleCheckBox" id="nonMaintenue" />
+                                <input type="checkbox" name="@ToolBox_MVC.Models.MaintainedAccountType.Unmaintained" class="invisibleCheckBox" id="nonMaintenue" />
                                 <button type="button" value="nonMaintenue" class="btn btn-light m-2 filterButton">Licence non maintenue</button>
                             }
                         }

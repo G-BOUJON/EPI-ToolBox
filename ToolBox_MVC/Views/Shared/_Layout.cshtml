@@ -27,11 +27,24 @@
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Log out</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarMfilesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">M-Files</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-area="LicenseManager" asp-controller="Home">
+                                            License Manager
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                         }
                     </ul>
+                </div>
+                <div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a class="btn btn-outline-primary text-dark text-decoration-none" asp-area="" asp-controller="Account" asp-action="Logout">Log out</a>
+                    }
                 </div>
             </div>
         </nav>

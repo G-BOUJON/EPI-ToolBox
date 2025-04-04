@@ -2,7 +2,7 @@
 
 using MFilesAPI;
 
-namespace ToolBox.Models
+namespace ToolBox_MVC.Models
 {
     public enum MaintainedAccountType
     {
@@ -50,10 +50,10 @@ namespace ToolBox.Models
             // Traitement
             foreach (Account account in accounts)
             {
-                if (this.LicenseTypes.Contains(account.LicenseType) && this.AccountTypes.Contains(account.AccountType))
+                if (LicenseTypes.Contains(account.LicenseType) && AccountTypes.Contains(account.AccountType))
                 {
-                    if ((MaintainedTypes.Contains(MaintainedAccountType.Maintained) && maintainedAccounts.Contains(account.UserName))
-                        || (MaintainedTypes.Contains(MaintainedAccountType.Unmaintained) && !maintainedAccounts.Contains(account.UserName)))
+                    if (MaintainedTypes.Contains(MaintainedAccountType.Maintained) && maintainedAccounts.Contains(account.UserName)
+                        || MaintainedTypes.Contains(MaintainedAccountType.Unmaintained) && !maintainedAccounts.Contains(account.UserName))
                     {
                         filteredAccounts.Add(account);
                     }
@@ -68,9 +68,9 @@ namespace ToolBox.Models
         {
             int total = 0;
 
-            total += this.LicenseTypes.Count();
-            total += this.AccountTypes.Count();
-            total += this.MaintainedTypes.Count();
+            total += LicenseTypes.Count();
+            total += AccountTypes.Count();
+            total += MaintainedTypes.Count();
 
             return total;
         }

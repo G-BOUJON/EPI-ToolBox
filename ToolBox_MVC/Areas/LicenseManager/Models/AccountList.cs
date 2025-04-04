@@ -1,18 +1,18 @@
 ﻿using MFilesAPI;
-using ToolBox.Models;
-using ToolBox.Services;
+using ToolBox_MVC.Models;
+using ToolBox_MVC.Services;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Models
 {
-    public class SupressionListModel
+    public abstract class AccountList
     {
         public Config Configuration { get; set; }
         public AccountFilter Filter { get; set; }
         public ServerType Server { get; set; }
 
-        public SupressionListModel(ServerType server) : this(server, new AccountFilter()) { }
+        public AccountList(ServerType server) : this(server, new AccountFilter()) { }
 
-        public SupressionListModel(ServerType server, AccountFilter filter)
+        public AccountList(ServerType server, AccountFilter filter)
         {
             Server = server;
             this.Filter = filter;
@@ -20,16 +20,9 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models
 
         }
 
-        public List<Account> GetNonExistingAccounts()
-        {
-            return Filter.filterAccounts(new JsonLoginAccountsService(Server).GetAccounts().ToList() , Configuration.maintainedAccounts);
-        }
-
-        public void UpdateList()
-        {
-            MFilesUsersService mf = new MFilesUsersService(Configuration);
-            new JsonLoginAccountsService(Server).UpdateList(mf.GetSuppressionList());
-        }
+        public abstract List<Account> GetAccounts();
+        public abstract void UpdateList();
+        
 
         public bool FilterContains(MFLicenseType licenseType)
         {

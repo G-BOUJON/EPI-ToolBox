@@ -5,24 +5,24 @@
       "deletedAccounts": [
         {
           "AccountName": "EPI\\trainer",
-          "AccountType": "MFLoginAccountTypeWindows",
+          "AccountType": 2,
           "DomainName": "EPI",
           "EmailAddress": "",
-          "Enabled": "True",
+          "Enabled": true,
           "FullName": "TRAINER",
-          "LicenseType": "MFLicenseTypeNamedUserLicense",
-          "ServerRoles": "9",
+          "LicenseType": 1,
+          "ServerRoles": 9,
           "UserName": "trainer"
         },
         {
           "AccountName": "EPI\\trainer",
-          "AccountType": "MFLoginAccountTypeWindows",
+          "AccountType": 2,
           "DomainName": "EPI",
           "EmailAddress": "",
-          "Enabled": "True",
+          "Enabled": true,
           "FullName": "TRAINER",
-          "LicenseType": "MFLicenseTypeNamedUserLicense",
-          "ServerRoles": "9",
+          "LicenseType": 1,
+          "ServerRoles": 9,
           "UserName": "trainer"
         }
       ],
@@ -36,35 +36,35 @@
       "deletedAccounts": [
         {
           "AccountName": "EPI\\DBRUCOLI",
-          "AccountType": "MFLoginAccountTypeWindows",
+          "AccountType": 2,
           "DomainName": "EPI",
           "EmailAddress": "David.BRUCOLI@epi.ge.ch",
-          "Enabled": "True",
+          "Enabled": true,
           "FullName": "BRUCOLI David",
-          "LicenseType": "MFLicenseTypeNamedUserLicense",
-          "ServerRoles": "MFLoginServerRoleLogIn",
+          "LicenseType": 1,
+          "ServerRoles": 8,
           "UserName": "DBRUCOLI"
         },
         {
           "AccountName": "EPI\\VBAUSSAND",
-          "AccountType": "MFLoginAccountTypeWindows",
+          "AccountType": 2,
           "DomainName": "EPI",
           "EmailAddress": "Valentin.BAUSSAND@epi.ge.ch",
-          "Enabled": "True",
+          "Enabled": true,
           "FullName": "BAUSSAND Valentin",
-          "LicenseType": "MFLicenseTypeNamedUserLicense",
-          "ServerRoles": "MFLoginServerRoleLogIn",
+          "LicenseType": 1,
+          "ServerRoles": 8,
           "UserName": "VBAUSSAND"
         },
         {
           "AccountName": "EPI\\emalartre",
-          "AccountType": "MFLoginAccountTypeWindows",
+          "AccountType": 2,
           "DomainName": "EPI",
           "EmailAddress": "",
-          "Enabled": "True",
+          "Enabled": true,
           "FullName": "Emmanuel MALARTRE",
-          "LicenseType": "MFLicenseTypeNamedUserLicense",
-          "ServerRoles": "9",
+          "LicenseType": 1,
+          "ServerRoles": 9,
           "UserName": "emalartre"
         }
       ],
@@ -80,35 +80,35 @@
       "deletedAccounts": [
         {
           "AccountName": "EPI\\emalartre",
-          "AccountType": "MFLoginAccountTypeWindows",
+          "AccountType": 2,
           "DomainName": "EPI",
           "EmailAddress": "",
-          "Enabled": "True",
+          "Enabled": true,
           "FullName": "Emmanuel MALARTRE",
-          "LicenseType": "MFLicenseTypeNamedUserLicense",
-          "ServerRoles": "9",
+          "LicenseType": 1,
+          "ServerRoles": 9,
           "UserName": "emalartre"
         },
         {
           "AccountName": "EPI\\mpinho",
-          "AccountType": "MFLoginAccountTypeWindows",
+          "AccountType": 2,
           "DomainName": "EPI",
           "EmailAddress": "m.pinho@neurones.pro",
-          "Enabled": "True",
+          "Enabled": true,
           "FullName": "Mario PINHO",
-          "LicenseType": "MFLicenseTypeNamedUserLicense",
-          "ServerRoles": "9",
+          "LicenseType": 1,
+          "ServerRoles": 9,
           "UserName": "mpinho"
         },
         {
           "AccountName": "EPI\\MSCHLINGER",
-          "AccountType": "MFLoginAccountTypeWindows",
+          "AccountType": 2,
           "DomainName": "EPI",
           "EmailAddress": "Marie.SCHLINGER@epi.ge.ch",
-          "Enabled": "True",
+          "Enabled": true,
           "FullName": "SCHLINGER Marie",
-          "LicenseType": "MFLicenseTypeNamedUserLicense",
-          "ServerRoles": "MFLoginServerRoleLogIn",
+          "LicenseType": 1,
+          "ServerRoles": 8,
           "UserName": "MSCHLINGER"
         }
       ],

@@ -1,9 +1,10 @@
 ﻿using MFilesAPI;
 using Microsoft.AspNetCore.Authentication;
+using NuGet.Packaging;
 using System.DirectoryServices.AccountManagement;
-using ToolBox.Models;
+using ToolBox_MVC.Models;
 
-namespace ToolBox.Services
+namespace ToolBox_MVC.Services
 {
     public class MFilesUsersService
     {
@@ -18,21 +19,21 @@ namespace ToolBox.Services
             mfServerApplication = new MFilesServerApplication();
             mfServerApplication.Connect(
                 AuthType: MFAuthType.MFAuthTypeSpecificWindowsUser,
-                UserName: config.vaultCredentials.username,
-                Password: config.vaultCredentials.password,
-                Domain: config.vaultCredentials.domain,
-                ProtocolSequence: config.vaultCredentials.protocolSequence,
-                NetworkAddress: config.vaultCredentials.networkAddress,
-                Endpoint: config.vaultCredentials.endPoint);
-            vault = mfServerApplication.LogInToVault(config.vaultCredentials.guid);
+                UserName: config.VaultCredentials.Username,
+                Password: config.VaultCredentials.Password,
+                Domain: config.VaultCredentials.Domain,
+                ProtocolSequence: config.VaultCredentials.ProtocolSequence,
+                NetworkAddress: config.VaultCredentials.NetworkAddress,
+                Endpoint: config.VaultCredentials.EndPoint);
+            vault = mfServerApplication.LogInToVault(config.VaultCredentials.Guid);
 
-            pc = new(contextType: ContextType.Domain, name: config.activeDirectoryCredentials.domain, container: config.activeDirectoryCredentials.container, userName: config.activeDirectoryCredentials.username, password: config.activeDirectoryCredentials.password);
+            pc = new(contextType: ContextType.Domain, name: config.ActiveDirectoryCredentials.Domain, container: config.ActiveDirectoryCredentials.Container, userName: config.ActiveDirectoryCredentials.Username, password: config.ActiveDirectoryCredentials.Password);
         }
 
         public List<LoginAccount> GetSuppressionList()
         {
             // Initialisation
-            List<Group> groupNames = Configuration.groups.ToList();
+            List<Group> groupNames = Configuration.Groups.ToList();
             List<LoginAccount> nonExistingAccounts = new List<LoginAccount>();
 
             LoginAccounts loginAccounts = getLoginAccounts();
@@ -65,6 +66,62 @@ namespace ToolBox.Services
             // Sortie
             return nonExistingAccounts;
         }
+
+        public List<UserGroup> GetMFilesUserGroups()
+        {
+            VaultUserGroupOperations groupOperations = vault.UserGroupOperations;
+            
+            List<UserGroup> groupsToInspect = new List<UserGroup>();
+
+            foreach (UserGroup userGroup in groupOperations.GetUserGroups())
+            {
+                if (Configuration.GetGroupsNames().Contains(userGroup.Name))
+                {
+                    groupsToInspect.Add(userGroup);
+                }
+            }
+
+            return groupsToInspect;
+        }
+
+        public List<LoginAccount> GetRestorationList()
+        {
+            List<LoginAccount> accountsToRestore = new List<LoginAccount>();
+            LoginAccount currentAccount = null;
+
+            List<UserGroup> mfGroups = GetMFilesUserGroups();
+
+
+            foreach (UserGroup userGroup in mfGroups)
+            {
+                foreach (int userID in userGroup.Members)
+                {
+                    // Dans la collection Members, les id de groupes sont négatifs et les id d'utilisateur positifs
+                    if (userID > 0)
+                    {
+                        currentAccount = GetLoginAccountFromUserAccountID(userID);
+                        if (currentAccount != null)
+                        {
+                            if(currentAccount.LicenseType == MFLicenseType.MFLicenseTypeNone)
+                            {
+                                accountsToRestore.Add(currentAccount);
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            return accountsToRestore;
+        }
+
+        public LoginAccount GetLoginAccountFromUserAccountID(int userID)
+        {
+            VaultUserOperations userOperations = vault.UserOperations;
+            
+            return userOperations.GetLoginAccountOfUser(userID);
+        }
+        
 
         public bool groupExists(string name)
         {
@@ -144,7 +201,7 @@ namespace ToolBox.Services
             ServerLoginAccountOperations loginOperations = mfServerApplication.LoginAccountOperations;
             bool success = true;
 
-            if (!this.Configuration.maintainedAccounts.Contains(account.UserName))
+            if (!Configuration.MaintainedAccounts.Contains(account.UserName))
             {
                 try
                 {
@@ -169,7 +226,7 @@ namespace ToolBox.Services
         public bool DeleteLicense(string accountName)
         {
             LoginAccount account = mfServerApplication.LoginAccountOperations.GetLoginAccount(accountName);
-            return this.DeleteLicense(account);
+            return DeleteLicense(account);
         }
 
         List<LoginAccount> getLicencedAccounts(LoginAccounts loginAccounts)

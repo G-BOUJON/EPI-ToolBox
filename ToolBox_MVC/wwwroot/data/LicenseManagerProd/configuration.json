@@ -1,8 +1,9 @@
 {
-  "active": false,
-  "frequence": 0,
-  "hour": "08:29",
-  "groups": [
+  "ActiveSuppression": false,
+  "ActiveRestauration": false,
+  "Frequence": 0,
+  "Hour": "08:29",
+  "Groups": [
     {
       "name": "GRPD_Comptes_Equipes_MFiles"
     },
@@ -13,26 +14,25 @@
       "name": "GRPD_Liferay"
     }
   ],
-  "maintainedAccounts": [
+  "MaintainedAccounts": [
     "MLEMONTAGNER",
-    "INTRATEST02",
-    "INTRATEST01",
-    "COPYSHOP"
+    "COPYSHOP",
+    "INTRATEST01"
   ],
-  "vaultCredentials": {
-    "username": "intratest01",
-    "password": "Epi2020.",
-    "domain": "EPI",
-    "protocolSequence": "ncacn_ip_tcp",
-    "networkAddress": "mfiles.epi.ge.ch",
-    "endPoint": "2266",
-    "guid": "{D6B60CC3-9531-417A-8819-AFBD4E37DABF}"
+  "VaultCredentials": {
+    "Username": "intratest01",
+    "Password": "Epi2020.",
+    "Domain": "EPI",
+    "ProtocolSequence": "ncacn_ip_tcp",
+    "NetworkAddress": "mfiles.epi.ge.ch",
+    "EndPoint": "2266",
+    "Guid": "{D6B60CC3-9531-417A-8819-AFBD4E37DABF}"
   },
-  "activeDirectoryCredentials": {
-    "username": "EPI\\S_MFiles_T",
-    "password": "Epi2@22",
-    "domain": "epi-srv-dc.epidom.ch",
-    "container": "DC=epidom,DC=ch"
+  "ActiveDirectoryCredentials": {
+    "Username": "EPI\\S_MFiles_T",
+    "Password": "Epi2@22",
+    "Domain": "epi-srv-dc.epidom.ch",
+    "Container": "DC=epidom,DC=ch"
   },
-  "apiKey": "Tb0i8QemXE7uoqTDse32h6g3z"
+  "ApiKey": "Tb0i8QemXE7uoqTDse32h6g3z"
 }

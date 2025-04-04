@@ -6,7 +6,7 @@
  * 
  */
 
-namespace ToolBox.Services
+namespace ToolBox_MVC.Services
 {
     public enum ServerType
     {

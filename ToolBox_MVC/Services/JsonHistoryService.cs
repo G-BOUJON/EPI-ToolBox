@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using ToolBox.Models;
+using ToolBox_MVC.Models;
 
-namespace ToolBox.Services
+namespace ToolBox_MVC.Services
 {
     public class JsonHistoryService
     {
@@ -59,9 +59,16 @@ namespace ToolBox.Services
 
         public History getHistory()
         {
-            using (var jsonFileReader = File.OpenText(HistoryJsonFileName))
+            try
             {
-                return JsonSerializer.Deserialize<History>(jsonFileReader.ReadToEnd());
+                using (var jsonFileReader = File.OpenText(HistoryJsonFileName))
+                {
+                    return JsonSerializer.Deserialize<History>(jsonFileReader.ReadToEnd());
+                }
+            }
+            catch (Exception ex)
+            {
+                return new History();
             }
         }
 

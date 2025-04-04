@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using ToolBox.Models;
-using ToolBox.Services;
 using ToolBox_MVC.Areas.LicenseManager.Models;
+using ToolBox_MVC.Models;
+using ToolBox_MVC.Services;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 {
@@ -16,7 +16,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("List");
         }
 
         
@@ -32,7 +32,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             {
                 filter = new AccountFilter();
             }
-            return View(new SupressionListModel(id, filter));
+            return View(new SuppressionListModel(id, filter));
         }
 
         [HttpPost]
@@ -87,9 +87,8 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult RefreshList(ServerType id)
         {
-            SupressionListModel list = new SupressionListModel(id);
-            list.UpdateList();
-            return RedirectToAction("List",id);
+            UpdateList(id);
+            return RedirectToAction("List",new {id});
         }
 
         [HttpPost]
@@ -106,7 +105,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
                 confService.addMaintainedAccount(username);
             }
 
-            return RedirectToAction("List", id);
+            return RedirectToAction("List", new { id });
         }
 
         [HttpPost]
@@ -121,7 +120,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
                     confService.addMaintainedAccount(account.UserName);
                 }
             }
-            return RedirectToAction("List", id);
+            return RedirectToAction("List",new { id });
         }
 
         [HttpPost]
@@ -129,7 +128,8 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         {
             MFilesUsersService mfUserSevice = new MFilesUsersService(new JsonConfService(id).GetConf());
             mfUserSevice.DeleteLicense(accountName);
-            return RedirectToAction("List", id);
+            UpdateList(id);
+            return RedirectToAction("List", new { id });
         }
 
         [HttpPost]
@@ -145,10 +145,21 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
                     mfUserService.DeleteLicense(account.AccountName);
                 }
             }
-            return RedirectToAction("List",id);
+            UpdateList(id);
+            return RedirectToAction("List", new { id });
         }
 
+        public IActionResult History(ServerType id)
+        {
+            ViewData["Server"] = id;
+            return View(new JsonHistoryService(id).getHistory());
+        }
 
+        private void UpdateList(ServerType id)
+        {
+            new SupressionListModel(id).UpdateList();
+            GC.Collect();
+        }
        
     }
 }

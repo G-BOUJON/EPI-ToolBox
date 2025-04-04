@@ -1,13 +1,23 @@
-﻿namespace ToolBox.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ToolBox_MVC.Models
 {
     public class VaultCredentials
     {
-        public string username { get; set; }
-        public string password { get; set; }
-        public string domain { get; set; }
-        public string protocolSequence { get; set; }
-        public string networkAddress { get; set; }
-        public string endPoint { get; set; }
-        public string guid { get; set; }
+        [Required]
+        public string Username { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+        [Required]
+        public string Domain { get; set; }
+        [Required]
+        public string ProtocolSequence { get; set; }
+        [Required]
+        public string NetworkAddress { get; set; }
+        [Required]
+        public string EndPoint { get; set; }
+        [Required]
+        public string Guid { get; set; }
     }
 }

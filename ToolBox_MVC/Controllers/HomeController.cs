@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
-using ToolBox.Models;
-using ToolBox.Services;
+using ToolBox_MVC.Models;
+using ToolBox_MVC.Services;
 using ToolBox_MVC.Models;
 
 namespace ToolBox_MVC.Controllers

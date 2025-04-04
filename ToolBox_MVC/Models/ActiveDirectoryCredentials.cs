@@ -1,10 +1,18 @@
-﻿namespace ToolBox.Models
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+
+namespace ToolBox_MVC.Models
 {
     public class ActiveDirectoryCredentials
     {
-        public string username { get; set; }
-        public string password { get; set; }
-        public string domain { get; set; }
-        public string container { get; set; }
+        [Required]
+        public string Username { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+        [Required]
+        public string Domain { get; set; }
+        [Required]
+        public string Container { get; set; }
     }
 }

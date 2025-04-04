@@ -1,4 +1,4 @@
-﻿namespace ToolBox.Models
+﻿namespace ToolBox_MVC.Models
 {
     public class History
     {
