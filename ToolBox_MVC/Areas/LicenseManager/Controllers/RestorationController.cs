@@ -48,6 +48,24 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             
         }
 
+        [HttpPost]
+        // TODO : Tester la méthode, voir pour supprimer 3-4 licences et le remettres depuis le site
+        public IActionResult RestoreAllLicense(ServerType id)
+        {
+            MFilesUsersService mfUserService = new MFilesUsersService(new JsonConfService(id).GetConf());
+            JsonLoginAccountsService accountService = new JsonLoginAccountsService(id, LicenseManagerOperation.Restoration);
+
+            foreach (Account account in accountService.GetAccounts().ToList())
+            {
+                if (!string.IsNullOrEmpty(Request.Form[account.AccountName]))
+                {
+                    mfUserService.RestoreAccountLicense(account.AccountName);
+                }
+            }
+            UpdateList(id);
+            return RedirectToAction("List", new { id });
+        }
+
 
 
         private void UpdateList(ServerType id)
