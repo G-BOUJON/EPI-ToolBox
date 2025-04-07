@@ -342,7 +342,7 @@ namespace ToolBox_MVC.Services
             {
                 try
                 {
-                    new JsonHistoryService(serverType).addDeletedAccount(new Account(account));
+                    new JsonHistoryService(serverType,LicenseManagerOperation.Suppression).AddAccount(new Account(account));
                     account.LicenseType = MFLicenseType.MFLicenseTypeNone;
                     loginOperations.ModifyLoginAccount(account);
                 }

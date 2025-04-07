@@ -1,18 +1,37 @@
-﻿using System.Text.Json;
+﻿using MFilesAPI;
+using System.DirectoryServices.ActiveDirectory;
+using System.Text.Json;
 using ToolBox_MVC.Models;
 
 namespace ToolBox_MVC.Services
 {
     public class JsonHistoryService
     {
-        public string HistoryJsonFileName { get; private set; }
+        public Dictionary<LicenseManagerOperation,string> HISTORY_JSON = new Dictionary<LicenseManagerOperation, string>()
+        { {LicenseManagerOperation.Suppression, "supHistory.json" },
+            {LicenseManagerOperation.Restoration, "resHistory.json" }};
 
-        public JsonHistoryService(ServerType server) 
+        public string HistoryJsonFileName { get; private set; }
+        public ServerType Server { get; set; }
+
+        public JsonHistoryService(ServerType server, LicenseManagerOperation operation) 
         {
-            HistoryJsonFileName = FilePathService.LicenseManagerPath(server) + "history.json";
+            HistoryJsonFileName = FilePathService.LicenseManagerPath(server) + HISTORY_JSON[operation];
+            Server = server;
         }
 
-        public void addDeletedAccount(Account account)
+        public void AddAccount(string accountName)
+        {
+            MFilesUsersService mFilesUsers = new MFilesUsersService(new JsonConfService(Server).GetConf());
+
+            ServerLoginAccountOperations loginOperations = mFilesUsers.mfServerApplication.LoginAccountOperations;
+
+            Account account = new Account(loginOperations.GetLoginAccount(accountName));
+
+            AddAccount(account);
+        }
+
+        public void AddAccount(Account account)
         {
             const int MAXDATES = 100;
             // Initialisation

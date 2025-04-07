@@ -152,7 +152,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public IActionResult History(ServerType id)
         {
             ViewData["Server"] = id;
-            return View(new JsonHistoryService(id).getHistory());
+            return View(new JsonHistoryService(id,LicenseManagerOperation.Suppression).getHistory());
         }
 
         private void UpdateList(ServerType id)

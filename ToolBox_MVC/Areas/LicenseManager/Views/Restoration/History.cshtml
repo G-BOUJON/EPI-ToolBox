@@ -1,0 +1,51 @@
+﻿@using ToolBox_MVC.Services
+@model ToolBox_MVC.Models.History
+@{
+    ViewData["Title"] = ViewData["Server"] + " - Historique des restaurations";
+}
+<div class="d-inline-flex gap-3">
+    <h1>Historique des restaurations effectuées - Environnement : </h1>
+    <form id="changeServer" asp-controller="Suppression" asp-action="History" asp-route-id="" method="get">
+        <select class="form-select form-select-lg mb-0 fw-bold" id="selectServer" onchange="changeServer()">
+            @foreach (ServerType server in Enum.GetValues<ServerType>())
+            {
+                if (server == (ServerType)ViewData["Server"])
+                {
+                    <option selected value="@server">@server</option>
+                }
+                else
+                {
+                    <option value="@server">@server</option>
+                }
+            }
+        </select>
+    </form>
+</div>
+@{
+    foreach (Date date in Model.dates)
+    {
+        <div style="margin-top: 50px;" class="panel panel-default">
+            <div class="panel-heading" style="text-align: left;">Tâche du @date.date</div>
+            <div class="panel-body" style="text-align: left;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Licence</th>
+                            <th>Heure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            for (int i = date.deletedAccounts.Count - 1; i >= 0; i--)
+                            {
+                                <tr><td>@date.deletedAccounts[i].UserName</td><td>@date.deletedAccounts[i].TranslateLicenseType()</td><td>@date.hour[i]</td></tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}
+

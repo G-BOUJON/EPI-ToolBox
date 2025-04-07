@@ -1,0 +1,23 @@
+{
+  "dates": [
+    {
+      "date": "07.04.2025",
+      "deletedAccounts": [
+        {
+          "AccountName": "EPI\\GBOUJON",
+          "AccountType": 2,
+          "DomainName": "EPI",
+          "EmailAddress": "Gabriel.BOUJON@epi.ge.ch",
+          "Enabled": true,
+          "FullName": "BOUJON Gabriel",
+          "LicenseType": 3,
+          "ServerRoles": 8,
+          "UserName": "GBOUJON"
+        }
+      ],
+      "hour": [
+        "2:33:44 PM"
+      ]
+    }
+  ]
+}

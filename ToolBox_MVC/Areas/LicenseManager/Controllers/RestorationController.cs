@@ -29,6 +29,12 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             return View(new RestorationListModel(id, filter));
         }
 
+        public IActionResult History(ServerType id)
+        {
+            ViewData["Server"] = id;
+            return View(new JsonHistoryService(id, LicenseManagerOperation.Restoration).getHistory());
+        }
+
         [HttpPost]
         public IActionResult RefreshList(ServerType id)
         {
@@ -40,8 +46,11 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public IActionResult RestoreLicense(ServerType id, string accountName)
         {
             MFilesUsersService mfServices = new MFilesUsersService(new JsonConfService(id).GetConf());
+            JsonHistoryService historyService = new JsonHistoryService(id,LicenseManagerOperation.Restoration);
 
             mfServices.RestoreAccountLicense(accountName);
+            historyService.AddAccount(accountName);
+
             UpdateList(id);
 
             return RedirectToAction("List", new { id });
@@ -54,12 +63,14 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         {
             MFilesUsersService mfUserService = new MFilesUsersService(new JsonConfService(id).GetConf());
             JsonLoginAccountsService accountService = new JsonLoginAccountsService(id, LicenseManagerOperation.Restoration);
+            JsonHistoryService historyService = new JsonHistoryService(id, LicenseManagerOperation.Restoration);
 
             foreach (Account account in accountService.GetAccounts().ToList())
             {
                 if (!string.IsNullOrEmpty(Request.Form[account.AccountName]))
                 {
                     mfUserService.RestoreAccountLicense(account.AccountName);
+                    historyService.AddAccount(account.AccountName);
                 }
             }
             UpdateList(id);
