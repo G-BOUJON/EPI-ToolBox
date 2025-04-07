@@ -8,7 +8,8 @@ namespace ToolBox_MVC.Services
         {
             {MFLicenseType.MFLicenseTypeReadOnlyLicense,"Lecture Seule" },
             {MFLicenseType.MFLicenseTypeNamedUserLicense, "Nominative" },
-            {MFLicenseType.MFLicenseTypeConcurrentUserLicense, "Concurrente" }
+            {MFLicenseType.MFLicenseTypeConcurrentUserLicense, "Concurrente" },
+            {MFLicenseType.MFLicenseTypeNone, "Aucune Licence" }
         };
 
         public static string TranslateMFLicense(MFLicenseType licenseType)

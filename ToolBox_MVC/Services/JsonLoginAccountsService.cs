@@ -6,17 +6,27 @@ using ToolBox_MVC.Models;
 
 namespace ToolBox_MVC.Services
 {
+    public enum LicenseManagerOperation
+    {
+        Suppression,
+        Restoration
+    }
     public class JsonLoginAccountsService
     {
+        private Dictionary<LicenseManagerOperation,string> JsonFileNames = new Dictionary<LicenseManagerOperation,string>() { 
+            { LicenseManagerOperation.Suppression,"supLoginAccounts.json"},
+            { LicenseManagerOperation.Restoration,"resLoginAccounts.json" }
+        };
+
         public string JsonFileName
         {
             get;
             private set;
         }
 
-        public JsonLoginAccountsService(ServerType server)
+        public JsonLoginAccountsService(ServerType server, LicenseManagerOperation operation)
         {
-            JsonFileName = FilePathService.LicenseManagerPath(server) + "loginAccounts.json";
+            JsonFileName = FilePathService.LicenseManagerPath(server) + JsonFileNames[operation];
         }
 
         public IEnumerable<Account> GetAccounts()

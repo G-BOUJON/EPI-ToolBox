@@ -75,5 +75,16 @@
     "LicenseType": 1,
     "ServerRoles": 9,
     "UserName": "gartisi"
+  },
+  {
+    "AccountName": "EPI\\MJEANRENAUD",
+    "AccountType": 2,
+    "DomainName": "EPI",
+    "EmailAddress": "Michel.JEANRENAUD@epi.ge.ch",
+    "Enabled": true,
+    "FullName": "JEANRENAUD Michel",
+    "LicenseType": 3,
+    "ServerRoles": 8,
+    "UserName": "MJEANRENAUD"
   }
 ]

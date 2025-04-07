@@ -42,6 +42,17 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarMfilesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Restoration</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="text-dark dropdown-item" asp-area="LicenseManager" asp-controller="Restoration" asp-action="List" asp-route-id="@ViewData["Server"]">Liste</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-dark dropdown-item" asp-area="LicenseManager" asp-controller="Restoration" asp-action="History" asp-route-id="@ViewData["Server"]">Historique</a>
+                                    </li>
+                                </ul>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="LicenseManager" asp-controller="Configuration" asp-action="Index" asp-route-id="@ViewData["Server"]">Configuration</a> 
                             </li>

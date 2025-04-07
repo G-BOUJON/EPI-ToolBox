@@ -113,7 +113,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         {
             JsonConfService confService = new JsonConfService(id);
 
-            foreach (Account account in new JsonLoginAccountsService(id).GetAccounts().ToList())
+            foreach (Account account in new JsonLoginAccountsService(id,LicenseManagerOperation.Suppression).GetAccounts().ToList())
             {
                 if (!string.IsNullOrEmpty(Request.Form[account.AccountName]) && !confService.GetMaintainedAccounts().Contains(account.UserName))
                 {
@@ -136,7 +136,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public IActionResult DeleteAllSelected(ServerType id)
         {
             MFilesUsersService mfUserService = new MFilesUsersService(new JsonConfService(id).GetConf());
-            JsonLoginAccountsService accountService = new JsonLoginAccountsService(id);
+            JsonLoginAccountsService accountService = new JsonLoginAccountsService(id,LicenseManagerOperation.Suppression);
 
             foreach (Account account in accountService.GetAccounts().ToList())
             {
@@ -157,7 +157,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 
         private void UpdateList(ServerType id)
         {
-            new SupressionListModel(id).UpdateList();
+            new SuppressionListModel(id).UpdateList();
             GC.Collect();
         }
        

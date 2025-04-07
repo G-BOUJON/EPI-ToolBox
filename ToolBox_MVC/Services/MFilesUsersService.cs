@@ -1,7 +1,10 @@
 ﻿using MFilesAPI;
 using Microsoft.AspNetCore.Authentication;
 using NuGet.Packaging;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
 using ToolBox_MVC.Models;
 
 namespace ToolBox_MVC.Services
@@ -67,6 +70,20 @@ namespace ToolBox_MVC.Services
             return nonExistingAccounts;
         }
 
+        public List<GroupPrincipal> GetGroupPrincipals(List<Group> group)
+        {
+            List<GroupPrincipal> groups = new List<GroupPrincipal>();
+            GroupPrincipal principalGroupCurrent;
+
+            foreach(Group currentGroup in group)
+            {
+                principalGroupCurrent = GroupPrincipal.FindByIdentity(pc, currentGroup.name);
+                groups.AddRange(getAllSubGroups(principalGroupCurrent));
+            }
+
+            return groups;
+        }
+
         public List<UserGroup> GetMFilesUserGroups()
         {
             VaultUserGroupOperations groupOperations = vault.UserGroupOperations;
@@ -102,7 +119,7 @@ namespace ToolBox_MVC.Services
                         currentAccount = GetLoginAccountFromUserAccountID(userID);
                         if (currentAccount != null)
                         {
-                            if(currentAccount.LicenseType == MFLicenseType.MFLicenseTypeNone)
+                            if(currentAccount.LicenseType == MFLicenseType.MFLicenseTypeNone && currentAccount.Enabled && !string.IsNullOrEmpty(currentAccount.EmailAddress))
                             {
                                 accountsToRestore.Add(currentAccount);
                             }
@@ -113,6 +130,126 @@ namespace ToolBox_MVC.Services
             }
 
             return accountsToRestore;
+        }
+
+        public List<LoginAccount> GetRestorationsListFromAD()
+        {
+            
+
+            LoginAccount currentAccount = null;
+            List<GroupPrincipal> groups = GetGroupPrincipals(Configuration.Groups);
+
+            List<string> usersPrincipals = new List<string>();
+
+            List<LoginAccount> unlicensedAccounts = new List<LoginAccount>();
+            UserPrincipal userPrincipal = null;
+            bool isActive = false;
+            foreach (LoginAccount laccount in mfServerApplication.LoginAccountOperations.GetLoginAccounts())
+            {
+                if ((laccount.LicenseType == MFLicenseType.MFLicenseTypeNone && laccount.Enabled && !string.IsNullOrEmpty(laccount.EmailAddress) ) || laccount.UserName == "CCASIMO")
+                {
+                    
+                    
+                    if (recursiveIsExistingUser(groups, laccount.UserName))
+                    {
+                        userPrincipal = GetADUser(laccount.UserName);
+                        if (userPrincipal != null)
+                        {
+                            isActive = IsActive(userPrincipal);
+                            usersPrincipals.Add(userPrincipal.UserPrincipalName + " - " + isActive.ToString());
+                            if (isActive)
+                            {
+                                unlicensedAccounts.Add(laccount);
+                            }
+                        }
+                        
+                    }
+                }
+            }
+
+            JsonSerializer.Serialize(new Utf8JsonWriter(File.OpenWrite(FilePathService.LicenseManagerPath(ServerType.Prod) + "adAccounts.json"), new JsonWriterOptions
+            {
+                SkipValidation = true,
+                Indented = true
+            }),
+                    usersPrincipals);
+
+            return unlicensedAccounts;
+        }
+
+        public List<LoginAccount> GetRestorationList_V2()
+        {
+            List<LoginAccount> accountsToRestore = new List<LoginAccount>();
+
+            LoginAccount currentAccount = null;
+            UserPrincipal currentADUser = null;
+
+            List<UserGroup> mfGroups = GetMFilesUserGroups();
+
+            foreach (UserGroup userGroup in mfGroups)
+            {
+                foreach (int userID in userGroup.Members)
+                {
+                    // Dans la collection Members, les id de groupes sont négatifs et les id d'utilisateur positifs
+                    if (userID > 0)
+                    {
+                        currentAccount = GetLoginAccountFromUserAccountID(userID);
+                        currentADUser = GetADUser(currentAccount.UserName);
+
+                        if (currentADUser != null)
+                        {
+                            if (currentAccount.LicenseType == MFLicenseType.MFLicenseTypeNone && currentAccount.Enabled && !string.IsNullOrEmpty(currentAccount.EmailAddress) && IsActive(currentADUser))
+                            {
+                                accountsToRestore.Add(currentAccount);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return accountsToRestore;
+        }
+
+        public List<LoginAccount> GetADUsers()
+        {
+
+            using (var searcher = new PrincipalSearcher(new UserPrincipal(pc)))
+            {
+                foreach (var result in searcher.FindAll())
+                {
+                    DirectoryEntry de = result.GetUnderlyingObject() as DirectoryEntry;
+                    if (de.Properties["userAccountControl"].Value != null)
+                        {
+                            int flags = (int)de.Properties["userAccountControl"].Value;
+
+                            Console.WriteLine(de.Properties["sAMAccountName"].Value + " = " + flags.ToString());
+                        }
+                    
+                }
+            }
+
+            return new List<LoginAccount>();
+        }
+
+        private bool IsActive(UserPrincipal user)
+        {
+            
+            DirectoryEntry de = user.GetUnderlyingObject() as DirectoryEntry;
+
+            if (de.NativeGuid == null)
+            {
+                return false;
+            }
+
+            if (de.Properties["userAccountControl"].Value == null)
+            {
+                return true;
+            }
+
+            int flags = (int)de.Properties["userAccountControl"].Value;
+            Console.WriteLine(de.Properties["sAMAccountName"].Value + " = " + flags.ToString());
+
+            return !Convert.ToBoolean(flags & 0x0002);
         }
 
         public LoginAccount GetLoginAccountFromUserAccountID(int userID)
@@ -229,6 +366,18 @@ namespace ToolBox_MVC.Services
             return DeleteLicense(account);
         }
 
+        public void ChangeAccountLicense(LoginAccount account, MFLicenseType licenseType)
+        {
+            ServerLoginAccountOperations loginOperations = mfServerApplication.LoginAccountOperations;
+
+            // TODO : Mettre en place un check pour le compte à ne PAS restaurer
+            if (true)
+            {
+                account.LicenseType = licenseType;
+                loginOperations.ModifyLoginAccount(account);
+            }
+        }
+
         List<LoginAccount> getLicencedAccounts(LoginAccounts loginAccounts)
         {
             // Initialisation
@@ -328,6 +477,11 @@ namespace ToolBox_MVC.Services
 
             // Sortie
             return subGroups;
+        }
+
+        public UserPrincipal GetADUser(string username)
+        {
+            return UserPrincipal.FindByIdentity(pc, IdentityType.SamAccountName, username);
         }
 
         bool recursiveIsExistingUser(List<GroupPrincipal> groups, string username)

@@ -44,7 +44,7 @@ namespace ToolBox_MVC.Models
             List<string> groupsNames = new List<string>();
             foreach (Group group in this.Groups)
             {
-                groupsNames.Add(group.name);
+                groupsNames.Add("EPI\\" + group.name);
             }
             return groupsNames;
         }
