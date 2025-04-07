@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MFilesAPI;
+using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using ToolBox_MVC.Areas.LicenseManager.Models;
 using ToolBox_MVC.Models;
@@ -33,6 +34,18 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         {
             UpdateList(id);
             return RedirectToAction("List", new { id });
+        }
+
+        [HttpPost]
+        public IActionResult RestoreLicense(ServerType id, string accountName)
+        {
+            MFilesUsersService mfServices = new MFilesUsersService(new JsonConfService(id).GetConf());
+
+            mfServices.RestoreAccountLicense(accountName);
+            UpdateList(id);
+
+            return RedirectToAction("List", new { id });
+            
         }
 
 

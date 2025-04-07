@@ -378,6 +378,17 @@ namespace ToolBox_MVC.Services
             }
         }
 
+        public void RestoreAccountLicense(LoginAccount account)
+        {
+            ChangeAccountLicense(account, MFLicenseType.MFLicenseTypeReadOnlyLicense);
+        }
+
+        public void RestoreAccountLicense(string accountName)
+        {
+            LoginAccount account = mfServerApplication.LoginAccountOperations.GetLoginAccount(accountName);
+            RestoreAccountLicense(account);
+        }
+
         List<LoginAccount> getLicencedAccounts(LoginAccounts loginAccounts)
         {
             // Initialisation

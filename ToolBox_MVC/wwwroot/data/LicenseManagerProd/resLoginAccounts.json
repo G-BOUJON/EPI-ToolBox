@@ -625,16 +625,5 @@
     "LicenseType": 0,
     "ServerRoles": 8,
     "UserName": "KYACHOUTI"
-  },
-  {
-    "AccountName": "EPI\\GBOUJON",
-    "AccountType": 2,
-    "DomainName": "EPI",
-    "EmailAddress": "Gabriel.BOUJON@epi.ge.ch",
-    "Enabled": true,
-    "FullName": "BOUJON Gabriel",
-    "LicenseType": 0,
-    "ServerRoles": 8,
-    "UserName": "GBOUJON"
   }
 ]
