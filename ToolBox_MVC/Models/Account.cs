@@ -39,5 +39,17 @@ namespace ToolBox_MVC.Models
            
            
         }
+
+        public static List<Account> ConvertLoginAccountList(List<LoginAccount> loginAccounts)
+        {
+            List<Account> accounts = new List<Account>();
+
+            foreach(LoginAccount loginAccount in loginAccounts)
+            {
+                accounts.Add(new Account(loginAccount));
+            }
+
+            return accounts;
+        }
     }
 }

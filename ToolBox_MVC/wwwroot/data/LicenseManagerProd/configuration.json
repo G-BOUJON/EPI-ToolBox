@@ -17,7 +17,16 @@
   "MaintainedAccounts": [
     "MLEMONTAGNER",
     "COPYSHOP",
-    "INTRATEST01"
+    "INTRATEST01",
+    "INTRATEST02",
+    "RECEPTION-LACOMBE",
+    "RECEPTION-LC-6",
+    "RECEPTION-PAL",
+    "RECEPTION-PAL-18",
+    "ATELEKI",
+    "gartisi",
+    "MJEANRENAUD",
+    "RECEPTION-SPARK"
   ],
   "VaultCredentials": {
     "Username": "intratest01",

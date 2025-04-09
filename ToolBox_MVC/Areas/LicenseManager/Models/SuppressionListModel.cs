@@ -1,25 +1,38 @@
 ﻿using MFilesAPI;
 using ToolBox_MVC.Models;
 using ToolBox_MVC.Services;
+using ToolBox_MVC.Services.Factories;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Models
 {
     public class SuppressionListModel : AccountList
     {
-        private const LicenseManagerOperation OPERATION = LicenseManagerOperation.Suppression;
-        public SuppressionListModel(ServerType server) : base(server) { }
+        
+        
+        public SuppressionListModel(ServerType server, IMFilesUsersHandlerFactory mFilesFactory, IAccountsListHandlerFactory accountsListHandlerFactory) : base(server, mFilesFactory, accountsListHandlerFactory) { }
 
-        public SuppressionListModel(ServerType server, AccountFilter filter) : base(server, filter) { }
+        public SuppressionListModel(ServerType server, AccountFilter filter, IMFilesUsersHandlerFactory mFilesFactory, IAccountsListHandlerFactory accountsListHandlerFactory) : base(server, filter, mFilesFactory, accountsListHandlerFactory) { }
         
         public override List<Account> GetAccounts()
         {
-            return Filter.filterAccounts(new JsonLoginAccountsService(Server,OPERATION).GetAccounts().ToList() , Configuration.MaintainedAccounts);
+            List<Account> accounts = new List<Account>();
+            try
+            {
+                accounts = Filter.filterAccounts(_accountsListHandler.GetDeletedAccounts().ToList(), Configuration.MaintainedAccounts);
+
+            }
+            catch (Exception ex) 
+            {
+                UpdateAccounts();
+
+                accounts = Filter.filterAccounts(_accountsListHandler.GetDeletedAccounts().ToList(), Configuration.MaintainedAccounts);
+            }
+            return accounts.OrderBy(o => o.UserName).ToList();
         }
 
         public override void UpdateList()
         {
-            MFilesUsersService mf = new MFilesUsersService(Configuration);
-            new JsonLoginAccountsService(Server, OPERATION).UpdateList(mf.GetSuppressionList());
+            _accountsListHandler.UpdateDeleteList(_usersHandler.GetSuppressionList());
         }
     }
 }

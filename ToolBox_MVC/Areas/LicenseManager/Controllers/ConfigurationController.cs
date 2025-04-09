@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ToolBox_MVC.Models;
 using ToolBox_MVC.Services;
+using ToolBox_MVC.Services.Factories;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 {
@@ -9,6 +10,15 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
     [Authorize]
     public class ConfigurationController : Controller
     {
+        private readonly IMFilesUsersHandlerFactory _mfilesFactory;
+        private readonly IConfigurationHandlerFactory _configFactory;
+
+        public ConfigurationController(IMFilesUsersHandlerFactory mfilesFactory, IConfigurationHandlerFactory configFactory)
+        {
+            _mfilesFactory = mfilesFactory;
+            _configFactory = configFactory;
+        }
+
         [Route("LicenseManager/Configuration/{id}")]
         public IActionResult Index(ServerType id, string? errorMessage)
         {
@@ -17,16 +27,16 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
                 ViewData["ErrorMessage"] = errorMessage;
             }
             ViewData["Server"] = id;
-            return View(new JsonConfService(id).GetConf());
+            return View(_configFactory.Create(id).GetConfiguration());
         }
 
         [HttpPost]
         public IActionResult AddGroup(ServerType id)
         {
             string newGroupName = Request.Form["groupName"];
-            JsonConfService jsConf = new JsonConfService(id);
-            Config configuration = jsConf.GetConf();
-            MFilesUsersService mf = new MFilesUsersService(configuration);
+            IConfigurationHandler jsConf = _configFactory.Create(id);
+            Config configuration = jsConf.GetConfiguration();
+            IMFilesUsersHandler mf = _mfilesFactory.Create(id);
 
 
             if (string.IsNullOrEmpty(newGroupName))
@@ -38,7 +48,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
                 });
             }
 
-            if (!mf.groupExists(newGroupName))
+            if (!mf.GroupExists(newGroupName))
             {
                 return RedirectToAction("Index", new
                 {
@@ -60,7 +70,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             }
 
             configuration.Groups.Add(newGroup);
-            jsConf.serializeConfig(configuration);
+            jsConf.UpdateConfiguration(configuration);
 
             return RedirectToAction("Index", new { id });
         }
@@ -68,8 +78,8 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult DeleteGroup(ServerType id, string groupName)
         {
-            JsonConfService jsonConf = new JsonConfService(id);
-            Config configuration = jsonConf.GetConf();
+            IConfigurationHandler jsConf = _configFactory.Create(id);
+            Config configuration = jsConf.GetConfiguration();
             List<Group> lstGroup = new(configuration.Groups);
 
             foreach (Group group in lstGroup)
@@ -81,7 +91,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             }
 
 
-            jsonConf.serializeConfig(configuration);
+            jsConf.UpdateConfiguration(configuration);
 
             return RedirectToAction("Index", new { id });
         }
@@ -89,11 +99,11 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult EditApiKey(ServerType id, string apiKey)
         {
-            JsonConfService jsConf = new JsonConfService(id);
-            Config configuration = jsConf.GetConf();
+            IConfigurationHandler jsConf = _configFactory.Create(id);
+            Config configuration = jsConf.GetConfiguration();
             configuration.ApiKey = apiKey;
 
-            jsConf.serializeConfig(configuration);
+            jsConf.UpdateConfiguration(configuration);
 
             return RedirectToAction("Index", new { id });
         }
@@ -101,12 +111,12 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult EditADCredentials(ServerType id, ActiveDirectoryCredentials credentials)
         {
-            JsonConfService jsConf = new JsonConfService(id);
-            Config configuration = jsConf.GetConf();
+            IConfigurationHandler jsConf = _configFactory.Create(id);
+            Config configuration = jsConf.GetConfiguration();
 
             configuration.ActiveDirectoryCredentials = credentials;
 
-            jsConf.serializeConfig(configuration);
+            jsConf.UpdateConfiguration(configuration);
 
             return RedirectToAction("Index", new { id });
         }
@@ -114,12 +124,12 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult EditVaultCredentials(ServerType id,  VaultCredentials credentials)
         {
-            JsonConfService jsonConf = new JsonConfService(id);
-            Config configuration = jsonConf.GetConf();
+            IConfigurationHandler jsConf = _configFactory.Create(id);
+            Config configuration = jsConf.GetConfiguration();
 
             configuration.VaultCredentials = credentials;
 
-            jsonConf.serializeConfig(configuration);
+            jsConf.UpdateConfiguration(configuration);
 
             return RedirectToAction("Index", new { id });
         }
@@ -127,14 +137,14 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult EditAutomatisation(ServerType id, Config autoConfig)
         {
-            JsonConfService jsonConf = new JsonConfService(id);
-            Config configuration = jsonConf.GetConf();
+            IConfigurationHandler jsConf = _configFactory.Create(id);
+            Config configuration = jsConf.GetConfiguration();
 
             configuration.Hour = autoConfig.Hour;
             configuration.ActiveSuppression = autoConfig.ActiveSuppression;
             configuration.ActiveRestauration = autoConfig.ActiveRestauration;
 
-            jsonConf.serializeConfig(configuration);
+            jsConf.UpdateConfiguration(configuration);
 
             return RedirectToAction("Index", new { id });
         }

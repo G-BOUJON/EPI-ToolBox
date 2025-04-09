@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ToolBox_MVC.Services;
 using ToolBox_MVC.Models;
+using ToolBox_MVC.Services.Factories;
 
 
 namespace ToolBox_MVC.Controllers
@@ -11,6 +12,13 @@ namespace ToolBox_MVC.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+        private readonly IMFilesUsersHandlerFactory _mFilesUsersFactory;
+
+        public AccountController(IMFilesUsersHandlerFactory mFilesUsersFactory)
+        {
+            _mFilesUsersFactory = mFilesUsersFactory;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -29,8 +37,8 @@ namespace ToolBox_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                MFilesUsersService mf = new MFilesUsersService(new JsonConfService(ServerType.Prod).GetConf());
-                if (mf.areValidCredentials(credentials.Username, credentials.Password) || (credentials.Username == "gab" && credentials.Password == "1234"))
+                IMFilesUsersHandler mf = _mFilesUsersFactory.Create(ServerType.Prod);
+                if (mf.AreValidCredentials(credentials.Username, credentials.Password) || (credentials.Username == "gab" && credentials.Password == "1234"))
                 {
                     var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, "admin"),

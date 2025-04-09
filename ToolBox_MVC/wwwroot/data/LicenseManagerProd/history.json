@@ -1,0 +1,56 @@
+{
+  "SuppressionDates": [
+    {
+      "Date": "2025-04-08",
+      "Accounts": [
+        {
+          "AccountName": "EPI\\GBOUJON",
+          "AccountType": 2,
+          "DomainName": "EPI",
+          "EmailAddress": "Gabriel.BOUJON@epi.ge.ch",
+          "Enabled": true,
+          "FullName": "BOUJON Gabriel",
+          "LicenseType": 3,
+          "ServerRoles": 8,
+          "UserName": "GBOUJON"
+        }
+      ],
+      "Hours": [
+        "09:54:28.8552083"
+      ]
+    }
+  ],
+  "RestorationDates": [
+    {
+      "Date": "2025-04-08",
+      "Accounts": [
+        {
+          "AccountName": "EPI\\BREINHARD",
+          "AccountType": 2,
+          "DomainName": "EPI",
+          "EmailAddress": "Benno.REINHARD@epi.ge.ch",
+          "Enabled": true,
+          "FullName": "REINHARD Benno",
+          "LicenseType": 3,
+          "ServerRoles": 8,
+          "UserName": "BREINHARD"
+        },
+        {
+          "AccountName": "EPI\\GBOUJON",
+          "AccountType": 2,
+          "DomainName": "EPI",
+          "EmailAddress": "Gabriel.BOUJON@epi.ge.ch",
+          "Enabled": true,
+          "FullName": "BOUJON Gabriel",
+          "LicenseType": 3,
+          "ServerRoles": 8,
+          "UserName": "GBOUJON"
+        }
+      ],
+      "Hours": [
+        "10:06:29.0337414",
+        "10:06:29.2577670"
+      ]
+    }
+  ]
+}

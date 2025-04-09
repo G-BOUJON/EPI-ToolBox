@@ -7,30 +7,32 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using ToolBox_MVC.Models;
 
-namespace ToolBox_MVC.Services
+namespace ToolBox_MVC.Services.MFiles
 {
-    public class MFilesUsersService
+    public class MFilesUsersService : IMFilesUsersHandler
     {
-        public MFilesServerApplication mfServerApplication { get; set; }
+        public MFilesServerApplication MFilesServerApp { get; set; }
         public Vault vault { get; set; }
         public PrincipalContext pc { get; set; }
         public ServerType serverType { get; set; }
         public Config Configuration { get; set; }
-        public MFilesUsersService(Config config)
+        public IConfigurationHandler ConfigurationHandler { get; set; }
+        public MFilesUsersService(ServerType server, IConfigurationHandler configurationHandler)
         {
-            Configuration = config;
-            mfServerApplication = new MFilesServerApplication();
-            mfServerApplication.Connect(
+            ConfigurationHandler = configurationHandler;
+            Configuration = ConfigurationHandler.GetConfiguration();
+            MFilesServerApp = new MFilesServerApplication();
+            MFilesServerApp.Connect(
                 AuthType: MFAuthType.MFAuthTypeSpecificWindowsUser,
-                UserName: config.VaultCredentials.Username,
-                Password: config.VaultCredentials.Password,
-                Domain: config.VaultCredentials.Domain,
-                ProtocolSequence: config.VaultCredentials.ProtocolSequence,
-                NetworkAddress: config.VaultCredentials.NetworkAddress,
-                Endpoint: config.VaultCredentials.EndPoint);
-            vault = mfServerApplication.LogInToVault(config.VaultCredentials.Guid);
+                UserName: Configuration.VaultCredentials.Username,
+                Password: Configuration.VaultCredentials.Password,
+                Domain: Configuration.VaultCredentials.Domain,
+                ProtocolSequence: Configuration.VaultCredentials.ProtocolSequence,
+                NetworkAddress: Configuration.VaultCredentials.NetworkAddress,
+                Endpoint: Configuration.VaultCredentials.EndPoint);
+            vault = MFilesServerApp.LogInToVault(Configuration.VaultCredentials.Guid);
 
-            pc = new(contextType: ContextType.Domain, name: config.ActiveDirectoryCredentials.Domain, container: config.ActiveDirectoryCredentials.Container, userName: config.ActiveDirectoryCredentials.Username, password: config.ActiveDirectoryCredentials.Password);
+            pc = new(contextType: ContextType.Domain, name: Configuration.ActiveDirectoryCredentials.Domain, container: Configuration.ActiveDirectoryCredentials.Container, userName: Configuration.ActiveDirectoryCredentials.Username, password: Configuration.ActiveDirectoryCredentials.Password);
         }
 
         public List<LoginAccount> GetSuppressionList()
@@ -101,7 +103,7 @@ namespace ToolBox_MVC.Services
             return groupsToInspect;
         }
 
-        public List<LoginAccount> GetRestorationList()
+        public List<LoginAccount> GetRestorationList_V1()
         {
             List<LoginAccount> accountsToRestore = new List<LoginAccount>();
             LoginAccount currentAccount = null;
@@ -144,9 +146,9 @@ namespace ToolBox_MVC.Services
             List<LoginAccount> unlicensedAccounts = new List<LoginAccount>();
             UserPrincipal userPrincipal = null;
             bool isActive = false;
-            foreach (LoginAccount laccount in mfServerApplication.LoginAccountOperations.GetLoginAccounts())
+            foreach (LoginAccount laccount in MFilesServerApp.LoginAccountOperations.GetLoginAccounts())
             {
-                if ((laccount.LicenseType == MFLicenseType.MFLicenseTypeNone && laccount.Enabled && !string.IsNullOrEmpty(laccount.EmailAddress) ) || laccount.UserName == "CCASIMO")
+                if (laccount.LicenseType == MFLicenseType.MFLicenseTypeNone && laccount.Enabled  || laccount.UserName == "CCASIMO")
                 {
                     
                     
@@ -177,7 +179,7 @@ namespace ToolBox_MVC.Services
             return unlicensedAccounts;
         }
 
-        public List<LoginAccount> GetRestorationList_V2()
+        public List<LoginAccount> GetRestorationList()
         {
             List<LoginAccount> accountsToRestore = new List<LoginAccount>();
 
@@ -198,7 +200,7 @@ namespace ToolBox_MVC.Services
 
                         if (currentADUser != null)
                         {
-                            if (currentAccount.LicenseType == MFLicenseType.MFLicenseTypeNone && currentAccount.Enabled && !string.IsNullOrEmpty(currentAccount.EmailAddress) && IsActive(currentADUser))
+                            if (currentAccount.LicenseType == MFLicenseType.MFLicenseTypeNone && currentAccount.Enabled  && !string.IsNullOrEmpty(currentAccount.EmailAddress) && IsActive(currentADUser))
                             {
                                 accountsToRestore.Add(currentAccount);
                             }
@@ -260,7 +262,7 @@ namespace ToolBox_MVC.Services
         }
         
 
-        public bool groupExists(string name)
+        public bool GroupExists(string name)
         {
             // Initialisation
             bool groupExists = true;
@@ -280,7 +282,7 @@ namespace ToolBox_MVC.Services
         {
             // Initialisation
             LoginAccounts logins = new LoginAccounts();
-            ServerLoginAccountOperations loginAccountOps = mfServerApplication.LoginAccountOperations;
+            ServerLoginAccountOperations loginAccountOps = MFilesServerApp.LoginAccountOperations;
 
             // Traitement   
             logins = loginAccountOps.GetLoginAccounts();
@@ -306,7 +308,7 @@ namespace ToolBox_MVC.Services
         {
             // Initialisation
             bool success = true;
-            ServerLoginAccountOperations loginAccountOps = mfServerApplication.LoginAccountOperations;
+            ServerLoginAccountOperations loginAccountOps = MFilesServerApp.LoginAccountOperations;
 
             // Traitement
             try
@@ -325,7 +327,7 @@ namespace ToolBox_MVC.Services
 
         public LoginAccount convertToLoginAccount(Account account)
         {
-            return mfServerApplication.LoginAccountOperations.GetLoginAccount(account.AccountName);
+            return MFilesServerApp.LoginAccountOperations.GetLoginAccount(account.AccountName);
         }
 
         /// <summary>
@@ -335,14 +337,13 @@ namespace ToolBox_MVC.Services
         /// <returns>>True if operations was succeful (license was removed or account is protected), false otherwise</returns>
         public bool DeleteLicense(LoginAccount account)
         {
-            ServerLoginAccountOperations loginOperations = mfServerApplication.LoginAccountOperations;
+            ServerLoginAccountOperations loginOperations = MFilesServerApp.LoginAccountOperations;
             bool success = true;
 
             if (!Configuration.MaintainedAccounts.Contains(account.UserName))
             {
                 try
                 {
-                    new JsonHistoryService(serverType,LicenseManagerOperation.Suppression).AddAccount(new Account(account));
                     account.LicenseType = MFLicenseType.MFLicenseTypeNone;
                     loginOperations.ModifyLoginAccount(account);
                 }
@@ -360,15 +361,15 @@ namespace ToolBox_MVC.Services
         /// </summary>
         /// <param name="accountName">The name of the account to remove</param>
         /// <returns>True if operations was succeful (license was removed or account is protected), false otherwise</returns>
-        public bool DeleteLicense(string accountName)
+        public void DeleteAccountLicence(string accountName)
         {
-            LoginAccount account = mfServerApplication.LoginAccountOperations.GetLoginAccount(accountName);
-            return DeleteLicense(account);
+            LoginAccount account = MFilesServerApp.LoginAccountOperations.GetLoginAccount(accountName);
+            DeleteLicense(account);
         }
 
         public void ChangeAccountLicense(LoginAccount account, MFLicenseType licenseType)
         {
-            ServerLoginAccountOperations loginOperations = mfServerApplication.LoginAccountOperations;
+            ServerLoginAccountOperations loginOperations = MFilesServerApp.LoginAccountOperations;
 
             // TODO : Mettre en place un check pour le compte à ne PAS restaurer
             if (true)
@@ -385,7 +386,7 @@ namespace ToolBox_MVC.Services
 
         public void RestoreAccountLicense(string accountName)
         {
-            LoginAccount account = mfServerApplication.LoginAccountOperations.GetLoginAccount(accountName);
+            LoginAccount account = MFilesServerApp.LoginAccountOperations.GetLoginAccount(accountName);
             RestoreAccountLicense(account);
         }
 
@@ -430,7 +431,7 @@ namespace ToolBox_MVC.Services
 
         // Gestion de l'Active Directory
 
-        public bool areValidCredentials(string username, string password)
+        public bool AreValidCredentials(string username, string password)
         {
             // Initialisation
             bool validCredentials = true;

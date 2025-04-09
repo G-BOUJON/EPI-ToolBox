@@ -7,6 +7,8 @@ using System.Text.Json.Serialization;
 using ToolBox_MVC.Areas.LicenseManager.Models;
 using ToolBox_MVC.Models;
 using ToolBox_MVC.Services;
+using ToolBox_MVC.Services.Factories;
+using ToolBox_MVC.Services.JsonServices;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 {
@@ -14,6 +16,19 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
     [Authorize]
     public class SuppressionController : Controller
     {
+        private readonly IConfigurationHandlerFactory _configurationFactory;
+        private readonly IMFilesUsersHandlerFactory _mfilesFactory;
+        private readonly IAccountsHistoryHandlerFactory _accountsHistoryFactory;
+        private readonly IAccountsListHandlerFactory _accountsListFactory;
+
+        public SuppressionController(IConfigurationHandlerFactory configFactory, IMFilesUsersHandlerFactory mfilesFactory, IAccountsHistoryHandlerFactory accountsHistoryFactory, IAccountsListHandlerFactory accountsListFactory)
+        {
+            _configurationFactory = configFactory;
+            _mfilesFactory = mfilesFactory;
+            _accountsHistoryFactory = accountsHistoryFactory;
+            _accountsListFactory = accountsListFactory;
+        }
+
         public IActionResult Index()
         {
             return RedirectToAction("List");
@@ -32,7 +47,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             {
                 filter = new AccountFilter();
             }
-            return View(new SuppressionListModel(id, filter));
+            return View(new SuppressionListModel(id, filter, _mfilesFactory, _accountsListFactory));
         }
 
         [HttpPost]
@@ -94,15 +109,15 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult Maintain(ServerType id, string username)
         {
-            JsonConfService confService = new JsonConfService(id);
+            IConfigurationHandler confService = _configurationFactory.Create(id);
 
             if (confService.GetMaintainedAccounts().Contains(username))
             {
-                confService.deleteMaintainedAccount(username);
+                confService.RemoveMaintainedAccount(username);
             }
             else
             {
-                confService.addMaintainedAccount(username);
+                confService.AddMaintainedAccount(username);
             }
 
             return RedirectToAction("List", new { id });
@@ -111,13 +126,13 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult MaintainAllSelected(ServerType id)
         {
-            JsonConfService confService = new JsonConfService(id);
+            IConfigurationHandler confService = _configurationFactory.Create(id);
 
-            foreach (Account account in new JsonLoginAccountsService(id,LicenseManagerOperation.Suppression).GetAccounts().ToList())
+            foreach (Account account in new JsonLoginAccountsService(id).GetDeletedAccounts())
             {
                 if (!string.IsNullOrEmpty(Request.Form[account.AccountName]) && !confService.GetMaintainedAccounts().Contains(account.UserName))
                 {
-                    confService.addMaintainedAccount(account.UserName);
+                    confService.AddMaintainedAccount(account.UserName);
                 }
             }
             return RedirectToAction("List",new { id });
@@ -126,8 +141,9 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult DeleteLicense(ServerType id, string accountName)
         {
-            MFilesUsersService mfUserSevice = new MFilesUsersService(new JsonConfService(id).GetConf());
-            mfUserSevice.DeleteLicense(accountName);
+            IMFilesUsersHandler mfUserSevice = _mfilesFactory.Create(id);
+            mfUserSevice.DeleteAccountLicence(accountName);
+            _accountsHistoryFactory.Create(id).AddSuppressedAccount(accountName);
             UpdateList(id);
             return RedirectToAction("List", new { id });
         }
@@ -135,14 +151,15 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult DeleteAllSelected(ServerType id)
         {
-            MFilesUsersService mfUserService = new MFilesUsersService(new JsonConfService(id).GetConf());
-            JsonLoginAccountsService accountService = new JsonLoginAccountsService(id,LicenseManagerOperation.Suppression);
+            IMFilesUsersHandler mfUserService = _mfilesFactory.Create(id);
+            JsonLoginAccountsService accountService = new JsonLoginAccountsService(id);
 
-            foreach (Account account in accountService.GetAccounts().ToList())
+            foreach (Account account in accountService.GetDeletedAccounts())
             {
                 if (!string.IsNullOrEmpty(Request.Form[account.AccountName]))
                 {
-                    mfUserService.DeleteLicense(account.AccountName);
+                    mfUserService.DeleteAccountLicence(account.AccountName);
+                    _accountsHistoryFactory.Create(id).AddSuppressedAccount(account.AccountName);
                 }
             }
             UpdateList(id);
@@ -152,12 +169,12 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public IActionResult History(ServerType id)
         {
             ViewData["Server"] = id;
-            return View(new JsonHistoryService(id,LicenseManagerOperation.Suppression).getHistory());
+            return View(_accountsHistoryFactory.Create(id).GetHistory());
         }
 
         private void UpdateList(ServerType id)
         {
-            new SuppressionListModel(id).UpdateList();
+            new SuppressionListModel(id, _mfilesFactory, _accountsListFactory).UpdateList();
             GC.Collect();
         }
        

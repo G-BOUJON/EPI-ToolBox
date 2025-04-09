@@ -1,5 +1,5 @@
 ﻿@using ToolBox_MVC.Services
-@model ToolBox_MVC.Models.History
+@model ToolBox_MVC.Models.TaskHistory
 @{
     ViewData["Title"] = ViewData["Server"] + " - Historique des suppressions";
 }
@@ -22,10 +22,10 @@
     </form>
 </div>
 @{
-    foreach (Date date in Model.dates)
+    foreach (TaskDate date in Model.SuppressionDates)
     {
         <div style="margin-top: 50px;" class="panel panel-default">
-            <div class="panel-heading" style="text-align: left;">Tâche du @date.date</div>
+            <div class="panel-heading" style="text-align: left;">Tâche du @date.Date</div>
             <div class="panel-body" style="text-align: left;">
                 <table class="table">
                     <thead>
@@ -37,9 +37,9 @@
                     </thead>
                     <tbody>
                         @{
-                            for (int i = date.deletedAccounts.Count - 1; i >= 0; i--)
+                            for (int i = date.Accounts.Count - 1; i >= 0; i--)
                             {
-                                <tr><td>@date.deletedAccounts[i].UserName</td><td>@date.deletedAccounts[i].TranslateLicenseType()</td><td>@date.hour[i]</td></tr>
+                                <tr><td>@date.Accounts[i].UserName</td><td>@date.Accounts[i].TranslateLicenseType()</td><td>@date.Hours[i]</td></tr>
                             }
                         }
                     </tbody>

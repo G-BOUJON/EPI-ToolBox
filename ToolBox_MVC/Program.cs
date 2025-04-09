@@ -1,3 +1,5 @@
+using ToolBox_MVC.Services.Factories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,6 +13,11 @@ builder.Services.AddAuthentication("CookieAuth").AddCookie("CookieAuth", options
     options.LoginPath = "/Account/Login";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
 });
+
+builder.Services.AddSingleton<IConfigurationHandlerFactory, ConfigurationHandlerFactory>();
+builder.Services.AddSingleton<IMFilesUsersHandlerFactory, MfilesUsersHandlerFactory>();
+builder.Services.AddSingleton<IAccountsHistoryHandlerFactory, AccountsHistoryHandlerFactory>();
+builder.Services.AddSingleton<IAccountsListHandlerFactory, AccountsListHandlerFactory>();
 
 var app = builder.Build();
 

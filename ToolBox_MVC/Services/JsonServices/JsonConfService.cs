@@ -3,9 +3,9 @@ using System.Text.Json;
 using ToolBox_MVC.Models;
 using ToolBox_MVC.Services.JsonConverters;
 
-namespace ToolBox_MVC.Services
+namespace ToolBox_MVC.Services.JsonServices
 {
-    public class JsonConfService
+    public class JsonConfService : IConfigurationHandler
     {
         private JsonSerializerOptions serializerOptions = new JsonSerializerOptions
         {
@@ -19,7 +19,7 @@ namespace ToolBox_MVC.Services
             ConfigurationJsonFileName = FilePathService.LicenseManagerPath(server) + "configuration.json";
         }
 
-        public Config GetConf()
+        public Config GetConfiguration()
         {
             using (var jsonFileReader = File.OpenText(ConfigurationJsonFileName))
             {
@@ -29,35 +29,35 @@ namespace ToolBox_MVC.Services
 
         public void changeHour(TimeOnly hour)
         {
-            Config configuration = GetConf();
+            Config configuration = GetConfiguration();
 
             configuration.Hour = hour;
 
-            serializeConfig(configuration);
+            UpdateConfiguration(configuration);
         }
 
         public void changeActivity(bool activity)
         {
-            Config configuration = GetConf();
+            Config configuration = GetConfiguration();
 
             configuration.ActiveSuppression = activity;
 
-            serializeConfig(configuration);
+            UpdateConfiguration(configuration);
         }
 
         public void changeFrequence(int frequence)
         {
-            Config configuration = GetConf();
+            Config configuration = GetConfiguration();
 
             configuration.Frequence = frequence;
 
-            serializeConfig(configuration);
+            UpdateConfiguration(configuration);
         }
 
         public void deleteGroup(string groupName)
         {
             List<Group> updatedGroups = new List<Group>();
-            Config configuration = GetConf();
+            Config configuration = GetConfiguration();
             IEnumerable<Group> groups = configuration.Groups;
             groups = groups.ToList();
 
@@ -70,13 +70,13 @@ namespace ToolBox_MVC.Services
             }
             configuration.Groups = updatedGroups;
 
-            serializeConfig(configuration);
+            UpdateConfiguration(configuration);
         }
 
         public bool addGroup(Group group)
         {
             // Initialisation
-            Config configuration = GetConf();
+            Config configuration = GetConfiguration();
             List<Group> groups = configuration.Groups;
             bool existingGroup = false;
 
@@ -93,30 +93,30 @@ namespace ToolBox_MVC.Services
             {
                 groups.Add(group);
                 configuration.Groups = groups;
-                serializeConfig(configuration);
+                UpdateConfiguration(configuration);
             }
 
             // Sortie
             return !existingGroup;
         }
 
-        public void addMaintainedAccount(string username)
+        public void AddMaintainedAccount(string username)
         {
 
             // Initialisation
-            Config configuration = GetConf();
+            Config configuration = GetConfiguration();
 
             // Traitement
             configuration.MaintainedAccounts.Add(username);
 
             // Sortie
-            serializeConfig(configuration);
+            UpdateConfiguration(configuration);
         }
 
-        public void deleteMaintainedAccount(string username)
+        public void RemoveMaintainedAccount(string username)
         {
             // Initialisation
-            Config configuration = GetConf();
+            Config configuration = GetConfiguration();
             List<string> maintainedAccounts = new List<string>();
 
             // Traitement
@@ -130,10 +130,10 @@ namespace ToolBox_MVC.Services
             configuration.MaintainedAccounts = maintainedAccounts;
 
             // Sortie
-            serializeConfig(configuration);
+            UpdateConfiguration(configuration);
         }
 
-        public void serializeConfig(Config configuration)
+        public void UpdateConfiguration(Config configuration)
         {
             File.Delete(ConfigurationJsonFileName);
             using (var outputStream = File.OpenWrite(ConfigurationJsonFileName))
@@ -152,7 +152,7 @@ namespace ToolBox_MVC.Services
 
         public List<string> GetMaintainedAccounts()
         {
-            return GetConf().MaintainedAccounts;
+            return GetConfiguration().MaintainedAccounts;
         }
     }
 }
