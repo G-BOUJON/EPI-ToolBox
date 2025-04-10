@@ -12,6 +12,17 @@
       "UserName": "FDARBELLAY"
     },
     {
+      "AccountName": "EPI\\SMONNIER",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Sandrine.MONNIER@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "MONNIER Sandrine",
+      "LicenseType": 1,
+      "ServerRoles": 8,
+      "UserName": "SMONNIER"
+    },
+    {
       "AccountName": "EPI\\INTRATEST01",
       "AccountType": 2,
       "DomainName": "EPI",
@@ -78,6 +89,17 @@
       "UserName": "RECEPTION-PAL-18"
     },
     {
+      "AccountName": "EPI\\ANVAZQUEZ",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Ana.VAZQUEZ@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "VAZQUEZ Ana",
+      "LicenseType": 1,
+      "ServerRoles": 8,
+      "UserName": "ANVAZQUEZ"
+    },
+    {
       "AccountName": "EPI\\CRYTER",
       "AccountType": 2,
       "DomainName": "EPI",
@@ -87,6 +109,83 @@
       "LicenseType": 3,
       "ServerRoles": 8,
       "UserName": "CRYTER"
+    },
+    {
+      "AccountName": "EPI\\FBONNEFOND",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "France-Helene.BONNEFOND@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "BONNEFOND France-H\u00E9l\u00E8ne",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "FBONNEFOND"
+    },
+    {
+      "AccountName": "EPI\\MPORCHEROT",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Muriel.PORCHEROT@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "PORCHEROT Muriel",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "MPORCHEROT"
+    },
+    {
+      "AccountName": "EPI\\MREY",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Michel.REY@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "REY Michel",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "MREY"
+    },
+    {
+      "AccountName": "EPI\\RNOUAR",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Rachid.NOUAR@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "NOUAR Rachid",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "RNOUAR"
+    },
+    {
+      "AccountName": "EPI\\RPANELLA",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "PANELLA Raffaele",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "RPANELLA"
+    },
+    {
+      "AccountName": "EPI\\RREATEGUI",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Ricardo.REATEGUI@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "REATEGUI Ricardo",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "RREATEGUI"
+    },
+    {
+      "AccountName": "EPI\\SBOUTATY",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Salaheddine.BOUTATY@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "BOUTATY Salaheddine",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SBOUTATY"
     },
     {
       "AccountName": "EPI\\SPETER",
@@ -100,6 +199,39 @@
       "UserName": "SPETER"
     },
     {
+      "AccountName": "EPI\\SQUEIJO-HADDAD",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Suzanne.QUEIJO-HADDAD@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "QUEIJO-HADDAD Suzanne",
+      "LicenseType": 1,
+      "ServerRoles": 8,
+      "UserName": "SQUEIJO-HADDAD"
+    },
+    {
+      "AccountName": "EPI\\SYUSUF",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Shazna.YUSUF@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "YUSUF Shazna",
+      "LicenseType": 1,
+      "ServerRoles": 8,
+      "UserName": "SYUSUF"
+    },
+    {
+      "AccountName": "EPI\\TMBAKONGNDENGUE",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Thierry.MBAKONGNDENGUE@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "MBAKONG NDENGUE Thierry",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "TMBAKONGNDENGUE"
+    },
+    {
       "AccountName": "EPI\\VVOKOUMA",
       "AccountType": 2,
       "DomainName": "EPI",
@@ -111,6 +243,226 @@
       "UserName": "VVOKOUMA"
     },
     {
+      "AccountName": "EPI\\ABOUCHENOT",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Armelle.BOUCHENOT@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "BOUCHENOT Armelle",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "ABOUCHENOT"
+    },
+    {
+      "AccountName": "EPI\\BTSCHOPP",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Barbara.TSCHOPP@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "TSCHOPP Barbara",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "BTSCHOPP"
+    },
+    {
+      "AccountName": "EPI\\AKROPF",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Aurelie.KROPF@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "KROPF Aur\u00E9lie",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "AKROPF"
+    },
+    {
+      "AccountName": "EPI\\EPOTIER",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Eric.POTIER@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "POTIER Eric",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "EPOTIER"
+    },
+    {
+      "AccountName": "EPI\\SROULIN",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Sacha.ROULIN@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "ROULIN Sacha",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SROULIN"
+    },
+    {
+      "AccountName": "EPI\\MKILIC",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Mervan.KILIC@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "KILIC Mervan",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "MKILIC"
+    },
+    {
+      "AccountName": "EPI\\LTHONGSOUM",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Linda.THONGSOUM@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "THONGSOUM Linda",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "LTHONGSOUM"
+    },
+    {
+      "AccountName": "EPI\\VLIECHTI",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "LIECHTI Victoria",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "VLIECHTI"
+    },
+    {
+      "AccountName": "EPI\\EOPPRECHT",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Elodie.OPPRECHT@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "OPPRECHT Elodie",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "EOPPRECHT"
+    },
+    {
+      "AccountName": "EPI\\MBRUNCOSMEBRUNI",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Martine.BRUNCOSMEBRUNI@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "BRUN COSME BRUNI Martine",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "MBRUNCOSMEBRUNI"
+    },
+    {
+      "AccountName": "EPI\\VMOUTHON",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "MOUTHON Valentine",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "VMOUTHON"
+    },
+    {
+      "AccountName": "EPI\\PMONNIER",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "MONNIER Patrick",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "PMONNIER"
+    },
+    {
+      "AccountName": "EPI\\SSAEED",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "SAEED Shanzeh",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SSAEED"
+    },
+    {
+      "AccountName": "EPI\\ACASAIS",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Adrian.CASAIS@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "CASAIS Adrian",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "ACASAIS"
+    },
+    {
+      "AccountName": "EPI\\RLANZ",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Roxana.LANZ@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "LANZ Roxana",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "RLANZ"
+    },
+    {
+      "AccountName": "EPI\\ADELCLOY",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Antoine.DELCLOY@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "DELCLOY Antoine",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "ADELCLOY"
+    },
+    {
+      "AccountName": "EPI\\ADEMURALT",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Aliocha.DEMURALT@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "DE MURALT Aliocha",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "ADEMURALT"
+    },
+    {
+      "AccountName": "EPI\\PGIRARDIN",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "GIRARDIN Philippe",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "PGIRARDIN"
+    },
+    {
+      "AccountName": "EPI\\IJACQUOT",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Ines.JACQUOT@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "JACQUOT Ines",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "IJACQUOT"
+    },
+    {
+      "AccountName": "EPI\\RJAUCH",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "JAUCH Rom\u00E9o",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "RJAUCH"
+    },
+    {
       "AccountName": "EPI\\ATELEKI",
       "AccountType": 2,
       "DomainName": "EPI",
@@ -120,6 +472,83 @@
       "LicenseType": 1,
       "ServerRoles": 9,
       "UserName": "ATELEKI"
+    },
+    {
+      "AccountName": "EPI\\PROCHADASILVA",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "ROCHA DA SILVA Patricia",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "PROCHADASILVA"
+    },
+    {
+      "AccountName": "EPI\\GPIAMPIANO",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Giuseppe.PIAMPIANO@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "PIAMPIANO Giuseppe",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "GPIAMPIANO"
+    },
+    {
+      "AccountName": "EPI\\SKASHAI",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Simon.KASHAI@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "KASHAI Simon",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SKASHAI"
+    },
+    {
+      "AccountName": "EPI\\SBLEVE",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "BLEVE Simone",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SBLEVE"
+    },
+    {
+      "AccountName": "EPI\\SLALAOUI",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "LALAOUI Salim",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SLALAOUI"
+    },
+    {
+      "AccountName": "EPI\\SMOITAFERREIRA",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "MOITA FERREIRA Sofia",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SMOITAFERREIRA"
+    },
+    {
+      "AccountName": "EPI\\TAPARECIDAALVES",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "APARECIDA ALVES Tatiane",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "TAPARECIDAALVES"
     },
     {
       "AccountName": "EPI\\gartisi",
@@ -155,6 +584,50 @@
       "UserName": "NBUNZL"
     },
     {
+      "AccountName": "EPI\\ASTOCKER",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Alexandre.STOCKER@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "STOCKER Alexandre",
+      "LicenseType": 1,
+      "ServerRoles": 8,
+      "UserName": "ASTOCKER"
+    },
+    {
+      "AccountName": "EPI\\FLEVASSEUR",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Frederic.LEVASSEUR@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "LEVASSEUR Fr\u00E9d\u00E9ric",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "FLEVASSEUR"
+    },
+    {
+      "AccountName": "EPI\\OROBLEDO",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "ROBLEDO Olivier",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "OROBLEDO"
+    },
+    {
+      "AccountName": "EPI\\SJAF",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "JAF Sarkhel",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SJAF"
+    },
+    {
       "AccountName": "EPI\\SBISSON",
       "AccountType": 2,
       "DomainName": "EPI",
@@ -164,6 +637,127 @@
       "LicenseType": 3,
       "ServerRoles": 8,
       "UserName": "SBISSON"
+    },
+    {
+      "AccountName": "EPI\\YISABELLAVALENZI",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "ISABELLA VALENZI Yesbelle",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "YISABELLAVALENZI"
+    },
+    {
+      "AccountName": "EPI\\JTAVARESCARDOSO",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Jean-Pierre.TAVARESCARDOSO@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "TAVARES CARDOSO Jean-Pierre",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "JTAVARESCARDOSO"
+    },
+    {
+      "AccountName": "EPI\\SBOSSY",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "BOSSY Sylvie",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SBOSSY"
+    },
+    {
+      "AccountName": "EPI\\FRIOTTON",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Francoise.RIOTTON@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "RIOTTON Fran\u00E7oise",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "FRIOTTON"
+    },
+    {
+      "AccountName": "EPI\\LKUFFER",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Luna.KUFFER@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "KUFFER Luna",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "LKUFFER"
+    },
+    {
+      "AccountName": "EPI\\SEBERLE",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Sabrina.EBERLE@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "EBERLE Sabrina",
+      "LicenseType": 1,
+      "ServerRoles": 8,
+      "UserName": "SEBERLE"
+    },
+    {
+      "AccountName": "EPI\\SILIOPOULOU",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Sotiria.ILIOPOULOU@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "ILIOPOULOU Sotiria",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SILIOPOULOU"
+    },
+    {
+      "AccountName": "EPI\\SDUVEAU",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Sebastien.DUVEAU@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "DUVEAU S\u00E9bastien",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SDUVEAU"
+    },
+    {
+      "AccountName": "EPI\\CDIAS",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Christophe.DIAS@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "DIAS Christophe",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "CDIAS"
+    },
+    {
+      "AccountName": "EPI\\TMERCADOGUTIERREZ",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "MERCADO GUTIERREZ Triana",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "TMERCADOGUTIERREZ"
+    },
+    {
+      "AccountName": "EPI\\MLOPESCARNEIRO",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Marcos.LOPESCARNEIRO@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "LOPES CARNEIRO Marcos",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "MLOPESCARNEIRO"
     },
     {
       "AccountName": "EPI\\GMONTEIRO",
@@ -177,6 +771,17 @@
       "UserName": "GMONTEIRO"
     },
     {
+      "AccountName": "EPI\\TDOUMBOUYA",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "DOUMBOUYA Tch\u00E9kala",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "TDOUMBOUYA"
+    },
+    {
       "AccountName": "EPI\\MJEANRENAUD",
       "AccountType": 2,
       "DomainName": "EPI",
@@ -186,6 +791,50 @@
       "LicenseType": 3,
       "ServerRoles": 8,
       "UserName": "MJEANRENAUD"
+    },
+    {
+      "AccountName": "EPI\\SSTOLIC",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "STOLIC Sladan",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SSTOLIC"
+    },
+    {
+      "AccountName": "EPI\\NBADANGA",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Nadine.BADANGA@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "BADANGA Nadine",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "NBADANGA"
+    },
+    {
+      "AccountName": "EPI\\OGASSER",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Olivier.GASSER@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "GASSER Olivier",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "OGASSER"
+    },
+    {
+      "AccountName": "EPI\\SMERABTI",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Sadia.MERABTI@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "MERABTI Sadia",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SMERABTI"
     },
     {
       "AccountName": "EPI\\RECEPTION-SPARK",
@@ -199,6 +848,28 @@
       "UserName": "RECEPTION-SPARK"
     },
     {
+      "AccountName": "EPI\\YVOGLER",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Yannick.VOGLER@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "VOGLER Yannick",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "YVOGLER"
+    },
+    {
+      "AccountName": "EPI\\PFINGER",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "Pascal.FINGER@epi.ge.ch",
+      "Enabled": true,
+      "FullName": "FINGER Pascal",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "PFINGER"
+    },
+    {
       "AccountName": "EPI\\LCHAVEZ",
       "AccountType": 2,
       "DomainName": "EPI",
@@ -208,635 +879,29 @@
       "LicenseType": 3,
       "ServerRoles": 8,
       "UserName": "LCHAVEZ"
+    },
+    {
+      "AccountName": "EPI\\RBELHADJALI",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "BELHADJ ALI Rayan",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "RBELHADJALI"
+    },
+    {
+      "AccountName": "EPI\\SBURHAN",
+      "AccountType": 2,
+      "DomainName": "EPI",
+      "EmailAddress": "",
+      "Enabled": true,
+      "FullName": "BURHAN Sharmarke",
+      "LicenseType": 3,
+      "ServerRoles": 8,
+      "UserName": "SBURHAN"
     }
   ],
-  "AccountsToRestore": [
-    {
-      "AccountName": "EPI\\BREINHARD",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Benno.REINHARD@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "REINHARD Benno",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "BREINHARD"
-    },
-    {
-      "AccountName": "EPI\\ADM_JMBENICHOU",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "ADM_JMBENICHOU@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "ADM_JMBENICHOU",
-      "LicenseType": 0,
-      "ServerRoles": 9,
-      "UserName": "ADM_JMBENICHOU"
-    },
-    {
-      "AccountName": "EPI\\Admissions",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Admissions@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "Admissions centralis\u00E9es",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "Admissions"
-    },
-    {
-      "AccountName": "EPI\\ATELIER-ELECTRONIQUE",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Atelier.microtechnique@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "Atelier microtechnique",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "ATELIER-ELECTRONIQUE"
-    },
-    {
-      "AccountName": "EPI\\CUISINE-CHENE",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Restaurant.Episode@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "Restaurant L\u0027Episode",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "CUISINE-CHENE"
-    },
-    {
-      "AccountName": "EPI\\FORMATION10",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "FORMATION10@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "FORMATION10",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "FORMATION10"
-    },
-    {
-      "AccountName": "EPI\\FORMATION3",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "FORMATION3@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "FORMATION3",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "FORMATION3"
-    },
-    {
-      "AccountName": "EPI\\FORMATION4",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "FORMATION4@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "FORMATION4",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "FORMATION4"
-    },
-    {
-      "AccountName": "EPI\\FORMATION5",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "FORMATION5@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "FORMATION5",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "FORMATION5"
-    },
-    {
-      "AccountName": "EPI\\FORMATION6",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "FORMATION6@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "FORMATION6",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "FORMATION6"
-    },
-    {
-      "AccountName": "EPI\\FORMATION7",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "FORMATION7@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "FORMATION7",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "FORMATION7"
-    },
-    {
-      "AccountName": "EPI\\FORMATION8",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "FORMATION8@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "FORMATION8",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "FORMATION8"
-    },
-    {
-      "AccountName": "EPI\\FORMATION9",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "FORMATION9@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "FORMATION9",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "FORMATION9"
-    },
-    {
-      "AccountName": "EPI\\INFOGR",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "INFOGR@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "INFOGR",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "INFOGR"
-    },
-    {
-      "AccountName": "EPI\\RANCRE",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Restaurant.ANCRE@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "Restaurant de l\u0027Ancre",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "RANCRE"
-    },
-    {
-      "AccountName": "EPI\\RCAVOUR",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Restaurant.Cavour@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "Restaurant Cavour",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "RCAVOUR"
-    },
-    {
-      "AccountName": "EPI\\ALPHA10",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "alpha10@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "ALPHA10",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "ALPHA10"
-    },
-    {
-      "AccountName": "EPI\\VDIRICKX",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "VivienJonathan.DIRICKX@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "DIRICKX Vivien Jonathan",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "VDIRICKX"
-    },
-    {
-      "AccountName": "EPI\\AKOLL",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Alyssa.KOLL@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "KOLL Alyssa",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "AKOLL"
-    },
-    {
-      "AccountName": "EPI\\ASHABANI",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Adnan.SHABANI@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "SHABANI Adnan",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "ASHABANI"
-    },
-    {
-      "AccountName": "EPI\\CCONTAT",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Carole.CONTAT@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "CONTAT Carole",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "CCONTAT"
-    },
-    {
-      "AccountName": "EPI\\CRUDAZ",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Caroline.RUDAZ@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "RUDAZ Caroline",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "CRUDAZ"
-    },
-    {
-      "AccountName": "EPI\\DALFELD",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Daniela.ALFELD@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "ALFELD Daniela",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "DALFELD"
-    },
-    {
-      "AccountName": "EPI\\DREAL",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Djamila.REAL@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "REAL Djamila",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "DREAL"
-    },
-    {
-      "AccountName": "EPI\\IHURLIMANN",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Isabelle.HURLIMANN@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "HURLIMANN Isabelle",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "IHURLIMANN"
-    },
-    {
-      "AccountName": "EPI\\IPAREJA",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Irene.PAREJA@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "PAREJA Ir\u00E8ne",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "IPAREJA"
-    },
-    {
-      "AccountName": "EPI\\JTOMAS",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Jorge.TOMAS@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "TOMAS Jorge",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "JTOMAS"
-    },
-    {
-      "AccountName": "EPI\\KSOUZADACOSTA",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Kethelyne.SOUZADACOSTA@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "SOUZA DA COSTA Kethelyne",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "KSOUZADACOSTA"
-    },
-    {
-      "AccountName": "EPI\\LGHEZAL",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Laeticia.GHEZAL@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "GHEZAL Laeticia",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "LGHEZAL"
-    },
-    {
-      "AccountName": "EPI\\MMATTIA",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Myriam.MATTIAMyriam@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "MATTIA Myriam",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "MMATTIA"
-    },
-    {
-      "AccountName": "EPI\\MTIAGO",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Maria.TIAGO@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "TIAGO Maria",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "MTIAGO"
-    },
-    {
-      "AccountName": "EPI\\MTORCHIA",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Marco.TORCHIA@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "TORCHIA Marco",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "MTORCHIA"
-    },
-    {
-      "AccountName": "EPI\\NGAVARD-CHOLLET",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Nathalie.GAVARD-CHOLLET@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "GAVARD-CHOLLET Nathalie",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "NGAVARD-CHOLLET"
-    },
-    {
-      "AccountName": "EPI\\NRODRIGUEZGARCIA",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Noelia.RODRIGUEZGARCIA@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "RODRIGUEZ GARCIA Noelia",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "NRODRIGUEZGARCIA"
-    },
-    {
-      "AccountName": "EPI\\PDACOSTASOARES",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Paulo.DACOSTASOARES@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "DA COSTA SOARES Paulo",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "PDACOSTASOARES"
-    },
-    {
-      "AccountName": "EPI\\RGLARNER",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "RosaAna.GLARNER@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "GLARNER RosaAna",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "RGLARNER"
-    },
-    {
-      "AccountName": "EPI\\SBIANCHINI",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Sylvie.BIANCHINI@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "BIANCHINI Sylvie",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "SBIANCHINI"
-    },
-    {
-      "AccountName": "EPI\\SGOMESVARELA",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Sandra.GOMESVARELA@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "GOMES VARELA Sandra",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "SGOMESVARELA"
-    },
-    {
-      "AccountName": "EPI\\SMEKONEN",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Seble.MEKONEN@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "MEKONEN Seble",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "SMEKONEN"
-    },
-    {
-      "AccountName": "EPI\\SMICHAUD",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Sylvain.MICHAUD@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "MICHAUD Sylvain",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "SMICHAUD"
-    },
-    {
-      "AccountName": "EPI\\SMOKBIL",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Sarah.MOKBIL@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "MOKBIL Sarah",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "SMOKBIL"
-    },
-    {
-      "AccountName": "EPI\\SNZENGA",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Sandrine.NZENGA@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "NZENGA Sandrine",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "SNZENGA"
-    },
-    {
-      "AccountName": "EPI\\SSIVALINGAM",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Sivakumaran.SIVALINGAM@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "SIVALINGAM Sivakumaran",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "SSIVALINGAM"
-    },
-    {
-      "AccountName": "EPI\\TPERISSET",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Tanya.PERISSET@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "PERISSET Tanya",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "TPERISSET"
-    },
-    {
-      "AccountName": "EPI\\TVEDIAVALDEZ",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Tayana.VEDIAVALDEZ@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "VEDIA VALDEZ Tayana",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "TVEDIAVALDEZ"
-    },
-    {
-      "AccountName": "EPI\\VPYTHON",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Valerie.PYTHON@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "PYTHON Val\u00E9rie",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "VPYTHON"
-    },
-    {
-      "AccountName": "EPI\\CAMONNIER",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Carmen.MONNIER@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "MONNIER Carmen",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "CAMONNIER"
-    },
-    {
-      "AccountName": "EPI\\GDAY",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Gordon.DAY@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "DAY Gordon",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "GDAY"
-    },
-    {
-      "AccountName": "EPI\\MDUMORTIER",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Marion.DUMORTIER@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "DUMORTIER Marion",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "MDUMORTIER"
-    },
-    {
-      "AccountName": "EPI\\SROSSETTI",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Seven.ROSSETTI@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "ROSSETTI Seven",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "SROSSETTI"
-    },
-    {
-      "AccountName": "EPI\\FSIMON",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Floriane.SIMON@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "SIMON Floriane",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "FSIMON"
-    },
-    {
-      "AccountName": "EPI\\GTORNAMBENE",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Giordano.TORNAMBENE@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "TORNAMBENE Giordano",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "GTORNAMBENE"
-    },
-    {
-      "AccountName": "EPI\\YBARRAUD",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Yasha.BARRAUD@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "BARRAUD Yasha",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "YBARRAUD"
-    },
-    {
-      "AccountName": "EPI\\NMARTIGNANO",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Noemie.MARTIGNANO@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "MARTIGNANO No\u00E9mie",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "NMARTIGNANO"
-    },
-    {
-      "AccountName": "EPI\\LROSENBAUM",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Leila.ROSENBAUM@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "ROSENBAUM Leila",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "LROSENBAUM"
-    },
-    {
-      "AccountName": "EPI\\CMULETTE",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Christophe.MULETTE@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "MULETTE Christophe",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "CMULETTE"
-    },
-    {
-      "AccountName": "EPI\\KYACHOUTI",
-      "AccountType": 2,
-      "DomainName": "EPI",
-      "EmailAddress": "Khadija.YACHOUTI@epi.ge.ch",
-      "Enabled": true,
-      "FullName": "YACHOUTI Khadija",
-      "LicenseType": 0,
-      "ServerRoles": 8,
-      "UserName": "KYACHOUTI"
-    }
-  ]
+  "AccountsToRestore": []
 }

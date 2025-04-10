@@ -11,6 +11,8 @@ namespace ToolBox_MVC.Services
 {
     public interface IConfigurationHandler
     {
+        ServerType Server { get; }
+
         Config GetConfiguration();
         void UpdateConfiguration(Config configuration);
         List<string> GetMaintainedAccounts();

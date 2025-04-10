@@ -1,9 +1,6 @@
 ﻿using MFilesAPI;
-using Microsoft.AspNetCore.Authentication;
-using NuGet.Packaging;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using ToolBox_MVC.Models;
 
@@ -249,7 +246,6 @@ namespace ToolBox_MVC.Services.MFiles
             }
 
             int flags = (int)de.Properties["userAccountControl"].Value;
-            Console.WriteLine(de.Properties["sAMAccountName"].Value + " = " + flags.ToString());
 
             return !Convert.ToBoolean(flags & 0x0002);
         }
@@ -335,7 +331,7 @@ namespace ToolBox_MVC.Services.MFiles
         /// </summary>
         /// <param name="account">The login account whose license to remove</param>
         /// <returns>>True if operations was succeful (license was removed or account is protected), false otherwise</returns>
-        public bool DeleteLicense(LoginAccount account)
+        public void DeleteAccountLicense(LoginAccount account)
         {
             ServerLoginAccountOperations loginOperations = MFilesServerApp.LoginAccountOperations;
             bool success = true;
@@ -352,7 +348,7 @@ namespace ToolBox_MVC.Services.MFiles
                     success = false;
                 }
             }
-            return success;
+            
         }
 
 
@@ -361,10 +357,10 @@ namespace ToolBox_MVC.Services.MFiles
         /// </summary>
         /// <param name="accountName">The name of the account to remove</param>
         /// <returns>True if operations was succeful (license was removed or account is protected), false otherwise</returns>
-        public void DeleteAccountLicence(string accountName)
+        public void DeleteAccountLicense(string accountName)
         {
             LoginAccount account = MFilesServerApp.LoginAccountOperations.GetLoginAccount(accountName);
-            DeleteLicense(account);
+            DeleteAccountLicense(account);
         }
 
         public void ChangeAccountLicense(LoginAccount account, MFLicenseType licenseType)
