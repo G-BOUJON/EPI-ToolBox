@@ -1,6 +1,11 @@
+using ToolBox_MVC.Services;
 using ToolBox_MVC.Services.Factories;
+using ToolBox_MVC.Services.Periodic;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -18,6 +23,9 @@ builder.Services.AddSingleton<IConfigurationHandlerFactory, ConfigurationHandler
 builder.Services.AddSingleton<IMFilesUsersHandlerFactory, MfilesUsersHandlerFactory>();
 builder.Services.AddSingleton<IAccountsHistoryHandlerFactory, AccountsHistoryHandlerFactory>();
 builder.Services.AddSingleton<IAccountsListHandlerFactory, AccountsListHandlerFactory>();
+builder.Services.AddScoped<IPeriodicOperations,PeriodicLicenseMangerJob>();
+builder.Services.AddHostedService<LicenseMangerOperationHostedService>();
+
 
 var app = builder.Build();
 

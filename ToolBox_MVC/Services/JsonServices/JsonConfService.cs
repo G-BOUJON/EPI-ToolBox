@@ -13,9 +13,11 @@ namespace ToolBox_MVC.Services.JsonServices
             WriteIndented = true
         };
         public string ConfigurationJsonFileName { get; private set; }
+        public ServerType Server {  get; private set; }
 
         public JsonConfService(ServerType server) 
         {
+            Server = server;
             ConfigurationJsonFileName = FilePathService.LicenseManagerPath(server) + "configuration.json";
         }
 

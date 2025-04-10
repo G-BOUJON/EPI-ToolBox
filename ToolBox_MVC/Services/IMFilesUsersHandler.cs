@@ -10,7 +10,10 @@ namespace ToolBox_MVC.Services
 
         List<LoginAccount> GetSuppressionList();
         List<LoginAccount> GetRestorationList();
-        void DeleteAccountLicence(string accountName);
+        void DeleteAccountLicense(string accountName);
+        void DeleteAccountLicense(LoginAccount account);
+
+        void RestoreAccountLicense(LoginAccount account);
         void RestoreAccountLicense(string accountName);
         bool GroupExists(string groupName);
         bool AreValidCredentials(string username, string password);

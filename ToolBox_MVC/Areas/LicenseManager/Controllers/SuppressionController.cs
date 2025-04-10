@@ -142,7 +142,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public IActionResult DeleteLicense(ServerType id, string accountName)
         {
             IMFilesUsersHandler mfUserSevice = _mfilesFactory.Create(id);
-            mfUserSevice.DeleteAccountLicence(accountName);
+            mfUserSevice.DeleteAccountLicense(accountName);
             _accountsHistoryFactory.Create(id).AddSuppressedAccount(accountName);
             UpdateList(id);
             return RedirectToAction("List", new { id });
@@ -158,7 +158,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             {
                 if (!string.IsNullOrEmpty(Request.Form[account.AccountName]))
                 {
-                    mfUserService.DeleteAccountLicence(account.AccountName);
+                    mfUserService.DeleteAccountLicense(account.AccountName);
                     _accountsHistoryFactory.Create(id).AddSuppressedAccount(account.AccountName);
                 }
             }
