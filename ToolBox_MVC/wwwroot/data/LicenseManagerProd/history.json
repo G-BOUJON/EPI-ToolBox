@@ -22,6 +22,25 @@
   ],
   "RestorationDates": [
     {
+      "Date": "2025-04-11",
+      "Accounts": [
+        {
+          "AccountName": "EPI\\GBOUJON",
+          "AccountType": 2,
+          "DomainName": "EPI",
+          "EmailAddress": "Gabriel.BOUJON@epi.ge.ch",
+          "Enabled": true,
+          "FullName": "BOUJON Gabriel",
+          "LicenseType": 3,
+          "ServerRoles": 8,
+          "UserName": "GBOUJON"
+        }
+      ],
+      "Hours": [
+        "12:17:05.8167549"
+      ]
+    },
+    {
       "Date": "2025-04-08",
       "Accounts": [
         {

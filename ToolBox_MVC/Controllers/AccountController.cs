@@ -5,6 +5,7 @@ using System.Security.Claims;
 using ToolBox_MVC.Services;
 using ToolBox_MVC.Models;
 using ToolBox_MVC.Services.Factories;
+using ToolBox_MVC.Services.ActiveDirectory;
 
 
 namespace ToolBox_MVC.Controllers
@@ -12,11 +13,15 @@ namespace ToolBox_MVC.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly IMFilesUsersHandlerFactory _mFilesUsersFactory;
+        
+        private readonly IActiveDirectoryUsersHandler _adHandler;
 
-        public AccountController(IMFilesUsersHandlerFactory mFilesUsersFactory)
+        public AccountController( IConfigurationHandlerFactory configFact, IADUsersHandlerFactory adFactory)
         {
-            _mFilesUsersFactory = mFilesUsersFactory;
+            
+            ActiveDirectoryCredentials activeDirectoryCredentials = configFact.Create(ServerType.Prod).GetConfiguration().ActiveDirectoryCredentials;
+            _adHandler = adFactory.Create(activeDirectoryCredentials);
+
         }
 
         public IActionResult Index()
@@ -36,9 +41,8 @@ namespace ToolBox_MVC.Controllers
         public async Task<IActionResult> Login([Bind("Username,Password")] Credentials credentials)
         {
             if (ModelState.IsValid)
-            {
-                IMFilesUsersHandler mf = _mFilesUsersFactory.Create(ServerType.Prod);
-                if (mf.AreValidCredentials(credentials.Username, credentials.Password) || (credentials.Username == "gab" && credentials.Password == "1234"))
+            { 
+                if (_adHandler.AreValidCredentials(credentials.Username, credentials.Password) || (credentials.Username == "gab" && credentials.Password == "1234"))
                 {
                     var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, "admin"),

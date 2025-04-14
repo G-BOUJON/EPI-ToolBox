@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using ToolBox_MVC.Areas.LicenseManager.Data;
 using ToolBox_MVC.Services;
 using ToolBox_MVC.Services.Factories;
 using ToolBox_MVC.Services.Periodic;
@@ -19,11 +21,19 @@ builder.Services.AddAuthentication("CookieAuth").AddCookie("CookieAuth", options
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
 });
 
+builder.Services.AddDbContext<LicenseManagerDBContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("LicenseManagerDB")), ServiceLifetime.Singleton);
+
 builder.Services.AddSingleton<IConfigurationHandlerFactory, ConfigurationHandlerFactory>();
-builder.Services.AddSingleton<IMFilesUsersHandlerFactory, MfilesUsersHandlerFactory>();
+builder.Services.AddSingleton<IMFilesUsersHandlerFactory, MFilesAccountHandlerFactory>();
 builder.Services.AddSingleton<IAccountsHistoryHandlerFactory, AccountsHistoryHandlerFactory>();
-builder.Services.AddSingleton<IAccountsListHandlerFactory, AccountsListHandlerFactory>();
-builder.Services.AddScoped<IPeriodicOperations,PeriodicLicenseMangerJob>();
+
+// builder.Services.AddSingleton<IAccountsListHandlerFactory, AccountsListHandlerFactory>();
+builder.Services.AddSingleton<IAccountsListHandlerFactory, DbAccountsServiceFactory>();
+
+builder.Services.AddSingleton<IADUsersHandlerFactory, ActiveDirectoryUserHandlerFactory>();
+
+builder.Services.AddSingleton<IPeriodicOperations,PeriodicLicenseMangerJob>();
 builder.Services.AddHostedService<LicenseMangerOperationHostedService>();
 
 

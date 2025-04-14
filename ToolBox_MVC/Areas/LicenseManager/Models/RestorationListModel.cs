@@ -11,7 +11,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models
 
         public RestorationListModel(ServerType server, AccountFilter filter, IMFilesUsersHandlerFactory mfilesFactory, IAccountsListHandlerFactory accountsListHandlerFactory) : base(server, filter, mfilesFactory, accountsListHandlerFactory) { }
 
-        public override List<Account> GetAccounts()
+        public override List<IAccount> GetAccounts()
         {
             return (_accountsListHandler.GetRestoredAccounts()).OrderBy(o => o.UserName).ToList();
         }
@@ -20,5 +20,6 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models
         {
             _accountsListHandler.UpdateRestoreList(_usersHandler.GetRestorationList());
         }
+        
     }
 }

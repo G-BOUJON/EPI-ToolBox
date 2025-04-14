@@ -13,19 +13,19 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models
 
         public SuppressionListModel(ServerType server, AccountFilter filter, IMFilesUsersHandlerFactory mFilesFactory, IAccountsListHandlerFactory accountsListHandlerFactory) : base(server, filter, mFilesFactory, accountsListHandlerFactory) { }
         
-        public override List<Account> GetAccounts()
+        public override List<IAccount> GetAccounts()
         {
-            List<Account> accounts = new List<Account>();
+            List<IAccount> accounts = new List<IAccount>();
             try
             {
-                accounts = Filter.filterAccounts(_accountsListHandler.GetDeletedAccounts().ToList(), Configuration.MaintainedAccounts);
+                accounts = _accountsListHandler.GetDeletedAccounts().ToList();
 
             }
             catch (Exception ex) 
             {
                 UpdateAccounts();
 
-                accounts = Filter.filterAccounts(_accountsListHandler.GetDeletedAccounts().ToList(), Configuration.MaintainedAccounts);
+                accounts = _accountsListHandler.GetDeletedAccounts().ToList();
             }
             return accounts.OrderBy(o => o.UserName).ToList();
         }

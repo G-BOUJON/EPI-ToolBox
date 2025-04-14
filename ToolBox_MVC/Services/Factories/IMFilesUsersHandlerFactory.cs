@@ -21,4 +21,22 @@ namespace ToolBox_MVC.Services.Factories
             return new MFilesUsersService(server,configurationHandler);
         }
     }
+
+    public class MFilesAccountHandlerFactory : IMFilesUsersHandlerFactory
+    {
+        private readonly IConfigurationHandlerFactory _factory;
+        private readonly IADUsersHandlerFactory _adFactory;
+
+        public MFilesAccountHandlerFactory(IConfigurationHandlerFactory factory, IADUsersHandlerFactory adFactory) 
+        {
+            _factory = factory;
+            _adFactory = adFactory;
+        }
+
+        public IMFilesUsersHandler Create(ServerType server)
+        {
+            IConfigurationHandler configHandler = _factory.Create(server);
+            return new MFilesAccountService(configHandler, _adFactory);
+        }
+    }
 }

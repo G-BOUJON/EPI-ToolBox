@@ -6,12 +6,14 @@ namespace ToolBox_MVC.Services
 {
     public interface IAccountsListHandler
     {
-        List<Account> GetDeletedAccounts();
-        List<Account> GetRestoredAccounts();
+        List<IAccount> GetDeletedAccounts();
+        List<IAccount> GetRestoredAccounts();
 
         void UpdateRestoreList(List<LoginAccount> deleteAccounts);
         void UpdateDeleteList(List<LoginAccount> restoreAccounts);
 
-        void UpdateAccounts(Accounts accounts);
+        void UpdateAllAccounts(List<LoginAccount> allAccounts);
+
+        bool IsAccountMaintained(IAccount account);
     }
 }

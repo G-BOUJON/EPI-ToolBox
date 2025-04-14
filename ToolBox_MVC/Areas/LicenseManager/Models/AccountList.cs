@@ -27,7 +27,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models
 
         }
 
-        public abstract List<Account> GetAccounts();
+        public abstract List<IAccount> GetAccounts();
         public abstract void UpdateList();
         
 
@@ -52,8 +52,13 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models
         /// </summary>
         protected void UpdateAccounts()
         {
-            Accounts mfAccounts = new Accounts(Account.ConvertLoginAccountList(_usersHandler.GetSuppressionList()), Account.ConvertLoginAccountList(_usersHandler.GetRestorationList()));
-            _accountsListHandler.UpdateAccounts(mfAccounts);
+            List<LoginAccount> mfAccounts = _usersHandler.GetAllAccounts();
+            _accountsListHandler.UpdateAllAccounts(mfAccounts);
+        }
+
+        public bool IsAccountMaintained(IAccount account)
+        {
+            return _accountsListHandler.IsAccountMaintained(account);
         }
     }
 }

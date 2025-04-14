@@ -129,7 +129,7 @@
 
                 @{
                     int i = 0;
-                    foreach (Account loginaccount in Model.GetAccounts())
+                    foreach (IAccount loginaccount in Model.GetAccounts())
                     {
                         string modalName = "#" + "modal" + i.ToString();
                     <tr>
@@ -149,7 +149,7 @@
                                 }
                         </td>
                         <td>@loginaccount.UserName</td>
-                        <td>@loginaccount.TranslateLicenseType()</td>
+                        <td>@TranslatorService.TranslateMFLicense(loginaccount.LicenseType)</td>
 
                         <td>
                             <button type="button" style="border:none; background-color: transparent;" data-bs-toggle="modal" data-bs-target="@modalName">
@@ -200,7 +200,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Licence</th>
-                                                        <td>@loginaccount.TranslateLicenseType()</td>
+                                                        <td>@TranslatorService.TranslateMFLicense(loginaccount.LicenseType)</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Server Roles</th>

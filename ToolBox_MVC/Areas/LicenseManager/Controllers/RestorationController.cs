@@ -77,10 +77,10 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public IActionResult RestoreAllLicense(ServerType id)
         {
             IMFilesUsersHandler mfUserService = _mfilesFactory.Create(id);
-            JsonLoginAccountsService accountService = new JsonLoginAccountsService(id);
+            IAccountsListHandler accountService = _accountsListFactory.Create(id);
             IAccountsHistoryHandler historyService = _accountsHistoryFactory.Create(id);
 
-            foreach (Account account in accountService.GetRestoredAccounts())
+            foreach (IAccount account in accountService.GetRestoredAccounts())
             {
                 if (!string.IsNullOrEmpty(Request.Form[account.AccountName]))
                 {

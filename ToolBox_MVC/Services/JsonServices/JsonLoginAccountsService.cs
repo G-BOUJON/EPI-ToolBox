@@ -12,7 +12,7 @@ namespace ToolBox_MVC.Services.JsonServices
         Suppression,
         Restoration
     }
-    public class JsonLoginAccountsService : IAccountsListHandler
+    public class JsonLoginAccountsService
     {
         
 
@@ -27,11 +27,11 @@ namespace ToolBox_MVC.Services.JsonServices
             JsonFileName = FilePathService.LicenseManagerPath(server) + "loginAccounts.json";
         }
 
-        public IEnumerable<Account> GetAccounts()
+        public IEnumerable<IAccount> GetAccounts()
         {
             using (var jsonFileReader = File.OpenText(JsonFileName))
             {
-                return JsonSerializer.Deserialize<Account[]>(jsonFileReader.ReadToEnd(),
+                return JsonSerializer.Deserialize<IAccount[]>(jsonFileReader.ReadToEnd(),
                     new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
@@ -71,7 +71,7 @@ namespace ToolBox_MVC.Services.JsonServices
             }
             Accounts accounts = GetAccounts_V2();
             accounts.AccountsToRestore = list;
-            UpdateAccounts(accounts);
+            UpdateAllAccounts(accounts);
         }
 
         public void UpdateDeleteList(List<LoginAccount> deleteAccounts)
@@ -84,7 +84,7 @@ namespace ToolBox_MVC.Services.JsonServices
             }
             Accounts accounts = GetAccounts_V2();
             accounts.AccountsToDelete = list;
-            UpdateAccounts(accounts);
+            UpdateAllAccounts(accounts);
         }
 
         public void UpdateList(List<LoginAccount> accounts)
@@ -109,7 +109,7 @@ namespace ToolBox_MVC.Services.JsonServices
             }
         }
 
-        public void UpdateAccounts(Accounts accounts)
+        public void UpdateAllAccounts(Accounts accounts)
         {
             File.Delete(JsonFileName);
             using (var outputStream = File.OpenWrite(JsonFileName))

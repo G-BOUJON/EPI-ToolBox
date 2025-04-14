@@ -29,8 +29,16 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models
             AccountsToRestore = accountRestore;
         }
 
-        
 
+        public List<Account> GetAllAccounts()
+        {
+            List<Account> allAccounts = new List<Account>();
+
+            allAccounts.AddRange(AccountsToDelete);
+            allAccounts.AddRange(AccountsToRestore);
+
+            return allAccounts;
+        }
 
     }
 }

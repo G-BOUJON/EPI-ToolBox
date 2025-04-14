@@ -127,8 +127,9 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public IActionResult MaintainAllSelected(ServerType id)
         {
             IConfigurationHandler confService = _configurationFactory.Create(id);
+            IAccountsListHandler accountService = _accountsListFactory.Create(id);
 
-            foreach (Account account in new JsonLoginAccountsService(id).GetDeletedAccounts())
+            foreach (IAccount account in accountService.GetDeletedAccounts())
             {
                 if (!string.IsNullOrEmpty(Request.Form[account.AccountName]) && !confService.GetMaintainedAccounts().Contains(account.UserName))
                 {
@@ -152,9 +153,9 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public IActionResult DeleteAllSelected(ServerType id)
         {
             IMFilesUsersHandler mfUserService = _mfilesFactory.Create(id);
-            JsonLoginAccountsService accountService = new JsonLoginAccountsService(id);
+            IAccountsListHandler accountService = _accountsListFactory.Create(id);
 
-            foreach (Account account in accountService.GetDeletedAccounts())
+            foreach (IAccount account in accountService.GetDeletedAccounts())
             {
                 if (!string.IsNullOrEmpty(Request.Form[account.AccountName]))
                 {

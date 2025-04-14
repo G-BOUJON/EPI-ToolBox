@@ -93,8 +93,8 @@ namespace ToolBox_MVC.Services.Periodic
 
         private async Task UpdateAccountsAsync(IMFilesUsersHandler mfilesHandler, IAccountsListHandler accountHandler)
         {
-            Accounts accounts = new Accounts(Account.ConvertLoginAccountList(mfilesHandler.GetSuppressionList()), Account.ConvertLoginAccountList(mfilesHandler.GetRestorationList()));
-            accountHandler.UpdateAccounts(accounts);
+            
+            accountHandler.UpdateAllAccounts(mfilesHandler.GetAllAccounts());
             _logger.LogInformation(string.Format("{0} : Rafraichissement des comptes du serveur {1}", DateTime.Now.ToString("HH:mm"), mfilesHandler.Configuration.VaultCredentials.NetworkAddress));
         }
 

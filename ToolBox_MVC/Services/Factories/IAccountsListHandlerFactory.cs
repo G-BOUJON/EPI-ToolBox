@@ -1,4 +1,6 @@
-﻿using ToolBox_MVC.Services.JsonServices;
+﻿using ToolBox_MVC.Areas.LicenseManager.Data;
+using ToolBox_MVC.Areas.LicenseManager.Services.DBServices;
+using ToolBox_MVC.Services.JsonServices;
 
 namespace ToolBox_MVC.Services.Factories
 {
@@ -7,15 +9,20 @@ namespace ToolBox_MVC.Services.Factories
         IAccountsListHandler Create(ServerType server);
     }
 
-    public class AccountsListHandlerFactory : IAccountsListHandlerFactory
+    
+
+    public class DbAccountsServiceFactory : IAccountsListHandlerFactory
     {
 
-        public AccountsListHandlerFactory() { }
+        private readonly LicenseManagerDBContext _dbContext;
+        public DbAccountsServiceFactory(LicenseManagerDBContext context)
+        {
+            _dbContext = context;
+        }
 
         public IAccountsListHandler Create(ServerType server)
         {
-            return new JsonLoginAccountsService(server);
+            return new DbAccountsService(server, _dbContext);
         }
-
     }
 }

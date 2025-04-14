@@ -1,10 +1,25 @@
 ﻿using MFilesAPI;
+using System.ComponentModel.DataAnnotations;
 using ToolBox_MVC.Services;
 
 namespace ToolBox_MVC.Models
 {
+    public interface IAccount
+    {
+        string AccountName { get; set; }
+        MFLoginAccountType AccountType { get; set; }
+        string DomainName { get; set; }
+        string EmailAddress { get; set; }
+        bool Enabled { get; set; }
+        string FullName { get; set; }
+        MFLicenseType LicenseType { get; set; }
+        MFLoginServerRole ServerRoles { get; set; }
+        string UserName { get; set; }
+    }
+
     public class Account
     {
+        
         public string AccountName { get; set; }
         public MFLoginAccountType AccountType { get; set; }
         public string DomainName { get; set; }

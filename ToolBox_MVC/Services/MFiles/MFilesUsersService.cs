@@ -9,15 +9,14 @@ namespace ToolBox_MVC.Services.MFiles
     public class MFilesUsersService : IMFilesUsersHandler
     {
         public MFilesServerApplication MFilesServerApp { get; set; }
-        public Vault vault { get; set; }
+        public Vault Vault { get; set; }
         public PrincipalContext pc { get; set; }
-        public ServerType serverType { get; set; }
+        public ServerType Server { get; set; }
         public Config Configuration { get; set; }
-        public IConfigurationHandler ConfigurationHandler { get; set; }
+        
         public MFilesUsersService(ServerType server, IConfigurationHandler configurationHandler)
         {
-            ConfigurationHandler = configurationHandler;
-            Configuration = ConfigurationHandler.GetConfiguration();
+            Configuration = configurationHandler.GetConfiguration();
             MFilesServerApp = new MFilesServerApplication();
             MFilesServerApp.Connect(
                 AuthType: MFAuthType.MFAuthTypeSpecificWindowsUser,
@@ -27,7 +26,7 @@ namespace ToolBox_MVC.Services.MFiles
                 ProtocolSequence: Configuration.VaultCredentials.ProtocolSequence,
                 NetworkAddress: Configuration.VaultCredentials.NetworkAddress,
                 Endpoint: Configuration.VaultCredentials.EndPoint);
-            vault = MFilesServerApp.LogInToVault(Configuration.VaultCredentials.Guid);
+            Vault = MFilesServerApp.LogInToVault(Configuration.VaultCredentials.Guid);
 
             pc = new(contextType: ContextType.Domain, name: Configuration.ActiveDirectoryCredentials.Domain, container: Configuration.ActiveDirectoryCredentials.Container, userName: Configuration.ActiveDirectoryCredentials.Username, password: Configuration.ActiveDirectoryCredentials.Password);
         }
@@ -85,7 +84,8 @@ namespace ToolBox_MVC.Services.MFiles
 
         public List<UserGroup> GetMFilesUserGroups()
         {
-            VaultUserGroupOperations groupOperations = vault.UserGroupOperations;
+            VaultUserGroupOperations groupOperations = Vault.UserGroupOperations;
+
             
             List<UserGroup> groupsToInspect = new List<UserGroup>();
 
@@ -252,7 +252,7 @@ namespace ToolBox_MVC.Services.MFiles
 
         public LoginAccount GetLoginAccountFromUserAccountID(int userID)
         {
-            VaultUserOperations userOperations = vault.UserOperations;
+            VaultUserOperations userOperations = Vault.UserOperations;
             
             return userOperations.GetLoginAccountOfUser(userID);
         }
@@ -291,7 +291,7 @@ namespace ToolBox_MVC.Services.MFiles
         {
             // Initialisation
             UserAccounts? users = null;
-            VaultUserOperations userOps = vault.UserOperations;
+            VaultUserOperations userOps = Vault.UserOperations;
 
             // Traitement
             users = userOps.GetUserAccounts();
@@ -512,6 +512,11 @@ namespace ToolBox_MVC.Services.MFiles
 
             // Sortie
             return existing;
+        }
+
+        public List<LoginAccount> GetAllAccounts()
+        {
+            throw new NotImplementedException();
         }
     }
 }
