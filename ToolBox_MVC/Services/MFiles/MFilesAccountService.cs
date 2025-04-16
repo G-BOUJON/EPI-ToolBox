@@ -44,7 +44,7 @@ namespace ToolBox_MVC.Services.MFiles
             Vault = MFilesServerApp.LogInToVault(credentials.Guid);
             Domain = credentials.Domain;
 
-            ADUserHandler = adFactory.Create(config.ActiveDirectoryCredentials);
+            ADUserHandler = adFactory.Create(Server);
 
             Groups = config.Groups;
         }

@@ -16,12 +16,9 @@ namespace ToolBox_MVC.Controllers
         
         private readonly IActiveDirectoryUsersHandler _adHandler;
 
-        public AccountController( IConfigurationHandlerFactory configFact, IADUsersHandlerFactory adFactory)
+        public AccountController(IADUsersHandlerFactory adFactory)
         {
-            
-            ActiveDirectoryCredentials activeDirectoryCredentials = configFact.Create(ServerType.Prod).GetConfiguration().ActiveDirectoryCredentials;
-            _adHandler = adFactory.Create(activeDirectoryCredentials);
-
+            _adHandler = adFactory.Create(ServerType.Prod);
         }
 
         public IActionResult Index()

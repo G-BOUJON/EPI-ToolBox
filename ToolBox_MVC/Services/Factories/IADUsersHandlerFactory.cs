@@ -5,16 +5,21 @@ namespace ToolBox_MVC.Services.Factories
 {
     public interface IADUsersHandlerFactory
     {
-        IActiveDirectoryUsersHandler Create(ActiveDirectoryCredentials credentials);
+        IActiveDirectoryUsersHandler Create(ServerType server);
     }
 
     public class ActiveDirectoryUserHandlerFactory : IADUsersHandlerFactory
     {
-        public ActiveDirectoryUserHandlerFactory() { }
-
-        public IActiveDirectoryUsersHandler Create(ActiveDirectoryCredentials crendentials)
+        IConfigurationHandlerFactory _configFactory;
+        public ActiveDirectoryUserHandlerFactory(IConfigurationHandlerFactory configFactory) 
         {
-            return new ADUsersService(crendentials);
+            _configFactory = configFactory;
+        }
+
+        public IActiveDirectoryUsersHandler Create(ServerType server)
+        {
+            ActiveDirectoryCredentials credentials = _configFactory.Create(server).GetConfiguration().ActiveDirectoryCredentials;
+            return new ADUsersService(credentials);
         }
     }
 }
