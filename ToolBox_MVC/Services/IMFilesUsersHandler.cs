@@ -20,5 +20,6 @@ namespace ToolBox_MVC.Services
         void RestoreAccountLicense(string accountName);
         bool GroupExists(string groupName);
         bool AreValidCredentials(string username, string password);
+        List<UserGroup> GetAllGroups(int serverId);
     }
 }

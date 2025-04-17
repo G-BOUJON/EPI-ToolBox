@@ -9,6 +9,7 @@ namespace ToolBox_MVC.Services.ActiveDirectory
     {
         private PrincipalContext PrincipalContext { get; set; }
 
+
         public ADUsersService(IConfigurationHandler configurationHandler) : this(configurationHandler.GetConfiguration().ActiveDirectoryCredentials)
         {
         }
@@ -62,5 +63,10 @@ namespace ToolBox_MVC.Services.ActiveDirectory
         {
             return GroupPrincipal.FindByIdentity(PrincipalContext, groupName) != null;
         }
+    }
+
+    public class ADUserHandlerTest : ADUsersService
+    {
+        public ADUserHandlerTest() : base(new ActiveDirectoryCredentials {Username = "EPI\\S_MFiles_T", Password="Epi2@22", Container= "DC=epidom,DC=ch", Domain= "epi-srv-dc.epidom.ch" }) { }
     }
 }

@@ -6,6 +6,11 @@
     "sqlite1": {
       "type": "sqlite",
       "connectionId": "ConnectionStrings:LicenseManagerDB"
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:ToolBoxDb",
+      "dynamicId": null
     }
   }
 }

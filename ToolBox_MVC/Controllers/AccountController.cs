@@ -35,11 +35,11 @@ namespace ToolBox_MVC.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login([Bind("Username,Password")] Credentials credentials)
+        public async Task<IActionResult> Login(string Username, string Password)
         {
             if (ModelState.IsValid)
             { 
-                if (_adHandler.AreValidCredentials(credentials.Username, credentials.Password) || (credentials.Username == "gab" && credentials.Password == "1234"))
+                if (_adHandler.AreValidCredentials(Username, Password) || (Username == "gab" && Password == "1234"))
                 {
                     var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, "admin"),
@@ -53,7 +53,7 @@ namespace ToolBox_MVC.Controllers
                     return RedirectToAction("Index","Home");
                 }
             }
-            return View(credentials);
+            return View();
         }
 
         public async Task<IActionResult> Logout()

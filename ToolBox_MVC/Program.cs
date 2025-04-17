@@ -1,8 +1,16 @@
+using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.EntityFrameworkCore;
 using ToolBox_MVC.Areas.LicenseManager.Data;
+using ToolBox_MVC.Data;
 using ToolBox_MVC.Services;
+using ToolBox_MVC.Services.ActiveDirectory;
+using ToolBox_MVC.Services.DB;
 using ToolBox_MVC.Services.Factories;
+using ToolBox_MVC.Services.MFiles;
+using ToolBox_MVC.Services.MFiles.Connector;
+using ToolBox_MVC.Services.MFiles.Sync;
 using ToolBox_MVC.Services.Periodic;
+using ToolBox_MVC.Services.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -13,6 +21,7 @@ builder.Logging.AddConsole();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddDataProtection();
 
 builder.Services.AddAuthentication("CookieAuth").AddCookie("CookieAuth", options =>
 {
@@ -23,6 +32,8 @@ builder.Services.AddAuthentication("CookieAuth").AddCookie("CookieAuth", options
 
 builder.Services.AddDbContext<LicenseManagerDBContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("LicenseManagerDB")), ServiceLifetime.Singleton);
+builder.Services.AddDbContext<ToolBoxDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ToolBoxDb")), ServiceLifetime.Singleton);
 
 builder.Services.AddSingleton<IConfigurationHandlerFactory, ConfigurationHandlerFactory>();
 builder.Services.AddSingleton<IMFilesUsersHandlerFactory, MFilesAccountHandlerFactory>();
@@ -36,6 +47,16 @@ builder.Services.AddSingleton<IADUsersHandlerFactory, ActiveDirectoryUserHandler
 builder.Services.AddSingleton<IPeriodicOperations,PeriodicLicenseMangerJob>();
 builder.Services.AddHostedService<LicenseMangerOperationHostedService>();
 
+builder.Services.AddSingleton<IMFilesConnectorFactory, MFConnectorFactory>();
+builder.Services.AddSingleton<IMFilesService, MFilesService>();
+builder.Services.AddSingleton<ICredentialRepository, CredentialStoreTest>(); //test class
+builder.Services.AddSingleton<ISyncService, MFilesSyncService>();
+builder.Services.AddSingleton<IGroupAccountRepository,MFilesAccountGroupRepository>();
+builder.Services.AddSingleton<IAccountsRepository, MFilesAccountsRepository>();
+builder.Services.AddSingleton<IGroupRepository, MFilesGroupsRepository>();
+builder.Services.AddSingleton<IActiveDirectoryUsersHandler, ADUserHandlerTest>(); //test class
+
+
 
 var app = builder.Build();
 
@@ -47,7 +68,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    ServerSeedData.Initialize(services);
+}
+
+    app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

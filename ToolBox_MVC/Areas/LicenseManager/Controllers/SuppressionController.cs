@@ -9,6 +9,7 @@ using ToolBox_MVC.Models;
 using ToolBox_MVC.Services;
 using ToolBox_MVC.Services.Factories;
 using ToolBox_MVC.Services.JsonServices;
+using ToolBox_MVC.Services.MFiles.Sync;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 {
@@ -20,13 +21,15 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         private readonly IMFilesUsersHandlerFactory _mfilesFactory;
         private readonly IAccountsHistoryHandlerFactory _accountsHistoryFactory;
         private readonly IAccountsListHandlerFactory _accountsListFactory;
+        private readonly ISyncService _syncService;
 
-        public SuppressionController(IConfigurationHandlerFactory configFactory, IMFilesUsersHandlerFactory mfilesFactory, IAccountsHistoryHandlerFactory accountsHistoryFactory, IAccountsListHandlerFactory accountsListFactory)
+        public SuppressionController(IConfigurationHandlerFactory configFactory, IMFilesUsersHandlerFactory mfilesFactory, IAccountsHistoryHandlerFactory accountsHistoryFactory, IAccountsListHandlerFactory accountsListFactory, ISyncService syncService)
         {
             _configurationFactory = configFactory;
             _mfilesFactory = mfilesFactory;
             _accountsHistoryFactory = accountsHistoryFactory;
             _accountsListFactory = accountsListFactory;
+            _syncService = syncService;
         }
 
         public IActionResult Index()
@@ -100,8 +103,11 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         }
 
         [HttpPost]
-        public IActionResult RefreshList(ServerType id)
+        public async Task<IActionResult> RefreshList(ServerType id)
         {
+            await _syncService.SyncAccountsAsync((int)id + 1);
+            await _syncService.SyncGroupsAsync((int)id + 1);
+            await _syncService.SyncGroupsAccountsLinksAsync((int)id + 1);
             UpdateList(id);
             return RedirectToAction("List",new {id});
         }

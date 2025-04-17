@@ -8,6 +8,12 @@
       "resourceId": null,
       "type": "sqlite.local",
       "connectionId": "ConnectionStrings:LicenseManagerDB"
+    },
+    "mssql1": {
+      "secretStore": "LocalSecretsFile",
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:ToolBoxDb",
+      "dynamicId": null
     }
   }
 }

@@ -518,5 +518,10 @@ namespace ToolBox_MVC.Services.MFiles
         {
             throw new NotImplementedException();
         }
+
+        public List<UserGroup> GetAllGroups(int serverId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

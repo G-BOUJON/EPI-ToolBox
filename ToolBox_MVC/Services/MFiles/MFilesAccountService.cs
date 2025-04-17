@@ -250,5 +250,10 @@ namespace ToolBox_MVC.Services.MFiles
             }
             return membersID;
         }
+
+        public List<UserGroup> GetAllGroups(int serverId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
