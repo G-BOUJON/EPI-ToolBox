@@ -163,18 +163,12 @@ namespace ToolBox_MVC.Services.DB
         {
             ArgumentNullException.ThrowIfNull(account);
 
-            var allAccounts = await GetUsersAsync(account.ServerId);
-
-            var accountsDict = allAccounts.ToDictionary(a => a.AccountName, a => a);
-
-            if (accountsDict.TryGetValue(account.AccountName, out var existingAccount))
+            try
             {
-                if (AccountNeedsUpdate(existingAccount, account))
-                {
-                    _dbContext.MFilesAccounts.Update(UpdateAccount(existingAccount, account));
-                }
+                var existingAccount = GetAccount(account.ServerId, account.AccountName);
+                _dbContext.MFilesAccounts.Update(UpdateAccount(existingAccount, account));
             }
-            else
+            catch (ArgumentNullException)
             {
                 _dbContext.MFilesAccounts.Add(account);
             }

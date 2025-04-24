@@ -34,7 +34,7 @@ namespace ToolBox_MVC.Services.MFiles
 
             var sawedNames = new HashSet<string>();
 
-            foreach (LoginAccount loginAccount in _mfilesService.GetAllAccounts(serverId))
+            foreach (LoginAccount loginAccount in _mfilesService.GetLoginAccounts(serverId))
             {
                 var account = new MFilesAccount
                 {
@@ -63,13 +63,7 @@ namespace ToolBox_MVC.Services.MFiles
                         account.Active = false;
                     }
                 }
-                try
-                {
-                    account.UserId = _mfilesService.GetUserAccountFromLoginAccountName(serverId, account.AccountName).ID;
-                }
-                catch (ArgumentException)
-                {
-                }
+                
                 
                 batch.Add(account);
                 sawedNames.Add(account.AccountName);
@@ -94,11 +88,24 @@ namespace ToolBox_MVC.Services.MFiles
             sawedNames.Clear();
         }
 
+        public async Task SyncUserAccountAsync(int serverId)
+        {
+            foreach (UserAccount userAccount in _mfilesService.GetUserAccounts(serverId))
+            {
+                var mfAccount = _accountsRepository.GetAccount(serverId, userAccount.LoginName);
+                if (mfAccount != null)
+                {
+                    mfAccount.UserId = userAccount.ID;
+                    await _accountsRepository.UpdateOrAddAccount(mfAccount);
+                }
+            }
+        }
+
         public async Task SyncGroupsAsync(int serverId)
         {
             List<MFilesGroup> mFilesGroups = new List<MFilesGroup>();
 
-            foreach (UserGroup userGroup in _mfilesService.GetAllGroups(serverId))
+            foreach (UserGroup userGroup in _mfilesService.GetUserGroups(serverId))
             {
                 if (userGroup.Predefined)
                 {
@@ -122,7 +129,7 @@ namespace ToolBox_MVC.Services.MFiles
             var userIds = new HashSet<int>();
            
 
-            foreach (UserGroup userGroup in _mfilesService.GetAllGroups(serverId))
+            foreach (UserGroup userGroup in _mfilesService.GetUserGroups(serverId))
             {
                 if (userGroup.Predefined)
                 {

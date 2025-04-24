@@ -120,6 +120,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public async Task<IActionResult> RefreshList(int id)
         {
             await _syncService.SyncAccountsAsync(id);
+            await _syncService.SyncUserAccountAsync(id);
             await _syncService.SyncGroupsAsync(id);
             await _syncService.SyncGroupsAccountsLinksAsync(id);
 
@@ -129,6 +130,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public async Task<IActionResult> Sync(int id)
         {
             await _syncService.SyncAccountsAsync(id);
+            await _syncService.SyncUserAccountAsync(id);
             await _syncService.SyncGroupsAsync(id);
             await _syncService.SyncGroupsAccountsLinksAsync(id);
 

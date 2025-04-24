@@ -21,27 +21,22 @@ namespace ToolBox_MVC.Services.MFiles
             _connectorFactory = connectorFactory;
         }
 
-        public LoginAccounts GetAllAccounts(int mfilesServerLocalId)
+        public LoginAccounts GetLoginAccounts(int mfilesServerLocalId)
         {
             using var connector = _connectorFactory.CreateConnection(_credentialRepo.GetConnexionInfos(mfilesServerLocalId));
             return connector.ServerApplication.LoginAccountOperations.GetLoginAccounts();
         }
 
-        public UserGroups GetAllGroups(int mfilesServerLocalId)
+        public UserGroups GetUserGroups(int mfilesServerLocalId)
         {
             using var connector = _connectorFactory.CreateConnection(_credentialRepo.GetConnexionInfos(mfilesServerLocalId));
             return connector.Vault.UserGroupOperations.GetUserGroups();
         }
 
-        public UserAccount GetUserAccountFromLoginAccountName(int mfServerId,string accountName)
+        public UserAccounts GetUserAccounts(int mfServerId)
         {
             using var connector = _connectorFactory.CreateConnection(_credentialRepo.GetConnexionInfos(mfServerId));
-            UserAccounts searchResults = connector.Vault.UserOperationsEx.SearchForUserAccount(accountName);
-            if (searchResults.Count == 0)
-            {
-                throw new ArgumentException();
-            }
-            return searchResults[1];
+            return connector.Vault.UserOperations.GetUserAccounts();
         }
 
         public LoginAccount GetUserSpecificLoginAccount(int mfilesServerLocalId, int userId)
