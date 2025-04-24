@@ -33,13 +33,42 @@ namespace ToolBox_MVC.Services.MFiles
             return connector.Vault.UserGroupOperations.GetUserGroups();
         }
 
+        public UserAccount GetUserAccountFromLoginAccountName(int mfServerId,string accountName)
+        {
+            using var connector = _connectorFactory.CreateConnection(_credentialRepo.GetConnexionInfos(mfServerId));
+            UserAccounts searchResults = connector.Vault.UserOperationsEx.SearchForUserAccount(accountName);
+            if (searchResults.Count == 0)
+            {
+                throw new ArgumentException();
+            }
+            return searchResults[1];
+        }
+
         public LoginAccount GetUserSpecificLoginAccount(int mfilesServerLocalId, int userId)
         {
             using var connector = _connectorFactory.CreateConnection(_credentialRepo.GetConnexionInfos(mfilesServerLocalId));
             return connector.Vault.UserOperations.GetLoginAccountOfUser(userId);
         }
-        
 
-        
+        public bool ChangeAccountLicense(int mfilesServerId, string accountName, MFLicenseType newLicense)
+        {
+            using var connector = _connectorFactory.CreateConnection(_credentialRepo.GetConnexionInfos(mfilesServerId));
+
+            LoginAccount targetedAccount;
+            ServerLoginAccountOperations lAccountOperator = connector.ServerApplication.LoginAccountOperations;
+
+            try
+            {
+                targetedAccount = lAccountOperator.GetLoginAccount(accountName);
+                targetedAccount.LicenseType = newLicense;
+                lAccountOperator.ModifyLoginAccount(targetedAccount);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

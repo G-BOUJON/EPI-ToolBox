@@ -6,6 +6,7 @@
         public int MFilesId { get; set; }
         public int? ServerId { get; set; }
         public string Name { get; set; }
+        public bool Maintained { get; set; }
 
         public ICollection<MFilesAccount> Accounts { get; set; }
         public MFilesServer Server { get; set; }

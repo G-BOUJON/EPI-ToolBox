@@ -11,8 +11,8 @@ using ToolBox_MVC.Data;
 namespace ToolBox_MVC.Migrations.ToolBoxDb
 {
     [DbContext(typeof(ToolBoxDbContext))]
-    [Migration("20250417113203_EPIbdd")]
-    partial class EPIbdd
+    [Migration("20250422084436_s")]
+    partial class s
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,6 +140,11 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                     b.Property<int>("MFilesId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Maintained")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -166,6 +171,9 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ADCredentialId")
+                        .HasColumnType("int");
+
                     b.Property<string>("EndPoint")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -188,7 +196,41 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ADCredentialId");
+
                     b.ToTable("MFilesServers");
+                });
+
+            modelBuilder.Entity("ToolBox_MVC.Models.ADCredential", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Container")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Domain")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Domain")
+                        .IsUnique();
+
+                    b.ToTable("ADCredentials");
                 });
 
             modelBuilder.Entity("MFilesAccountMFilesGroup", b =>
@@ -235,6 +277,13 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                         .HasForeignKey("ServerId");
 
                     b.Navigation("Server");
+                });
+
+            modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesServer", b =>
+                {
+                    b.HasOne("ToolBox_MVC.Models.ADCredential", null)
+                        .WithMany()
+                        .HasForeignKey("ADCredentialId");
                 });
 
             modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesServer", b =>

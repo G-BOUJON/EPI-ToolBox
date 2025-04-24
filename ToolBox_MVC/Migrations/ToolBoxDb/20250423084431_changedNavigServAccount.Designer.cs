@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToolBox_MVC.Data;
 
@@ -10,9 +11,11 @@ using ToolBox_MVC.Data;
 namespace ToolBox_MVC.Migrations.ToolBoxDb
 {
     [DbContext(typeof(ToolBoxDbContext))]
-    partial class ToolBoxDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250423084431_changedNavigServAccount")]
+    partial class changedNavigServAccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,11 +83,6 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
                     b.Property<int>("ServerRole")
                         .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<string>("UserName")
                         .IsRequired()

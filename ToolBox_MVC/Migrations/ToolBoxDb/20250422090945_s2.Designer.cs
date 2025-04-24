@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToolBox_MVC.Data;
 
@@ -10,9 +11,11 @@ using ToolBox_MVC.Data;
 namespace ToolBox_MVC.Migrations.ToolBoxDb
 {
     [DbContext(typeof(ToolBoxDbContext))]
-    partial class ToolBoxDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422090945_s2")]
+    partial class s2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,11 +83,6 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
                     b.Property<int>("ServerRole")
                         .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -252,11 +250,13 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
             modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesAccount", b =>
                 {
-                    b.HasOne("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesServer", null)
-                        .WithMany()
+                    b.HasOne("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesServer", "Server")
+                        .WithMany("Accounts")
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Server");
                 });
 
             modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesCredential", b =>
@@ -288,6 +288,8 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
             modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesServer", b =>
                 {
+                    b.Navigation("Accounts");
+
                     b.Navigation("Credential")
                         .IsRequired();
                 });

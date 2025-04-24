@@ -17,6 +17,13 @@ namespace ToolBox_MVC.Services.DB
         /// </summary>
         /// <param name="serverId"></param>
         /// <returns></returns>
-        Task<List<MFilesAccount>> GetUserAsync(int serverId);
+        Task<HashSet<MFilesAccount>> GetUsersAsync(int serverId);
+
+        MFilesAccount GetAccount(int serverId, string accountName);
+
+        Task UpdateOrAddAccount(MFilesAccount account);
+
+        Task SyncAccountsBatchAsync(int serverId, HashSet<MFilesAccount> accountsBatch);
+        Task DeleteAccountsNotInSyncAsync(int serverId, HashSet<string> accountNamesSaw);
     }
 }

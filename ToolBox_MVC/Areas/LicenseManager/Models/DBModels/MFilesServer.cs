@@ -1,4 +1,7 @@
-﻿namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ToolBox_MVC.Models;
+
+namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
 {
     public class MFilesServer
     {
@@ -8,9 +11,10 @@
         public string EndPoint {  get; set; }
         public string ProtocolSequence { get; set; }
         public string VaultGuid { get; set; }
+        public int ADCredentialId { get; set; }
 
         public MFilesCredential Credential { get; set; }
-        public virtual ICollection<MFilesAccount> Accounts { get; set; }
+        
 
         public MFilesServer() { }
     }

@@ -3,32 +3,38 @@ using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Services.ActiveDirectory;
 using ToolBox_MVC.Services.DB;
 using ToolBox_MVC.Services.MFiles.Sync;
+using ToolBox_MVC.Services.Repository;
 
 namespace ToolBox_MVC.Services.MFiles
 {
     public class MFilesSyncService : ISyncService
     {
         private readonly IMFilesService _mfilesService;
+        private readonly IMfilesServerRepository _serverRepo;
         private readonly IAccountsRepository _accountsRepository;
-        private readonly IActiveDirectoryUsersHandler _activeDirectoryUsersHandler;
+        private readonly IAdService _adService;
         private readonly IGroupRepository _groupRepo;
         private readonly IGroupAccountRepository _groupAccountRepo;
 
-        public MFilesSyncService(IMFilesService mfilesService, IAccountsRepository accountsRepository, IActiveDirectoryUsersHandler activeDirectoryUsersHandler, IGroupRepository groupRepo, IGroupAccountRepository groupAccountRepo)
+        public MFilesSyncService(IMFilesService mfilesService, IAccountsRepository accountsRepository,IMfilesServerRepository mFilesServerRepository, IAdService activeDirectoryUsersHandler, IGroupRepository groupRepo, IGroupAccountRepository groupAccountRepo)
         {
             _mfilesService = mfilesService;
             _accountsRepository = accountsRepository;
-            _activeDirectoryUsersHandler = activeDirectoryUsersHandler;
+            _adService = activeDirectoryUsersHandler;
             _groupRepo = groupRepo;
             _groupAccountRepo = groupAccountRepo;
+            _serverRepo = mFilesServerRepository;
         }
 
         public async Task SyncAccountsAsync(int serverId)
         {
-            LoginAccounts incomingLoginAccounts = _mfilesService.GetAllAccounts(serverId);
-            List<MFilesAccount> mFilesAccounts = new List<MFilesAccount>();
+            const int batchSize = 100;
+            HashSet<MFilesAccount> batch = new HashSet<MFilesAccount>(batchSize);
+            int adLocalId = 1;
 
-            foreach (LoginAccount loginAccount in incomingLoginAccounts)
+            var sawedNames = new HashSet<string>();
+
+            foreach (LoginAccount loginAccount in _mfilesService.GetAllAccounts(serverId))
             {
                 var account = new MFilesAccount
                 {
@@ -43,30 +49,56 @@ namespace ToolBox_MVC.Services.MFiles
                     ServerRole = (int)loginAccount.ServerRoles,
                     UserName = loginAccount.UserName,
                     Maintained = false,
-                    Active = false
+                    Active = true
                 };
+                if (loginAccount.AccountType == MFLoginAccountType.MFLoginAccountTypeWindows)
+                {
+                    try
+                    {
+                        account.Active = _adService.IsUserActive(adLocalId, account.UserName);
+
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        account.Active = false;
+                    }
+                }
                 try
                 {
-                    account.Active = _activeDirectoryUsersHandler.IsUserActive(account.UserName);
-
+                    account.UserId = _mfilesService.GetUserAccountFromLoginAccountName(serverId, account.AccountName).ID;
                 }
-                catch (ArgumentNullException ex)
+                catch (ArgumentException)
                 {
-                    account.Active = false;
                 }
                 
-                mFilesAccounts.Add(account);
+                batch.Add(account);
+                sawedNames.Add(account.AccountName);
+
+                if (batch.Count >= batchSize)
+                {
+                    await _accountsRepository.SyncAccountsBatchAsync(serverId,batch);
+                    batch.Clear();
+                }
             }
 
-            await _accountsRepository.SyncAccountsAsync(serverId, mFilesAccounts);
+            if (batch.Count > 0)
+            {
+                await _accountsRepository.SyncAccountsBatchAsync(serverId, batch);
+                batch.Clear();
+            }
+
+            
+
+            await _accountsRepository.DeleteAccountsNotInSyncAsync(serverId, sawedNames);
+
+            sawedNames.Clear();
         }
 
         public async Task SyncGroupsAsync(int serverId)
         {
-            UserGroups incomingGroups = _mfilesService.GetAllGroups(serverId);
             List<MFilesGroup> mFilesGroups = new List<MFilesGroup>();
 
-            foreach (UserGroup userGroup in incomingGroups)
+            foreach (UserGroup userGroup in _mfilesService.GetAllGroups(serverId))
             {
                 if (userGroup.Predefined)
                 {
@@ -86,12 +118,11 @@ namespace ToolBox_MVC.Services.MFiles
 
         public async Task SyncGroupsAccountsLinksAsync(int serverId)
         {
-            UserGroups mfilesGroups = _mfilesService.GetAllGroups(serverId);
-            List<string> accountNames = new List<string>();
-            string singleAccountName;
+            
+            var userIds = new HashSet<int>();
            
 
-            foreach (UserGroup userGroup in mfilesGroups)
+            foreach (UserGroup userGroup in _mfilesService.GetAllGroups(serverId))
             {
                 if (userGroup.Predefined)
                 {
@@ -99,20 +130,20 @@ namespace ToolBox_MVC.Services.MFiles
                 }
 
 
-                accountNames.Clear();
+                
 
                 foreach(int userId in userGroup.Members)
                 {
                     if (userId > 0)
                     {
-                        singleAccountName = GetAccountNameFromId(serverId, userId);
-                        accountNames.Add(singleAccountName);
+                        
+                        userIds.Add(userId);
                     }
                 }
                 
                 
-                await _groupAccountRepo.SyncLinks(serverId, userGroup.ID, accountNames);
-                
+                await _groupAccountRepo.SyncLinks(serverId, userGroup.ID, userIds);
+                userIds.Clear();
             }
         }
 

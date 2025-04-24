@@ -11,6 +11,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
         public string EmailAddress { get; set; }
         public string FullName { get; set; }
         public string UserName { get; set; }
+        public int UserId { get; set; }
         public int AccountType { get; set; }
         public int License {  get; set; }
         public int ServerRole { get; set; }
@@ -20,7 +21,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
 
         
         public int ServerId { get; set; }
-        public virtual MFilesServer Server { get; set; }
+        
 
         public virtual ICollection<MFilesGroup> Groups { get; set; }
 

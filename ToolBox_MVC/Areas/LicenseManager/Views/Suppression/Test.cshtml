@@ -1,0 +1,405 @@
+﻿@using MFilesAPI
+@using ToolBox_MVC.Services
+@using ToolBox_MVC.Services.DB
+
+@model IEnumerable<ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesAccount>
+@inject IMfilesServerRepository serverRepo
+
+@{
+    int serverId = Model.First().ServerId;
+    string serverName = serverRepo.GetServerInfos(serverId).Name;
+    ViewData["Server"] = serverName;
+    ViewData["Title"] = ViewData["Server"] + " - Suppression";
+}
+
+<div class="d-inline-flex gap-3">
+    <h1>Utilisateurs à supprimer - Environnement : </h1>
+    <form id="changeServer" asp-controller="Suppression" asp-action="Test" asp-route-id="" method="get">
+        <select class="form-select form-select-lg mb-0 mb-3" id="selectServer" onchange="changeServer()">
+            @foreach (var mfServer in serverRepo.GetServers())
+            {
+                if (mfServer.Id == serverId)
+                {
+                    <option selected value="@mfServer.Id">@mfServer.Name</option>
+                }
+                else
+                {
+                    <option value="@mfServer.Id">@mfServer.Name</option>
+                }
+            }
+        </select>
+    </form>
+</div>
+<div class="text-center">
+    <div class="d-flex justify-content-between">
+
+        <div style="width:33%;" class="d-flex justify-content-start">
+
+            <button class="btn btn-outline-secondary" id="selectAll">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-check-all" viewBox="0 0 16 16">
+                    <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992a.252.252 0 0 1 .02-.022zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486-.943 1.179z" />
+                </svg>
+            </button>
+            <button type="button" class="btn actionOnSelection" style="padding:0px; margin:5px; border:none; background-color: transparent;" id="maintainSelection" onclick="getNbSelected()" data-bs-toggle="modal" data-bs-target="#maintainanceValidation" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+                    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
+                </svg>
+            </button>
+            <button type="button" name="delete" class="btn btn-danger actionOnSelection" id="suppressSelection" onclick="getNbSelected()" data-bs-toggle="modal" data-bs-target="#suppressValidation" disabled style="padding:0px; margin:5px; border:none; background-color: transparent;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="red" class="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                </svg>
+            </button>
+        </div>
+
+        <div style="width:33%;" class="d-flex justify-content-center">
+            <form asp-controller="Suppression" asp-action="RefreshList" asp-route-id="@serverId" method="post">
+                <button type="submit" class="btn btn-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                    </svg>
+                    Rafraîchir
+                </button>
+            </form>
+        </div>
+
+        <div style="width:33%;" class="d-flex justify-content-end">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#filter" class="btn btn-primary">
+                Filtres
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
+                    <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                </svg>
+
+            </button>
+        </div>
+
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Nom d'utilisateur</th>
+                <th>Licence</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <form asp-controller="Suppression" method="post">
+                @*Boites modales*@
+                <div class="modal fade" id="suppressValidation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Suppression</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Confirmer la suppression de <span class="nbSelection"></span> licenses ?</p>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button asp-action="DeleteAllSelected" class="btn btn-danger">Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="maintainanceValidation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Maintenir</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Maintenir <span class="nbSelection"></span> licenses ?</p>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button asp-action="MaintainAllSelected" class="btn btn-success">Maintenir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*Fin boites modales*@
+
+                @{
+                    int i = 0;
+                    foreach (var loginaccount in Model)
+                    {
+                        string modalName = "#" + "modal" + i.ToString();
+                    <tr>
+
+                        <td><input type="checkbox" class="select form-check-input" name="@loginaccount.AccountName" value="true" /></td>
+                        <td>
+                                @{
+
+                                    if (loginaccount.Maintained)
+                                    {
+                                    <div title="Licence maintenue">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-exclamation-circle-fill" viewBox="0 0 16 16" title="Licence maintenue">
+                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                        </svg>
+                                    </div>
+                                    }
+                                }
+                        </td>
+                        <td>@loginaccount.UserName</td>
+                        <td>@TranslatorService.TranslateMFLicense((MFLicenseType)loginaccount.License)</td>
+
+                        <td>
+                            <button type="button" style="border:none; background-color: transparent;" data-bs-toggle="modal" data-bs-target="@modalName">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
+                                </svg>
+                            </button>
+
+                                @{
+                                    modalName = "modal" + i.ToString();
+                                }
+                            <div class="modal fade" id="@modalName" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle">@loginaccount.AccountName</h5>
+                                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">Account Name</th>
+                                                        <td>@loginaccount.AccountName</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Account Type</th>
+                                                        <td>@loginaccount.AccountType</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Domain Name</th>
+                                                        <td>@loginaccount.Domain</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Email Adress</th>
+                                                        <td>@loginaccount.EmailAddress</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Enabled</th>
+                                                        <td>@loginaccount.Enabled</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Full Name</th>
+                                                        <td>@loginaccount.FullName</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Licence</th>
+                                                        <td>@TranslatorService.TranslateMFLicense((MFLicenseType)loginaccount.License)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Server Roles</th>
+                                                        <td>@loginaccount.ServerRole</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Username</th>
+                                                        <td>@loginaccount.UserName</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                                @{
+                                                    if (loginaccount.Maintained)
+                                                    {
+
+                                                    <button type="submit" asp-controller="Suppression" asp-action="Maintain" asp-route-id="@serverId" asp-route-accountName="@loginaccount.AccountName" class="btn btn-danger">
+                                                        Ne plus maintenir la licence
+                                                    </button>
+
+                                                    }
+                                                    else
+                                                    {
+
+                                                    <button type="submit" asp-controller="Suppression" asp-action="Maintain" asp-route-id="@serverId" asp-route-accountName="@loginaccount.AccountName" class="btn btn-success">
+                                                        Maintenir la licence
+                                                    </button>
+
+                                                    }
+                                                }
+                                        </div>
+                                        <div class="modal-footer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                @{
+                                    modalName = "#confirm" + i.ToString();
+                                }
+                            <button type="button" name="delete" style="border:none; background-color: transparent;" data-bs-toggle="modal" data-bs-target="@modalName">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                                </svg>
+                            </button>
+
+                                @{
+                                    modalName = "confirm" + i.ToString();
+                                }
+                            <div class="modal fade" id="@modalName" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle">Confirmation</h5>
+                                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <p>Confirmer la suppression de la licence pour <b>@loginaccount.UserName</b></p>
+
+                                            <button type="submit" asp-action="TestRemoveLicense" asp-route-id="@serverId" asp-route-accountName="@loginaccount.AccountName" class="btn btn-danger">
+                                                Supprimer la licence
+                                            </button>
+                                        </div>
+                                        <div class="modal-footer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                        i += 1;
+                    }
+                }
+            </form>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="filter" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Filtrer</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+@*Script pour calculer le nombre de checkbox selectionnees*@
+<script>
+    function getNbSelected() {
+        var spanNbSelected = document.getElementsByClassName("nbSelection");
+        var nbSelected = 0;
+        var checkBoxes = document.getElementsByClassName("select");
+
+        for (i = 0; i < checkBoxes.length; i++) {
+            if (checkBoxes[i].checked) {
+                nbSelected += 1;
+            }
+        }
+
+        for(i=0; i<spanNbSelected.length; i++){
+            spanNbSelected[i].innerText = nbSelected;
+        }
+    }
+</script>
+
+@*Script pour sélectionner toutes les checkbox*@
+<script>
+    var selectAllButton = document.getElementById("selectAll");
+
+    selectAllButton.onclick = function () {
+        var checkBoxes = document.getElementsByClassName("select");
+
+        if (document.getElementById("selectAll").className == "btn btn-outline-secondary") {
+            for (i = 0; i < checkBoxes.length; i++) {
+                checkBoxes[i].checked = true;
+            }
+            document.getElementById("selectAll").className = "btn btn-primary";
+        }
+        else {
+            for (i = 0; i < checkBoxes.length; i++) {
+                checkBoxes[i].checked = false;
+            }
+            document.getElementById("selectAll").className = "btn btn-outline-secondary";
+        }
+
+        disableSuppressButton();
+    }
+</script>
+
+@*Script pour désactiver le bouton supprimer quand rien n'est coché*@
+<script>
+    var selectionButtons = document.getElementsByClassName("select");
+
+    for (i = 0; i < selectionButtons.length; i++) {
+
+        selectionButtons[i].onclick = disableSuppressButton;
+    }
+
+    function disableSuppressButton() {
+        var buttons = document.getElementsByClassName("actionOnSelection");
+        var selectionButtons = document.getElementsByClassName("select");
+        var disable = true;
+        console.log(buttons.length);
+
+        for (i = 0; i < selectionButtons.length; i++) {
+            if (selectionButtons[i].checked) {
+                disable = false;
+            }
+        }
+
+        for(i = 0; i<buttons.length; i++){
+            if (disable) {
+                buttons[i].setAttribute('disabled', '');
+            }
+            else {
+                buttons[i].removeAttribute('disabled');
+            }
+        }
+    }
+</script>
+
+@*Script pour le style des boutons de filtrage*@
+<script>
+    var filterButtons = document.getElementsByClassName("filterButton")
+
+    for (i = 0; i < filterButtons.length; i++) {
+        filterButtons[i].onclick = function () {
+            if (this.className == "btn btn-primary m-2 filterButton") {
+                this.className = "btn btn-light m-2 filterButton";
+            }
+            else {
+                this.className = "btn btn-primary m-2 filterButton";
+            }
+            document.getElementById(this.value).checked = !document.getElementById(this.value).checked
+        }
+    }
+</script>
+
+@*Script pour selection de serveur*@
+<script>
+    function changeServer() {
+        let currentForm = document.getElementById("changeServer");
+        let currentSelect = document.getElementById("selectServer");
+        let newServer = currentSelect.options[currentSelect.selectedIndex].value;
+
+        currentForm.getAttributeNode("action").value += "/" + newServer;
+        currentForm.submit();
+    }
+</script>

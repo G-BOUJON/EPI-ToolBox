@@ -9,8 +9,7 @@
     },
     "mssql1": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:ToolBoxDb",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:ToolBoxDb"
     }
   }
 }

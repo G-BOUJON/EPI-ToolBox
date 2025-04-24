@@ -37,22 +37,72 @@ namespace ToolBox_MVC.Services.DB
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task SyncLinks(int serverId, int mfilesGroupId, List<string> accountNames)
+        public async Task SyncLinks(int serverId, int mfilesGroupId, HashSet<string> accountNames)
         {
             var group = _dbContext.MFilesGroups
                 .Include(g => g.Accounts)
                 .FirstOrDefault(g => g.ServerId == serverId && g.MFilesId == mfilesGroupId);
 
-            var accountsToRemove = await _dbContext.MFilesAccounts.Where(a => !accountNames.Contains(a.AccountName) && a.ServerId == serverId).ToListAsync();
-            var accountsToAdd = await _dbContext.MFilesAccounts
-                .Where(a => accountNames.Contains(a.AccountName) && a.ServerId == serverId && !group.Accounts.Contains(a))
-                .ToListAsync();
+            var accountDict = await _dbContext.MFilesAccounts.Where(a=>a.ServerId == serverId).ToDictionaryAsync(a => a.AccountName, a => a);
 
-            group.Accounts.AddRange(accountsToAdd);
-            
-            foreach (var account in accountsToRemove)
+            var dbMembers = group.Accounts.Select(a => a.AccountName).ToHashSet();
+
+
+            var accountsToAdd = accountNames.Except(dbMembers);
+            foreach (var accountName in accountsToAdd)
             {
-                group.Accounts.Remove(account);
+                if (accountDict.TryGetValue(accountName, out var account))
+                {
+                    group.Accounts.Add(account);
+                }
+            }
+
+            
+
+            var accountsToRemove = dbMembers.Except(accountNames);
+            foreach (var accountName in accountsToRemove)
+            {
+                var account = group.Accounts.FirstOrDefault(a => a.AccountName == accountName);
+                if (account != null)
+                {
+                    group.Accounts.Remove(account);
+                }
+            }
+
+            _dbContext.MFilesGroups.Update(group);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SyncLinks(int serverId, int mfilesGroupId, HashSet<int> userIds)
+        {
+            var group = _dbContext.MFilesGroups
+                .Include(g => g.Accounts)
+                .FirstOrDefault(g => g.ServerId == serverId && g.MFilesId == mfilesGroupId);
+
+            var accountDict = await _dbContext.MFilesAccounts.Where(a => a.ServerId == serverId && a.UserId != 0).ToDictionaryAsync(a => a.UserId, a => a);
+
+            var dbMembers = group.Accounts.Select(a => a.UserId).ToHashSet();
+
+
+            var accountsToAdd = userIds.Except(dbMembers);
+            foreach (var accUserId in accountsToAdd)
+            {
+                if (accountDict.TryGetValue(accUserId, out var account))
+                {
+                    group.Accounts.Add(account);
+                }
+            }
+
+
+
+            var accountsToRemove = dbMembers.Except(userIds);
+            foreach (var accUsrId in accountsToRemove)
+            {
+                var account = group.Accounts.FirstOrDefault(a => a.UserId == accUsrId);
+                if (account != null)
+                {
+                    group.Accounts.Remove(account);
+                }
             }
 
             _dbContext.MFilesGroups.Update(group);

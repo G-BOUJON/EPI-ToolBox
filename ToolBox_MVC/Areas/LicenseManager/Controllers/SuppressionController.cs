@@ -5,6 +5,8 @@ using NuGet.Protocol;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using ToolBox_MVC.Areas.LicenseManager.Models;
+using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
+using ToolBox_MVC.Areas.LicenseManager.Services;
 using ToolBox_MVC.Models;
 using ToolBox_MVC.Services;
 using ToolBox_MVC.Services.Factories;
@@ -22,14 +24,16 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         private readonly IAccountsHistoryHandlerFactory _accountsHistoryFactory;
         private readonly IAccountsListHandlerFactory _accountsListFactory;
         private readonly ISyncService _syncService;
+        private readonly ILicenseMangagerService _licenseMangagerService;
 
-        public SuppressionController(IConfigurationHandlerFactory configFactory, IMFilesUsersHandlerFactory mfilesFactory, IAccountsHistoryHandlerFactory accountsHistoryFactory, IAccountsListHandlerFactory accountsListFactory, ISyncService syncService)
+        public SuppressionController(IConfigurationHandlerFactory configFactory, IMFilesUsersHandlerFactory mfilesFactory, IAccountsHistoryHandlerFactory accountsHistoryFactory, IAccountsListHandlerFactory accountsListFactory, ISyncService syncService, ILicenseMangagerService licenseMangagerService)
         {
             _configurationFactory = configFactory;
             _mfilesFactory = mfilesFactory;
             _accountsHistoryFactory = accountsHistoryFactory;
             _accountsListFactory = accountsListFactory;
             _syncService = syncService;
+            _licenseMangagerService = licenseMangagerService;
         }
 
         public IActionResult Index()
@@ -37,6 +41,16 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             return RedirectToAction("List");
         }
 
+        public async Task<IActionResult> Test(int id)
+        {
+            return View((await _licenseMangagerService.GetAccountsToRemoveLicenseAsync(id)).ToList().OrderBy(a => a.UserName));
+        }
+
+        public async Task<IActionResult> TestRemoveLicense(int id, string accountName)
+        {
+            await _licenseMangagerService.RemoveLicenseAsync((int)id, accountName);
+            return RedirectToAction("Test", new {id});
+        }
         
 
         public IActionResult List(ServerType id, string? JSfilter)
@@ -103,46 +117,43 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RefreshList(ServerType id)
+        public async Task<IActionResult> RefreshList(int id)
         {
-            await _syncService.SyncAccountsAsync((int)id + 1);
-            await _syncService.SyncGroupsAsync((int)id + 1);
-            await _syncService.SyncGroupsAccountsLinksAsync((int)id + 1);
-            UpdateList(id);
-            return RedirectToAction("List",new {id});
+            await _syncService.SyncAccountsAsync(id);
+            await _syncService.SyncGroupsAsync(id);
+            await _syncService.SyncGroupsAccountsLinksAsync(id);
+
+            return RedirectToAction("Test",new {id});
+        }
+
+        public async Task<IActionResult> Sync(int id)
+        {
+            await _syncService.SyncAccountsAsync(id);
+            await _syncService.SyncGroupsAsync(id);
+            await _syncService.SyncGroupsAccountsLinksAsync(id);
+
+            return RedirectToAction("Test", new { id });
         }
 
         [HttpPost]
-        public IActionResult Maintain(ServerType id, string username)
+        public IActionResult Maintain(int id, string accountName)
         {
-            IConfigurationHandler confService = _configurationFactory.Create(id);
+            _licenseMangagerService.MaintainAccount(id, accountName);
 
-            if (confService.GetMaintainedAccounts().Contains(username))
-            {
-                confService.RemoveMaintainedAccount(username);
-            }
-            else
-            {
-                confService.AddMaintainedAccount(username);
-            }
-
-            return RedirectToAction("List", new { id });
+            return RedirectToAction("Test", new { id });
         }
 
         [HttpPost]
-        public IActionResult MaintainAllSelected(ServerType id)
+        public async Task<IActionResult> MaintainAllSelected(int id)
         {
-            IConfigurationHandler confService = _configurationFactory.Create(id);
-            IAccountsListHandler accountService = _accountsListFactory.Create(id);
-
-            foreach (IAccount account in accountService.GetDeletedAccounts())
+            foreach (MFilesAccount account in await _licenseMangagerService.GetAccountsToRemoveLicenseAsync(id))
             {
-                if (!string.IsNullOrEmpty(Request.Form[account.AccountName]) && !confService.GetMaintainedAccounts().Contains(account.UserName))
+                if (!string.IsNullOrEmpty(Request.Form[account.AccountName]))
                 {
-                    confService.AddMaintainedAccount(account.UserName);
+                    _licenseMangagerService.MaintainAccount(id,account.AccountName);
                 }
             }
-            return RedirectToAction("List",new { id });
+            return RedirectToAction("Test",new { id });
         }
 
         [HttpPost]
@@ -151,7 +162,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             IMFilesUsersHandler mfUserSevice = _mfilesFactory.Create(id);
             mfUserSevice.DeleteAccountLicense(accountName);
             _accountsHistoryFactory.Create(id).AddSuppressedAccount(accountName);
-            UpdateList(id);
+            
             return RedirectToAction("List", new { id });
         }
 
@@ -169,7 +180,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
                     _accountsHistoryFactory.Create(id).AddSuppressedAccount(account.AccountName);
                 }
             }
-            UpdateList(id);
+            
             return RedirectToAction("List", new { id });
         }
 
@@ -179,11 +190,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             return View(_accountsHistoryFactory.Create(id).GetHistory());
         }
 
-        private void UpdateList(ServerType id)
-        {
-            new SuppressionListModel(id, _mfilesFactory, _accountsListFactory).UpdateList();
-            GC.Collect();
-        }
+        
        
     }
 }

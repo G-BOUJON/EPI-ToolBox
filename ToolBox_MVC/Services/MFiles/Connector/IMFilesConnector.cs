@@ -13,9 +13,11 @@ namespace ToolBox_MVC.Services.MFiles.Connector
 
     public class MFilesConnector : IMFilesConnector
     {
+        private bool disposedValue;
+
         public MFilesServerApplication ServerApplication { get; }
 
-        public Vault Vault { get; }
+        public Vault? Vault { get; set; }
 
         public MFilesConnector(MFilesConnexionInfo connexionInfo)
         {
@@ -32,8 +34,26 @@ namespace ToolBox_MVC.Services.MFiles.Connector
             Vault = ServerApplication.LogInToVault(connexionInfo.VaultGuid);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                }
+                ServerApplication.Disconnect();
+                Vault = null;
+
+                disposedValue = true;
+            }
+        }
+
+        
+
         public void Dispose()
         {
+            
+            Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
     }

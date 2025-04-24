@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.EntityFrameworkCore;
 using ToolBox_MVC.Areas.LicenseManager.Data;
+using ToolBox_MVC.Areas.LicenseManager.Services;
 using ToolBox_MVC.Data;
 using ToolBox_MVC.Services;
 using ToolBox_MVC.Services.ActiveDirectory;
@@ -47,15 +48,21 @@ builder.Services.AddSingleton<IADUsersHandlerFactory, ActiveDirectoryUserHandler
 builder.Services.AddSingleton<IPeriodicOperations,PeriodicLicenseMangerJob>();
 builder.Services.AddHostedService<LicenseMangerOperationHostedService>();
 
-builder.Services.AddSingleton<IMFilesConnectorFactory, MFConnectorFactory>();
-builder.Services.AddSingleton<IMFilesService, MFilesService>();
-builder.Services.AddSingleton<ICredentialRepository, CredentialStoreTest>(); //test class
-builder.Services.AddSingleton<ISyncService, MFilesSyncService>();
-builder.Services.AddSingleton<IGroupAccountRepository,MFilesAccountGroupRepository>();
-builder.Services.AddSingleton<IAccountsRepository, MFilesAccountsRepository>();
-builder.Services.AddSingleton<IGroupRepository, MFilesGroupsRepository>();
-builder.Services.AddSingleton<IActiveDirectoryUsersHandler, ADUserHandlerTest>(); //test class
+builder.Services.AddScoped<IMFilesConnectorFactory, MFConnectorFactory>();
+builder.Services.AddScoped<IAdConnectorFactory, AdConnectorFactory>();
 
+builder.Services.AddScoped<IAdService,ActiveDirectoryService>();
+
+builder.Services.AddScoped<IMFilesService, MFilesService>();
+builder.Services.AddScoped<IMfilesServerRepository, MFilesServerRepository>();
+builder.Services.AddScoped<ICredentialRepository, MFilesCredentialStore>();
+builder.Services.AddScoped<ISyncService, MFilesSyncService>();
+builder.Services.AddScoped<IGroupAccountRepository,MFilesAccountGroupRepository>();
+builder.Services.AddScoped<IAccountsRepository, MFilesAccountsRepository>();
+builder.Services.AddScoped<IGroupRepository, MFilesGroupsRepository>();
+builder.Services.AddScoped<IActiveDirectoryUsersHandler, ADUserHandlerTest>(); //test class
+builder.Services.AddScoped<IADCredRepository, ADCredentialStore>();
+builder.Services.AddScoped<ILicenseMangagerService, LicenseManager>();
 
 
 var app = builder.Build();
