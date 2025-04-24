@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\LicenseManager\Views\Removal\" />
     <Folder Include="Controllers\" />
     <Folder Include="Migrations\" />
     <Folder Include="Views\Shared\" />

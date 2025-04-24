@@ -51,6 +51,8 @@ builder.Services.AddHostedService<LicenseMangerOperationHostedService>();
 builder.Services.AddScoped<IMFilesConnectorFactory, MFConnectorFactory>();
 builder.Services.AddScoped<IAdConnectorFactory, AdConnectorFactory>();
 
+builder.Services.AddScoped<IMFilesConnexionInfosService,MFilesConnexionInfosService>();
+
 builder.Services.AddScoped<IAdService,ActiveDirectoryService>();
 
 builder.Services.AddScoped<IMFilesService, MFilesService>();

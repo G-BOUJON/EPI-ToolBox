@@ -6,6 +6,5 @@ namespace ToolBox_MVC.Services.Repository
     {
         Credentials GetCredentials(int mfilesServerId);
         void UpdateCredentials(Credentials credentials, int mfilesServerId);
-        MFilesConnexionInfo GetConnexionInfos(int mfilesServerId);
     }
 }
