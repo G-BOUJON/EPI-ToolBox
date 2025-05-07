@@ -15,7 +15,7 @@
 <div class="d-inline-flex gap-3">
     <h1>Utilisateurs à supprimer - Environnement : </h1>
     <form id="changeServer" asp-controller="Suppression" asp-action="Test" asp-route-id="" method="get">
-        <select class="form-select form-select-lg mb-0 mb-3" id="selectServer" onchange="changeServer()">
+        <select class="form-select form-select-lg mb-0 mb-3 select-no-border" id="selectServer" onchange="changeServer()">
             @foreach (var mfServer in serverRepo.GetServers())
             {
                 if (mfServer.Id == serverId)

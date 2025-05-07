@@ -140,7 +140,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public IActionResult Maintain(int id, string accountName)
         {
-            _licenseMangagerService.MaintainAccount(id, accountName);
+           // _licenseMangagerService.MaintainAccount(id, accountName);
 
             return RedirectToAction("Test", new { id });
         }
@@ -152,7 +152,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             {
                 if (!string.IsNullOrEmpty(Request.Form[account.AccountName]))
                 {
-                    _licenseMangagerService.MaintainAccount(id,account.AccountName);
+                   // _licenseMangagerService.MaintainAccount(id,account.AccountName);
                 }
             }
             return RedirectToAction("Test",new { id });

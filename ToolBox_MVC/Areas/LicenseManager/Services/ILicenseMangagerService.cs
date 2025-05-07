@@ -8,7 +8,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
         Task<IEnumerable<MFilesAccount>> GetAccountsToRestoreLicenseAsync(int serverId);
         Task RemoveLicenseAsync(int serverId, string accountName);
         Task RestoreLicenseAsync(int serverId, string accountName);
-        void MaintainAccount(int serverId, string accountName);
-        void UnmaintainAccount(int serverId, string accountName);
+        void MaintainAccount(int accountId);
+        void UnmaintainAccount(int accountId);
     }
 }

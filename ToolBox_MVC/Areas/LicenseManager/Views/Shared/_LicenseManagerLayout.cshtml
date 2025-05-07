@@ -1,88 +1,32 @@
 ﻿@using ToolBox_MVC.Services
+@using ToolBox_MVC.Services.DB
+@using ToolBox_MVC.Services.Repository
+@inject IMfilesServerRepository serverRepository
+
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    if (ViewData["Server"] == null)
+    Layout = "_Layout";
+    if (string.IsNullOrEmpty(ViewBag.ServerName))
     {
-        ViewData["Server"] = ServerType.Prod;
+        ViewBag.ServerName = serverRepository.GetServerInfos(1).Name;
     }
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - LicenseManager</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ToolBox_MVC.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="LicenseManager" asp-controller="Home" asp-action="Index">License Manager</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarMfilesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Suppression</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="text-dark dropdown-item" asp-area="LicenseManager" asp-controller="Suppression" asp-action="List" asp-route-id="@ViewData["Server"]">Liste</a>
-                                    </li>
-                                    <li>
-                                        <a class="text-dark dropdown-item" asp-area="LicenseManager" asp-controller="Suppression" asp-action="History" asp-route-id="@ViewData["Server"]">Historique</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarMfilesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Restoration</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="text-dark dropdown-item" asp-area="LicenseManager" asp-controller="Restoration" asp-action="List" asp-route-id="@ViewData["Server"]">Liste</a>
-                                    </li>
-                                    <li>
-                                        <a class="text-dark dropdown-item" asp-area="LicenseManager" asp-controller="Restoration" asp-action="History" asp-route-id="@ViewData["Server"]">Historique</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="LicenseManager" asp-controller="Configuration" asp-action="Index" asp-route-id="@ViewData["Server"]">Configuration</a> 
-                            </li>
-                        }
-                    </ul>
-                </div>
-                <div>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <a class="btn btn-outline-danger" asp-area="" asp-controller="Home" asp-action="Index">Quitter License Manager</a>
-                        <a class="btn btn-outline-primary" asp-area="" asp-controller="Account" asp-action="Logout">Log out</a>
-                    }
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <a class="fw-bold" asp-area="LicenseManager" asp-controller="Home" asp-action="Index">Gestion M-Files</a>
     </div>
+    <ul class="sidebar-list">
+        <li class="sidebar-list-item">
+            <a asp-area="LicenseManager" asp-controller="Home" asp-action="Details" asp-route-serverName="@ViewBag.ServerName">Dashboard</a>
+        </li>
+        <li class="sidebar-list-item">
+            <a asp-area="LicenseManager" asp-controller="Removal" asp-action="Index" asp-route-serverName="@ViewBag.ServerName">Retrait</a>
+        </li>
+    </ul>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - ToolBox_MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
+</aside>
+<main class="content">
+    @RenderBody()
+</main>

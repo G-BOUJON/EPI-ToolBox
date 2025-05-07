@@ -25,5 +25,6 @@ namespace ToolBox_MVC.Services.DB
 
         Task SyncAccountsBatchAsync(int serverId, HashSet<MFilesAccount> accountsBatch);
         Task DeleteAccountsNotInSyncAsync(int serverId, HashSet<string> accountNamesSaw);
+        MFilesAccount GetAccount(int accountId);
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToolBox_MVC.Data;
 
@@ -10,9 +11,11 @@ using ToolBox_MVC.Data;
 namespace ToolBox_MVC.Migrations.ToolBoxDb
 {
     [DbContext(typeof(ToolBoxDbContext))]
-    partial class ToolBoxDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250425081157_addUniqName_MfServer")]
+    partial class addUniqName_MfServer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

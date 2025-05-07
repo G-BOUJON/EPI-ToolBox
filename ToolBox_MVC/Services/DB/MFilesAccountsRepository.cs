@@ -159,6 +159,14 @@ namespace ToolBox_MVC.Services.DB
             return account;
         }
 
+        public MFilesAccount GetAccount(int accountId)
+        {
+            MFilesAccount? account = _dbContext.MFilesAccounts.Find(accountId);
+            ArgumentNullException.ThrowIfNull(account);
+
+            return account;
+        }
+
         public async Task UpdateOrAddAccount(MFilesAccount account)
         {
             ArgumentNullException.ThrowIfNull(account);

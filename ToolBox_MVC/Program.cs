@@ -92,9 +92,24 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAreaControllerRoute(
-    name: "licenseManager_route",
+    name: "LM_Home",
     areaName: "LicenseManager",
-    pattern: "LicenseManager/{controller=Home}/{action=Index}/{id?}");
+    pattern: "LicenseManager/Home",
+    defaults: new {area = "LicenseManager",controller = "Home", action="Index"});
+//pattern: "LicenseManager/{controller=Home}/{action=Index}/{id?}");
+
+app.MapAreaControllerRoute(
+    name: "LM_ServerDahsboard",
+    areaName: "LicenseManager",
+    pattern: "LicenseManager/{serverName}",
+    defaults : new {controller = "Home", action="Details"});
+
+app.MapAreaControllerRoute(
+    name: "LM_ServerSpecific",
+    areaName: "LicenseManager",
+    pattern: "LicenseManager/{serverName}/{controller}/{action}",
+    defaults : new {area = "LicenseManager", controller = "Home", action="Index"});
+
 
 app.MapControllerRoute(
     name: "default_route",

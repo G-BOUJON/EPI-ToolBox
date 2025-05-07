@@ -35,6 +35,11 @@ namespace ToolBox_MVC.Data
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // 2 serveurs ne doivent pas partager le même nom
+            builder.Entity<MFilesServer>()
+                .HasIndex(s => s.Name)
+                .IsUnique();
+
             builder.Entity<ADCredential>()
                 .HasMany<MFilesServer>()
                 .WithOne()

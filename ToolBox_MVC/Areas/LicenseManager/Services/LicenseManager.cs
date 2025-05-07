@@ -48,9 +48,15 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
 
         public async Task RemoveLicenseAsync(int serverId, string accountName)
         {
+            var account = _accountsRepo.GetAccount(serverId, accountName);
+            if (account.Maintained)
+            {
+                return;
+            }
+
             if (_mFilesService.ChangeAccountLicense(serverId, accountName, MFLicenseType.MFLicenseTypeNone))
             {
-                var account = _accountsRepo.GetAccount(serverId, accountName);
+                
                 account.License = (int)MFLicenseType.MFLicenseTypeNone;
                 await _accountsRepo.UpdateOrAddAccount(account);
 
@@ -65,9 +71,15 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
 
         public async Task RestoreLicenseAsync(int serverId, string accountName)
         {
+            var account = _accountsRepo.GetAccount(serverId, accountName);
+            if (account.Maintained)
+            {
+                return;
+            }
+
             if (_mFilesService.ChangeAccountLicense(serverId, accountName, MFLicenseType.MFLicenseTypeReadOnlyLicense)) 
             {
-                var account = _accountsRepo.GetAccount(serverId, accountName);
+                
                 account.License = (int)MFLicenseType.MFLicenseTypeReadOnlyLicense;
                 await _accountsRepo.UpdateOrAddAccount(account);
             }
@@ -77,18 +89,20 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
             }
         }
 
-        public void MaintainAccount(int serverId, string accountName)
+        public void MaintainAccount(int accountId)
         {
-            var accountToMaintain = _accountsRepo.GetAccount(serverId, accountName);
+            var accountToMaintain = _accountsRepo.GetAccount(accountId);
             accountToMaintain.Maintained = true;
             _accountsRepo.UpdateOrAddAccount(accountToMaintain);
         }
 
-        public void UnmaintainAccount(int serverId, string accountName)
+        public void UnmaintainAccount(int accountId)
         {
-            var accountToMaintain = _accountsRepo.GetAccount(serverId, accountName);
+            var accountToMaintain = _accountsRepo.GetAccount(accountId);
             accountToMaintain.Maintained = false;
             _accountsRepo.UpdateOrAddAccount(accountToMaintain);
         }
+
+        
     }
 }
