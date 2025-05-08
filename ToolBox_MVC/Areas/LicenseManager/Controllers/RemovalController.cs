@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Areas.LicenseManager.Services;
 using ToolBox_MVC.Services.DB;
@@ -7,16 +8,17 @@ using ToolBox_MVC.Services.MFiles.Sync;
 namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 {
     [Area("LicenseManager")]
+    [Authorize]
     public class RemovalController : Controller
     {
         private readonly ILicenseMangagerService _licenseManager;
-        private readonly ISyncService _syncService;
+        
         private readonly IMfilesServerRepository _serverRepo;
 
-        public RemovalController(ILicenseMangagerService licenseManager, ISyncService syncService, IMfilesServerRepository serverRepo)
+        public RemovalController(ILicenseMangagerService licenseManager, IMfilesServerRepository serverRepo)
         {
             _licenseManager = licenseManager;
-            _syncService = syncService;
+            
             _serverRepo = serverRepo;
         }
 
@@ -30,13 +32,6 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             MFilesServer server = _serverRepo.GetServerInfos(serverName);
             var accountsToRemove = await _licenseManager.GetAccountsToRemoveLicenseAsync(server.Id);
             ViewBag.ServerName = serverName;
-            return View(accountsToRemove.OrderBy(a => a.UserName));
-        }
-
-        public async Task<IActionResult> List(int serverId)
-        {
-            ViewBag.ServerId = serverId;
-            var accountsToRemove = await _licenseManager.GetAccountsToRemoveLicenseAsync(serverId);
             return View(accountsToRemove.OrderBy(a => a.UserName));
         }
 

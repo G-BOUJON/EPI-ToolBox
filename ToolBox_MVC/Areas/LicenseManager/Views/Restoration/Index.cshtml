@@ -1,0 +1,197 @@
+﻿@using MFilesAPI
+@using ToolBox_MVC.Services
+@using ToolBox_MVC.Services.DB
+
+@model IEnumerable<ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesAccount>
+@inject IMfilesServerRepository serverRepo
+
+@{
+    string serverName = ViewBag.ServerName;
+    ViewData["Title"] = "Restauration de licences";
+}
+
+<div class="d-inline-flex gap-3 flex-grow-0">
+    <h1 class="align-middle">Licences à restaurer - Environnement : </h1>
+    <form id="changeServer" asp-area="LicenseManager" asp-controller="Restoration" asp-action="Index" asp-route-serverName="" method="get">
+        <a class="dropdown-toggle text-dark text-decoration-none clickable-text title" data-bs-toggle="dropdown" href="#">@serverName</a>
+        <ul class="dropdown-menu">
+            @{
+                foreach (var server in serverRepo.GetServers())
+                {
+                    <li><a class="dropdown-item text-dark" asp-controller="Restoration" asp-action="Index" asp-route-serverName="@server.Name">@server.Name</a></li>
+                }
+            }
+        </ul>
+    </form>
+</div>
+<div class="d-flex flex-column flex-nowrap flex-grow-1 overflow-hidden">
+    <form asp-controller="Restoration" asp-route-serverName="@serverName" method="post" class="d-flex flex-column overflow-hidden">
+        <div class="area-wrapper tableView">
+            <div class="table-header">
+                <div class="table-cell check">
+                    <input type="checkbox" id="account-select-all" onclick="checkAllAccountCheckBoxes()" />
+                </div>
+                <div class="table-cell username">
+                    Nom d'utilisateur
+                </div>
+                <div class="table-cell license">
+                    Licence M-Files
+                </div>
+                <div class="table-cell maintained">
+                    Status maintenance
+                </div>
+            </div>
+            @{
+                foreach (var account in Model)
+                {
+                    string modalName = "modal" + account.Id.ToString();
+
+                    <div class="table-row">
+                        <div class="table-cell check">
+                            <input type="checkbox" class="account-check" name="@account.AccountName" value="true" onclick="updateViewSelectAll()" />
+                        </div>
+                        <div class="table-cell username">
+                            <button type="button" class="bg-transparent border-0 clickable-text" data-bs-toggle="modal" data-bs-target="#@modalName">
+                                @account.UserName
+                            </button>
+                        </div>
+                        <div class="table-cell license">
+                            @TranslatorService.TranslateMFLicense((MFLicenseType)account.License)
+                        </div>
+                        <div class="table-cell maintained">
+                            @{
+                                if (account.Maintained)
+                                {
+                                    <button type="sumbit" class="status active no-border clickable" asp-action="Unmaintain" asp-route-serverName="@serverName" asp-route-accountId="@account.Id">
+                                        Maintenu
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="sumbit" class="status disabled no-border clickable" asp-action="Maintain" asp-route-serverName="@serverName" asp-route-accountId="@account.Id">
+                                        Non maintenu
+                                    </button>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    @*Boîte modale*@
+                    <div class="modal fade" id="@modalName" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">@account.AccountName</h5>
+                                    <button type="button" class="btn-close b-0" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <div class="modal-body container text-start">
+                                    <div class="row mt-1">
+                                        <div class="col-5 fw-bold text-end">Nom d'utilisateur</div>
+                                        <div class="col-6">@account.UserName</div>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <div class="col-5 fw-bold text-end">Nom complet</div>
+                                        <div class="col-6">@account.FullName</div>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <div class="col-5 fw-bold text-end">Adresse Mail</div>
+                                        <div class="col-6">@account.EmailAddress</div>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <div class="col-5 fw-bold text-end">Licence M-Files</div>
+                                        <div class="col-6">@TranslatorService.TranslateMFLicense((MFLicenseType)account.License)</div>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <div class="col-5 fw-bold text-end">Statut M-Files</div>
+                                        <div class="col-auto pe-none">
+                                            @{
+                                                if (account.Enabled)
+                                                {
+                                                    <span class="status active no-border">Actif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="status disabled no-border">Inactif</span>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <div class="col-5 fw-bold text-end">Status AD</div>
+                                        <div class="col-auto pe-none">
+                                            @{
+                                                if (account.Active)
+                                                {
+                                                    <span class="status active no-border">Actif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="status disabled no-border">Inactif</span>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <div class="col-5 fw-bold text-end">Status maintenance</div>
+                                        <div class="col-auto pe-none">
+                                            @{
+                                                if (account.Maintained)
+                                                {
+                                                    <span class="status active no-border">Maintenu</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="status disabled no-border">Non maintenu</span>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer container justify-content-center">
+                                    <div class="col-4">
+                                        @{
+                                            if (account.Maintained)
+                                            {
+                                                <button type="sumbit" class="btn btn-secondary align-middle p-0 px-1 fw-bold" asp-action="Unmaintain" asp-route-serverName="@serverName" asp-route-accountId="@account.Id">
+                                                    Ne plus maintenir ce compte
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button type="sumbit" class="btn btn-secondary align-middle p-0 px-1 fw-bold" asp-action="Maintain" asp-route-serverName="@serverName" asp-route-accountId="@account.Id">
+                                                    Maintenir ce compte
+                                                </button>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="col-2">
+                                    </div>
+                                    <div class="col-4">
+                                        <button type="submit" class="btn btn-success fw-bold align-middle p-0 px-1" asp-action="RestoreLicence" asp-route-serverName="@serverName" asp-route-accountName="@account.AccountName">
+                                            Donner une licence lecture seule au compte
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            <div class="table-footer">
+                <div class="table-cell counter">
+                    Nombre de comptes sélectionnés :<span class="selectionNumber">0</span>
+                </div>
+                <div class="table-cell buttons">
+                    <button disabled id="maintainSelection" class="selectionButton btn btn-primary" asp-controller="Restoration" asp-action="MaintainSelection" asp-route-serverName="@serverName">Maintenir la sélection</button>
+                    <button disabled id="unmaintainSelection" class="selectionButton btn btn-secondary" asp-controller="Restoration" asp-action="UnmaintainSelection" asp-route-serverName="@serverName">Ne plus maintenir la sélection</button>
+                    <button disabled id="restoreSelection" class="selectionButton btn btn-success" asp-controller="Restoration" asp-action="RestoreSelection" asp-route-serverName="@serverName">Restaurer les licences sélectionnées</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    
+</script>

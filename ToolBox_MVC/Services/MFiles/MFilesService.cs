@@ -65,5 +65,29 @@ namespace ToolBox_MVC.Services.MFiles
 
             return true;
         }
+
+        public void ChangeAccountStatus(int mfServerId, int userId, bool activeStatus)
+        {
+            using var connector = _connectorFactory.CreateConnection(_connexionInfoService.GetConnexionInfos(mfServerId));
+
+            VaultUserOperations userOperations = connector.Vault.UserOperations;
+            ServerLoginAccountOperations loginOperations = connector.ServerApplication.LoginAccountOperations;
+
+            try
+            {
+                UserAccount userAcc = userOperations.GetUserAccount(userId);
+                LoginAccount loginAcc = loginOperations.GetLoginAccount(userAcc.LoginName);
+
+                userAcc.Enabled = activeStatus;
+                loginAcc.Enabled = activeStatus;
+
+                userOperations.ModifyUserAccount(userAcc);
+                loginOperations.ModifyLoginAccount(loginAcc);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error during status change");
+            }
+        }
     }
 }
