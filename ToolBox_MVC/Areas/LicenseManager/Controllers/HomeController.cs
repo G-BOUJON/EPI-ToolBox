@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ToolBox_MVC.Services.DB;
+using ToolBox_MVC.Services.MFiles.Sync;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 {
@@ -9,10 +10,12 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
     public class HomeController : Controller
     {
         private readonly IMfilesServerRepository _filesServerRepository;
+        private readonly ISyncService _syncService;
 
-        public HomeController(IMfilesServerRepository filesServerRepository)
+        public HomeController(IMfilesServerRepository filesServerRepository, ISyncService syncService)
         {
             _filesServerRepository = filesServerRepository;
+            _syncService = syncService;
         }
         
 
@@ -29,6 +32,20 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         public IActionResult Details(string serverName)
         {
             return View(_filesServerRepository.GetServerInfos(serverName));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Sync(string serverName)
+        {
+            var server = _filesServerRepository.GetServerInfos(serverName);
+            var id = server.Id;
+
+            await _syncService.SyncAccountsAsync(id);
+            await _syncService.SyncUserAccountAsync(id);
+            await _syncService.SyncGroupsAsync(id);
+            await _syncService.SyncGroupsAccountsLinksAsync(id);
+
+            return RedirectToAction("Details", new { serverName });
         }
     }
 }

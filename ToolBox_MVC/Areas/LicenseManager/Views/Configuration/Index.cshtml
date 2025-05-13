@@ -1,388 +1,220 @@
-﻿@using ToolBox_MVC.Services
-@model ToolBox_MVC.Models.Config
+﻿@using ToolBox_MVC.Areas.LicenseManager.Models.DBModels
+@using ToolBox_MVC.Services.ActiveDirectory
+@using ToolBox_MVC.Services.DB
+@inject IMfilesServerRepository serverRepo;
+@inject IADCredRepository adRepo;
+@inject IGroupRepository groupRepository;
+
+@model MFilesServer;
+
 @{
-    ViewData["Title"] = "Configuration " + ViewData["Server"];
-    ServerType serv = (ServerType)ViewData["Server"];
-    ActiveDirectoryCredentials adCredentials = Model.ActiveDirectoryCredentials;
-    VaultCredentials vaultCredentials = Model.VaultCredentials;
+    ViewData["Title"] = "Configuration M-Files";
+    var adCred = adRepo.GetADCredential(Model.ADCredentialId);
 }
 
-<div class="d-inline-flex gap-3">
-    <h1>Configuration - Environnement : </h1>
-    <form class="d-flex flex-column justify-content-center" id="changeServer" asp-controller="Configuration" asp-action="Index" asp-route-id="" method="get">
-        <select class="form-select form-select-lg mb-0 fw-bold" id="selectServer" onchange="changeServer()">
-            @foreach (ServerType server in Enum.GetValues<ServerType>())
-            {
-                if (server == (ServerType)ViewData["Server"])
+<div class="d-inline-flex gap-3 flex-grow-0">
+    <h1 class="align-middle">Configuration - Environnement : </h1>
+    <form id="changeServer" asp-area="LicenseManager" asp-controller="Configuration" asp-action="Index" asp-route-serverName="" method="get">
+        <a class="dropdown-toggle text-dark text-decoration-none clickable-text title" data-bs-toggle="dropdown" href="#">@Model.Name</a>
+        <ul class="dropdown-menu">
+            @{
+                foreach (var server in serverRepo.GetServers())
                 {
-                    <option selected value="@server">@server</option>
-                }
-                else
-                {
-                    <option value="@server">@server</option>
+                    <li><a class="dropdown-item text-dark" asp-controller="Configuration" asp-action="Index" asp-route-serverName="@server.Name">@server.Name</a></li>
                 }
             }
-        </select>
+        </ul>
     </form>
 </div>
-<div class="d-flex flex-column justify-content-start mt-4">
-    <div class="border-bottom">
-        <h2>Groupes</h2>
-    </div>
-    <table class="table table-striped">
-        @foreach (Group group in Model.Groups)
-        {
-            <tr>
-                <th scope="row" class="fw-bold">@Model.Groups.IndexOf(group)</th>
-                <td class="">@group.name</td>
-                <td class="">
-                    <form asp-area="LicenseManager" asp-controller="Configuration" asp-action="DeleteGroup" asp-route-id="@serv" asp-route-groupName="@group.name" method="post">
-                        <button type="submit" class="btn btn-danger btn-sm"> 
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash " viewBox="0 0 16 16">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-                            </svg>
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        }
-        <tr>
-            <th></th>
-            <td></td>
-            <td>
-                <button type="button" class="btn btn-sm btn-success align-self-center" data-bs-toggle="modal" data-bs-target="#addGroup">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
-                        <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0" />
-                    </svg>
-                </button>
-            </td>
-        </tr>
-    </table>
-    @*Boîtes modal pour ajout groupe*@
-    <div class="modal fade" id="addGroup" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <form class="modal-content" asp-area="LicenseManager" asp-controller="Configuration" asp-action="AddGroup" asp-route-id="@serv" method="post">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Ajout d'un groupe</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body d-flex flex-row justify-content-start gap-3">
-                    <label for="newGroupName">Nom du groupe</label>
-                    <input class="flex-lg-grow-1" type="text" name="groupName" id="newGroupName" class="form-control" required/>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Ajouter</button>
-                </div>
-            </form>
+<div class="config-grid">
+    <div class="config-grid-item">
+        @*Container for server infos*@
+        <div class="g-header">
+            <h2>Infos de connexion au serveur M-Files</h2>
         </div>
-    </div>
-</div>
-<div class="d-flex flex-column justify-content-start mt-4">
-    <div class="border-bottom d-flex justify-content-start"><h2>API</h2></div>
-    <div class="container text-center bg-secondary bg-opacity-10">
-        <div class="row">
-            <div class="col-md-auto d-flex flex-row align-items-center">
-                <span class="fw-bold">Clef d'accès</span>
-            </div>
-            <div class="col-md-auto d-flex flex-row align-items-center">
-                <span>@Model.ApiKey</span>
-            </div>
-            <div class="col d-flex flex-row-reverse">
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalChangeApiKey">Modifier</button>
-            </div>
-        </div>
-    </div>
-    @*Boîte modal pour edit API Key*@
-    <div class="modal fade" id="modalChangeApiKey" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <form class="modal-content" asp-area="LicenseManager" asp-controller="Configuration" asp-action="EditApiKey" asp-route-id="@serv" method="post">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Configurer l'API</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body d-flex flex-row justify-content-start gap-3">
-                    <label asp-for="@Model.ApiKey">Clef</label>
-                    <input class="flex-lg-grow-1" asp-for="@Model.ApiKey"/>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Sauvegarder</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="d-flex flex-column justify-content-start mt-4">
-    <div class="border-bottom d-flex justify-content-start">
-        <h2>Connexion à l'Active Directory</h2>
-    </div>
-    <div class="container bg-secondary bg-opacity-10">
-        <div class="row mt-1">
-            <div class="col-3 fw-bold">Nom d'utilisateur</div>
-            <div class="col-8">@Model.ActiveDirectoryCredentials.Username</div>
-        </div>
-        <div class="row mt-1">
-            <div class="col-3 fw-bold">Mot de passe</div>
-                <div class="col-8">
-                    @for (int i = 0; i < Model.ActiveDirectoryCredentials.Password.Length; i++)
-                    {
-                        <span>*</span>
-                    }
-                </div>
-        </div>
-        <div class="row mt-1">
-            <div class=" col-3 fw-bold">Domaine</div>
-            <div class=" col-8">@Model.ActiveDirectoryCredentials.Domain</div>
-        </div>
-        <div class="row mt-1">
-            <div class="col-3 fw-bold">Container</div>
-            <div class="col-8">@Model.ActiveDirectoryCredentials.Container</div>
-        </div>
-        <div class="row mt-1">
-            <div class="col d-flex flex-row-reverse">
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalActiveDirectory">
-                    Modifer
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="modalActiveDirectory" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <form class="modal-content" asp-area="LicenseManager" asp-controller="Configuration" asp-action="EditADCredentials" asp-route-id="@serv" method="post">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Modifier Active Directory</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body container">
-                    <div class="row mt-1">
-                        <label class="col-4" asp-for="@adCredentials.Username">Nom d'utilisateur</label>
-                        <input class="col-7" asp-for="@adCredentials.Username" name="Username" />
+        <div class="g-body">
+            <div class="listView">
+                <div class="list-item">
+                    <div class="item-label">
+                        Serveur 
                     </div>
-                    <div class="row mt-1">
-                        <label class="col-4" asp-for="@adCredentials.Password">Mot de passe</label>
-                        <input class="col-7" asp-for="@adCredentials.Password" name="Password" />
-                    </div>
-                    <div class="row mt-1">
-                        <label class="col-4" asp-for="@adCredentials.Domain">Domaine</label>
-                        <input class="col-7" asp-for="@adCredentials.Domain" name="Domain" />
-                    </div>
-                    <div class="row mt-1">
-                        <label class="col-4" asp-for="@adCredentials.Container">Container</label>
-                        <input class="col-7" asp-for="@adCredentials.Container" name="Container" />
+                    <div class="item-value">
+                        @Model.Name
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Sauvegarder</button>
+                <div class="list-item">
+                    <div class="item-label">
+                        Adresse
+                    </div>
+                    <div class="item-value">
+                        @Model.NetworkAddress
+                    </div>
                 </div>
-            </form>
+                <div class="list-item">
+                    <div class="item-label">
+                        Protocole
+                    </div>
+                    <div class="item-value">
+                        @Model.ProtocolSequence
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="item-label">
+                        Endpoint
+                    </div>
+                    <div class="item-value">
+                        @Model.EndPoint
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="item-label">
+                        GUID du Coffre
+                    </div>
+                    <div class="item-value">
+                        @Model.VaultGuid
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="g-footer justify-content-end">
+            <button class="btn btn-primary">Modifier</button>
+            <button class="btn btn-secondary">Changer identifiant</button>
         </div>
     </div>
-</div>
-@*Connexion au vault*@
-<div class="d-flex flex-column justify-content-start mt-4">
-    <div class="border-bottom">
-        <h2>Connexion au coffre M-Files</h2>
-    </div>
-    <div class="container bg-secondary bg-opacity-10">
-        @*Affichage Username*@
-        <div class="row mt-1">
-            <div class="col-3 d-flex flex-row align-items-center">
-                <span class="fw-bold">Nom d'utilisateur</span>
-            </div>
-            <div class="col d-flex flex-row align-items-center">
-                <span>@Model.VaultCredentials.Username</span>
-            </div>
+    <div class="config-grid-item double-row">
+        @*Container for M-Files groups list*@
+        <div class="g-header">
+            <h2>LicenseManager - Groupes M-Files</h2>
         </div>
-        @*Affichage Password*@
-        <div class="row mt-1">
-            <div class="col-3 d-flex flex-row align-items-center">
-                <span class="fw-bold">Mot de passe</span>
+        <div class="g-body">
+        <div class="tableView area-wrapper">
+            <div class="table-header">
+                <div class="table-cell check">
+                        <input type="checkbox" id="account-select-all" onclick="checkAllAccountCheckBoxes()" />
+                </div>
+                <div class="table-cell">
+                    Nom
+                </div>
+                <div class="table-cell maintained">
+                    État
+                </div>
             </div>
-            <div class="col d-flex flex-row align-items-center">
-
-                @for(int i = 0; i < Model.VaultCredentials.Password.Length; i++)
+            @{
+                var groupList = (await groupRepository.GetGroupsAsync(Model.Id)).OrderByDescending(g => g.Maintained);
+                var lastMaintained = true;
+                foreach (var group in groupList)
                 {
-                    <span>*</span>
-                }
+                    if (lastMaintained && !group.Maintained)
+                    {
+                        <div class="table-group-seperator"></div>
+                    }
+                    lastMaintained = group.Maintained;
+                    <div class="table-row">
+                        <div class="table-cell check">
+                                <input type="checkbox" class="account-check" name="@group.Name" value="true" onclick="updateViewSelectAll()" />
+                        </div>
+                        <div class="table-cell">
+                            @group.Name
+                        </div>
+                        <div class="table-cell maintained">
+                            @{
+                                if (group.Maintained)
+                                {
+                                    <button class="status active no-border clickable" @*Mettre asp lien vers action*@>
+                                        Garder licences
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="status disabled no-border clickable">
+                                        Retirer licences
+                                    </button>
+                                }
+                            }
+                        </div>
+                    </div>
 
-            </div>
-        </div>
-        @*Affichage Domain*@
-        <div class="row mt-1">
-            <div class="col-3 d-flex flex-row align-items-center">
-                <span class="fw-bold">Domaine</span>
-            </div>
-            <div class="col d-flex flex-row align-items-center">
-                <span>@Model.VaultCredentials.Domain</span>
-            </div>
-        </div>
-        @*Affichage ProtocolSequence*@
-        <div class="row mt-1">
-            <div class="col-3 d-flex flex-row align-items-center">
-                <span class="fw-bold">Protocole</span>
-            </div>
-            <div class="col d-flex flex-row align-items-center">
-                <span>@Model.VaultCredentials.ProtocolSequence</span>
-            </div>
-        </div>
-        @*Affichage NetworkAdresse*@
-        <div class="row mt-1">
-            <div class="col-3 d-flex flex-row align-items-center">
-                <span class="fw-bold">Addresse réseau</span>
-            </div>
-            <div class="col d-flex flex-row align-items-center">
-                <span>@Model.VaultCredentials.NetworkAddress</span>
-            </div>
-        </div>
-        @*Affichage EndPoint*@
-        <div class="row mt-1">
-            <div class="col-3 d-flex flex-row align-items-center">
-                <span class="fw-bold">Endpoint</span>
-            </div>
-            <div class="col d-flex flex-row align-items-center">
-                <span>@Model.VaultCredentials.EndPoint</span>
-            </div>
-        </div>
-        @*Affichage GUID*@
-        <div class="row mt-1">
-            <div class="col-3 d-flex flex-row align-items-center">
-                <span class="fw-bold">GUID</span>
-            </div>
-            <div class="col d-flex flex-row align-items-center">
-                <span>@Model.VaultCredentials.Guid</span>
-            </div>
-        </div>
-        @*boutton modifier*@
-        <div class="row mt-1">
-            <div class="col d-flex flex-row-reverse">
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalVaultCredentials">Modifier</button>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="modalVaultCredentials" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <form class="modal-content" asp-area="LicenseManager" asp-controller="Configuration" asp-action="EditVaultCredentials" asp-route-id="@serv" method="post">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Modifier informations connexion au coffre M-Files</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body container">
-                    <div class="row mt-2 gx-1">
-                        <label asp-for="@vaultCredentials.Username" class="col-3">Nom d'utilisateur</label>
-                        <input class="col" asp-for="@vaultCredentials.Username" name="Username" />
-
-                    </div>
-                    <div class="row mt-2 gx-1">
-                        <label asp-for="@vaultCredentials.Password" class="col-3">Mot de passe</label>
-                        <input class="col" asp-for="@vaultCredentials.Password" name="Password"/>
-
-                    </div>
-                    <div class="row mt-2 gx-1">
-                        <label asp-for="@vaultCredentials.Domain" class="col-3">Domaine</label>
-                        <input class="col" asp-for="@vaultCredentials.Domain" name="Domain"/>
-                    </div>
-                    <div class="row mt-2 gx-1">
-                        <label asp-for="@vaultCredentials.ProtocolSequence" class="col-3">Protocole</label>
-                        <input class="col" asp-for="@vaultCredentials.ProtocolSequence" name="ProtocolSequence" />
-                    </div>
-                    <div class="row mt-2 gx-1">
-                        <label asp-for="@vaultCredentials.NetworkAddress" class="col-3">Adresse réseau</label>
-                        <input class="col" asp-for="@vaultCredentials.NetworkAddress" name="NetworkAddress" />
-                    </div>
-                    <div class="row mt-2 gx-1">
-                        <label asp-for="@vaultCredentials.EndPoint" class="col-3">Endpoint</label>
-                        <input class="col" asp-for="@vaultCredentials.EndPoint" name="EndPoint" />
-                    </div>
-                    <div class="row mt-2 gx-1">
-                        <label asp-for="@vaultCredentials.Guid" class="col-3">GUID</label>
-                        <input class="col" asp-for="@vaultCredentials.Guid" name="Guid" />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Sauvegarder</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="d-flex flex-column justify-content-start">
-    <div class="border-bottom">
-        <h2>Paramètres d'automatisation</h2>
-    </div>
-    <div class="container bg-secondary bg-opacity-10">
-        <div class="row mt-1">
-            <div class="col-2">
-                <span class="fw-bold">Heure d'activation</span>
-            </div>
-            <div class="col-auto">
-                <span>@Model.Hour.ToString("HH:mm")</span>
-            </div>
-        </div>
-        <div class="row mt-1">
-            <div class="col-2">
-                <span class="fw-bold">Suppression</span>
-            </div>
-            <div class="col-auto">
-                @{
-                    if (Model.ActiveSuppression)
-                    {
-                        <span class="text-secondary">Activé</span>
-                    }
-                    else
-                    {
-                        <span class="text-secondary text-opacity-75">Désactivé</span>
-                    }
                 }
-            </div>
+            }
+                <div class="table-footer">
+                    <div class="table-cell counter">
+                        Nombre de comptes sélectionnés :<span class="selectionNumber">0</span>
+                    </div>
+                    <div class="table-cell buttons">
+                        <button disabled id="maintainSelection" class="selectionButton btn btn-primary">Garder les licences</button>
+                        <button disabled id="unmaintainSelection" class="selectionButton btn btn-secondary">Retirer les licences</button>
+                    </div>
+                </div>
         </div>
-        <div class="row mt-1">
-            <div class="col-2">
-                <span class="fw-bold">Restauration</span>
-            </div>
-            <div class="col-auto">
-                @{
-                    if (Model.ActiveRestauration)
-                    {
-                        <span class="text-secondary">Activé</span>
-                    }
-                    else
-                    {
-                        <span class="text-secondary text-opacity-75">Désactivé</span>
-                    }
-                }
-            </div>
-        </div>
-        <div class="row">
-            <div class="col d-flex flex-row-reverse">
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAutomatisation">Modifier</button> 
-            </div>
         </div>
     </div>
-    <div class="modal fade" id="modalAutomatisation" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <form class="modal-content" asp-area="LicenseManager" asp-controller="Configuration" asp-action="EditAutomatisation" asp-route-id="@serv" method="post">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Modification des automatismes</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body container">
-                    <div class="row">
-                        <label class="col-6" asp-for="@Model.Hour">Heure</label>
-                        <input class="col-auto" asp-for="@Model.Hour" />
+    <div class="config-grid-item">
+        <div class="g-header">
+            <h2>Infos de connexion à l'Active Directory</h2>
+        </div>
+        @*Container for AD infos*@
+        <div class="g-body">
+            <div class="listView">
+                <div class="list-item">
+                    <div class="item-label">
+                        Domain
                     </div>
-                    <div class="row">
-                        <label class="col-6" asp-for="@Model.ActiveSuppression">Suppression automatique</label>
-                        <input class="col-auto form-switch" role="switch" asp-for="@Model.ActiveSuppression" />
-                    </div>
-                    <div class="row">
-                        <label class="col-6" asp-for="@Model.ActiveRestauration">Restauration automatique</label>
-                        <input class="col-auto form-switch" role="switch" asp-for="@Model.ActiveRestauration" />
+                    <div class="item-value">
+                        @adCred.Domain
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Sauvegarder</button>
+                <div class="list-item">
+                    <div class="item-label">
+                        Container
+                    </div>
+                    <div class="item-value">
+                        @adCred.Container
+                    </div>
                 </div>
-            </form>
+            </div>
+        </div>
+        <div class="g-footer justify-content-end">
+            <button class="btn btn-primary">Modifier</button>
+            <button class="btn btn-secondary">Changer identifiant</button>
         </div>
     </div>
+    
+    <form method="post" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeAutoParameters" class="config-grid-item">
+        <div class="g-header">
+            <h2>Automatisation et synchronisation</h2>
+        </div>
+        @*Container for sync settings*@
+        <div class="g-body">
+            <input type="hidden" asp-for="Id" value="@Model.Id"/>
+            <div class="listView area-wrapper">
+                <div class="list-item">
+                    <div class="item-label">
+                        Heure de synchronisation
+                    </div>
+                    <div class="item-value">
+                        <input type="time" asp-for="SyncTime" value="@Model.SyncTime" />
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="item-label">
+                        LM - Retrait automatique
+                    </div>
+                    <div class="item-value">
+                        <input type="checkbox" @*mettre asp-for="AutoRemove"*@/>
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="item-label">
+                        LM - Restauration automatique
+                    </div>
+                    <div class="item-value">
+                        <input type="checkbox" @*mettre asp-for="AutoRestore"*@ />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="g-footer justify-content-end">
+            <button type="submit" class="btn btn-primary">Sauvegarder</button>
+        </div>
+    </form>
 </div>

@@ -4,6 +4,7 @@ $secondaryDarkBg: #283957;
 $bgPrimary: #f5f8ff;
 
 $modalBg: #80ccff;
+$tableBg: #b3e0ff;
 
 $mainTitleColor: #353536;
 $subTitleColor: #8e92a4;
@@ -118,7 +119,7 @@ body {
         display: flex;
         align-items: center;
         border-radius: 4px;
-        background-color: $modalBg;
+        background-color: $tableBg;
         position: sticky;
         top: 0;
     }
@@ -161,15 +162,44 @@ body {
             gap: 5px;
             justify-content: flex-end;
         }
+
+
     }
 
     .table-footer {
         display: flex;
         align-items: center;
         border-radius: 4px;
-        background-color: $modalBg;
+        background-color: $tableBg;
         position: sticky;
         bottom: 0;
+    }
+
+    .table-group-seperator {
+        border-top: 2px solid black;
+    }
+}
+
+.listView {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    .list-item{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+
+        .item-label{
+            font-weight: bold;
+            flex: 1 0 0%;
+            min-width: 150px;
+        }
+
+        .item-value{
+            flex: 1 1 0%;
+        }
     }
 }
 
@@ -191,20 +221,33 @@ body {
         &.fullrow{
             grid-column: span 3;
         }
-
-        .g-header{
-            background-color: $modalBg;
-            display: flex;
-            flex-grow: 1;
-            padding: 5px;
-        }
-
-        .g-body {
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-        }
     }
+}
+
+.g-header
+{
+    background-color: $modalBg;
+    display: flex;
+    flex-grow: 0;
+    flex-shrink:0;
+    padding: 5px;
+    gap: 5px;
+}
+
+.g-body {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    flex-grow:1;
+    overflow: hidden;
+}
+
+.g-footer {
+    display: flex;
+    padding: 5px;
+    flex: 0 0;
+    border-top: 1px solid rgba(0,0,0,.125);
+    gap: 5px;
 }
 
 .dashboard-card {
@@ -217,6 +260,26 @@ body {
         background-color: $modalBg;
         display: flex;
         flex-grow: 1;
+    }
+}
+
+.config-grid {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 300px;
+    overflow: auto;
+
+    &-item{
+        display: flex;
+        flex-direction: column;
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: .25rem;
+        overflow: hidden;
+
+        &.double-row{
+            grid-row: span 2;
+        }
     }
 }
 

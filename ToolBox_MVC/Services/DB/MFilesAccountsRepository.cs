@@ -89,7 +89,7 @@ namespace ToolBox_MVC.Services.DB
 
         public async Task SyncAccountsBatchAsync(int serverId, HashSet<MFilesAccount> accountsBatch)
         {
-            var existingAccounts = await _dbContext.MFilesAccounts
+            var existingAccounts = await _dbContext.MFilesAccounts.AsNoTracking()
                 .Where(a => a.ServerId == serverId && accountsBatch.Select(c => c.AccountName).Contains(a.AccountName))
                 .ToHashSetAsync();
 
@@ -99,18 +99,17 @@ namespace ToolBox_MVC.Services.DB
             foreach (var account in accountsBatch)
             {
                 var existingAccount = existingAccounts.FirstOrDefault(a => a.AccountName == account.AccountName);
+                
                 if (existingAccount == null)
                 {
-                    accountsToInsert.Add(account);
+                    _dbContext.Add(account);
                 }
                 else
                 {
-                    accountsToUpdate.Add(UpdateAccount(existingAccount, account));
+                    existingAccount = UpdateAccount(existingAccount, account);
+                    _dbContext.Update(existingAccount);
                 }
             }
-
-            await _dbContext.BulkInsertAsync(accountsToInsert);
-            await _dbContext.BulkUpdateAsync(accountsToUpdate);
 
             accountsToInsert.Clear();
             accountsToUpdate.Clear();

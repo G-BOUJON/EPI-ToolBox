@@ -87,7 +87,7 @@ body {
   display: flex;
   align-items: center;
   border-radius: 4px;
-  background-color: #80ccff;
+  background-color: #b3e0ff;
   position: sticky;
   top: 0;
 }
@@ -128,9 +128,32 @@ body {
   display: flex;
   align-items: center;
   border-radius: 4px;
-  background-color: #80ccff;
+  background-color: #b3e0ff;
   position: sticky;
   bottom: 0;
+}
+.tableView .table-group-seperator {
+  border-top: 2px solid black;
+}
+
+.listView {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+.listView .list-item {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.listView .list-item .item-label {
+  font-weight: bold;
+  flex: 1 0 0%;
+  min-width: 150px;
+}
+.listView .list-item .item-value {
+  flex: 1 1 0%;
 }
 
 .selectionButton {
@@ -151,16 +174,30 @@ body {
 .dashboard-grid-item.fullrow {
   grid-column: span 3;
 }
-.dashboard-grid-item .g-header {
+
+.g-header {
   background-color: #80ccff;
   display: flex;
-  flex-grow: 1;
+  flex-grow: 0;
+  flex-shrink: 0;
   padding: 5px;
+  gap: 5px;
 }
-.dashboard-grid-item .g-body {
+
+.g-body {
   display: flex;
   flex-direction: column;
   padding: 10px;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.g-footer {
+  display: flex;
+  padding: 5px;
+  flex: 0 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+  gap: 5px;
 }
 
 .dashboard-card {
@@ -173,6 +210,24 @@ body {
   background-color: #80ccff;
   display: flex;
   flex-grow: 1;
+}
+
+.config-grid {
+  display: grid;
+  gap: 25px;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 300px;
+  overflow: auto;
+}
+.config-grid-item {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+.config-grid-item.double-row {
+  grid-row: span 2;
 }
 
 /*CSS pour dropdown submenu*/

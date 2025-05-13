@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Models;
 using ToolBox_MVC.Services;
+using ToolBox_MVC.Services.DB;
 using ToolBox_MVC.Services.Factories;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Controllers
@@ -10,143 +12,26 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
     [Authorize]
     public class ConfigurationController : Controller
     {
-        private readonly IMFilesUsersHandlerFactory _mfilesFactory;
-        private readonly IConfigurationHandlerFactory _configFactory;
+        private readonly IMfilesServerRepository _serverRepo;
 
-        public ConfigurationController(IMFilesUsersHandlerFactory mfilesFactory, IConfigurationHandlerFactory configFactory)
+        public ConfigurationController(IMfilesServerRepository mfilesServerRepository)
         {
-            _mfilesFactory = mfilesFactory;
-            _configFactory = configFactory;
+            _serverRepo = mfilesServerRepository;
         }
 
-        [Route("LicenseManager/Configuration/{id}")]
-        public IActionResult Index(ServerType id, string? errorMessage)
+
+        public IActionResult Index(string serverName)
         {
-            if (errorMessage != null)
-            {
-                ViewData["ErrorMessage"] = errorMessage;
-            }
-            ViewData["Server"] = id;
-            return View(_configFactory.Create(id).GetConfiguration());
+            ViewBag.ServerName = serverName;
+            return View(_serverRepo.GetServerInfos(serverName));
         }
 
-        [HttpPost]
-        public IActionResult AddGroup(ServerType id)
+        public IActionResult ChangeHour(MFilesServer server)
         {
-            string newGroupName = Request.Form["groupName"];
-            IConfigurationHandler jsConf = _configFactory.Create(id);
-            Config configuration = jsConf.GetConfiguration();
-            IMFilesUsersHandler mf = _mfilesFactory.Create(id);
-
-
-            if (string.IsNullOrEmpty(newGroupName))
-            {
-                return RedirectToAction("Index", new
-                {
-                    id,
-                    errorMessage = "Nom de groupe vide"
-                });
-            }
-
-            if (!mf.GroupExists(newGroupName))
-            {
-                return RedirectToAction("Index", new
-                {
-                    id,
-                    errorMessage = "Groupe inexistant"
-                });
-            }
-
-            
-            Group newGroup = new Group(newGroupName);
-
-            if (configuration.Groups.Contains(newGroup))
-            {
-                return RedirectToAction("Index", new
-                {
-                    id,
-                    errorMessage = "Groupe déjà ajouté à la configuration"
-                });
-            }
-
-            configuration.Groups.Add(newGroup);
-            jsConf.UpdateConfiguration(configuration);
-
-            return RedirectToAction("Index", new { id });
-        }
-
-        [HttpPost]
-        public IActionResult DeleteGroup(ServerType id, string groupName)
-        {
-            IConfigurationHandler jsConf = _configFactory.Create(id);
-            Config configuration = jsConf.GetConfiguration();
-            List<Group> lstGroup = new(configuration.Groups);
-
-            foreach (Group group in lstGroup)
-            {
-                if (group.name == groupName)
-                {
-                    configuration.Groups.Remove(group);
-                }
-            }
-
-
-            jsConf.UpdateConfiguration(configuration);
-
-            return RedirectToAction("Index", new { id });
-        }
-
-        [HttpPost]
-        public IActionResult EditApiKey(ServerType id, string apiKey)
-        {
-            IConfigurationHandler jsConf = _configFactory.Create(id);
-            Config configuration = jsConf.GetConfiguration();
-            configuration.ApiKey = apiKey;
-
-            jsConf.UpdateConfiguration(configuration);
-
-            return RedirectToAction("Index", new { id });
-        }
-
-        [HttpPost]
-        public IActionResult EditADCredentials(ServerType id, ActiveDirectoryCredentials credentials)
-        {
-            IConfigurationHandler jsConf = _configFactory.Create(id);
-            Config configuration = jsConf.GetConfiguration();
-
-            configuration.ActiveDirectoryCredentials = credentials;
-
-            jsConf.UpdateConfiguration(configuration);
-
-            return RedirectToAction("Index", new { id });
-        }
-
-        [HttpPost]
-        public IActionResult EditVaultCredentials(ServerType id,  VaultCredentials credentials)
-        {
-            IConfigurationHandler jsConf = _configFactory.Create(id);
-            Config configuration = jsConf.GetConfiguration();
-
-            configuration.VaultCredentials = credentials;
-
-            jsConf.UpdateConfiguration(configuration);
-
-            return RedirectToAction("Index", new { id });
-        }
-
-        [HttpPost]
-        public IActionResult EditAutomatisation(ServerType id, Config autoConfig)
-        {
-            IConfigurationHandler jsConf = _configFactory.Create(id);
-            Config configuration = jsConf.GetConfiguration();
-
-            configuration.Hour = autoConfig.Hour;
-            configuration.ActiveSuppression = autoConfig.ActiveSuppression;
-            configuration.ActiveRestauration = autoConfig.ActiveRestauration;
-
-            jsConf.UpdateConfiguration(configuration);
-
-            return RedirectToAction("Index", new { id });
+            var dbServer = _serverRepo.GetServerInfos(server.Id);
+            dbServer.SyncTime = server.SyncTime;
+            _serverRepo.UpdateServer(dbServer);
+            return RedirectToAction("Index", new {server.Name});
         }
     }
 }

@@ -7,6 +7,7 @@
         public string EncryptedUserName { get; set; }
         public string EncryptedPassword { get; set; }
         public string Domain { get; set; }
+        
 
 
         public MFilesServer MFilesServer { get; set; }

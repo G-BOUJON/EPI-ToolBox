@@ -12,6 +12,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
         public string ProtocolSequence { get; set; }
         public string VaultGuid { get; set; }
         public int ADCredentialId { get; set; }
+        public TimeOnly SyncTime { get; set; }
 
         public MFilesCredential Credential { get; set; }
         

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToolBox_MVC.Data;
 
@@ -11,9 +12,11 @@ using ToolBox_MVC.Data;
 namespace ToolBox_MVC.Migrations.ToolBoxDb
 {
     [DbContext(typeof(ToolBoxDbContext))]
-    partial class ToolBoxDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250509125909_addSyncTime")]
+    partial class addSyncTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,6 +127,9 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                     b.Property<int>("ServerId")
                         .HasColumnType("int");
 
+                    b.Property<TimeOnly>("SyncTime")
+                        .HasColumnType("time");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ServerId")
@@ -192,9 +198,6 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                     b.Property<string>("ProtocolSequence")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeOnly>("SyncTime")
-                        .HasColumnType("time");
 
                     b.Property<string>("VaultGuid")
                         .IsRequired()

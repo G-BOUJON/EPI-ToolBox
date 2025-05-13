@@ -8,6 +8,7 @@ namespace ToolBox_MVC.Services.DB
         MFilesServer GetServerInfos(int serverId);
         MFilesServer GetServerInfos(string serverName);
         IEnumerable<MFilesServer> GetServers();
+        void UpdateServer(MFilesServer server);
     }
 
     public class MFilesServerRepository : IMfilesServerRepository
@@ -36,6 +37,20 @@ namespace ToolBox_MVC.Services.DB
         public IEnumerable<MFilesServer> GetServers()
         {
             return _dbContext.MFilesServers;
+        }
+
+        public void UpdateServer(MFilesServer server)
+        {
+            try
+            {
+                var oldServer = GetServerInfos(server.Id);
+                _dbContext.Update(server);
+            }
+            catch (ArgumentNullException)
+            {
+                _dbContext.Add(server);
+            }
+            _dbContext.SaveChanges();
         }
     }
 }
