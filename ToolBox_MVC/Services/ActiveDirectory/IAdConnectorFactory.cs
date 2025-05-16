@@ -1,32 +1,39 @@
 ﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.DirectoryServices.AccountManagement;
 using ToolBox_MVC.Models;
+using ToolBox_MVC.Repositories;
 
 namespace ToolBox_MVC.Services.ActiveDirectory
 {
     public interface IAdConnectorFactory
     {
-        PrincipalContext CreatePrincipalContext(int adId);
+        PrincipalContext CreatePrincipalContext(int serverID);
     }
 
     public class AdConnectorFactory : IAdConnectorFactory
     {
-        private readonly IADCredRepository _repository;
+        private readonly Dictionary<int,ADCredential> allCredentials;
 
-        public AdConnectorFactory(IADCredRepository credRepo) 
+        public AdConnectorFactory(IADCredentialService credRepo, IServerRepository servRepo) 
         {
-            _repository = credRepo;
+            var allServer = Task.Run(servRepo.GetAllAsync).Result;
+
+            allCredentials = new();
+            foreach (var server in allServer)
+            {
+                allCredentials.Add(server.Id,Task.Run(() => credRepo.GetCredential(server.Id)).Result);
+            }
         }
 
-        public PrincipalContext CreatePrincipalContext(int adId)
+        public PrincipalContext CreatePrincipalContext(int serverId)
         {
-            ADConnexionInfos credentials = _repository.GetADCredential(adId);
+            ADCredential credentials = allCredentials[serverId];
             return new PrincipalContext(
                 contextType: ContextType.Domain,
                 name: credentials.Domain,
                 container: credentials.Container,
-                userName: credentials.Username,
-                password: credentials.Password
+                userName: credentials.EncryptedUsername,
+                password: credentials.EncryptedPassword
                 );
         }
     }

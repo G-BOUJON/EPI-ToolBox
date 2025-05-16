@@ -5,9 +5,9 @@ namespace ToolBox_MVC.Services.ActiveDirectory
 {
     public interface IAdService
     {
-        bool IsUserActive(int adId, string userName);
-        bool AreValidCredentials(int adId, string userName, string password);
-        bool GroupExists(int adId, string groupName);
+        bool IsUserActive(int serverID, string userName);
+        bool AreValidCredentials(int serverID, string userName, string password);
+        bool GroupExists(int serverID, string groupName);
     }
 
     public class ActiveDirectoryService : IAdService
@@ -19,25 +19,25 @@ namespace ToolBox_MVC.Services.ActiveDirectory
             _connectorFactory = connectorFactory;
         }
 
-        public bool AreValidCredentials(int adId, string userName, string password)
+        public bool AreValidCredentials(int serverID, string userName, string password)
         {
-            using (var connector = _connectorFactory.CreatePrincipalContext(adId))
+            using (var connector = _connectorFactory.CreatePrincipalContext(serverID))
             {
                 return connector.ValidateCredentials(userName, password);
             }
         }
 
-        public bool GroupExists(int adId, string groupName)
+        public bool GroupExists(int serverID, string groupName)
         {
-            using (var connector = _connectorFactory.CreatePrincipalContext(adId))
+            using (var connector = _connectorFactory.CreatePrincipalContext(serverID))
             { 
                 return GroupPrincipal.FindByIdentity(connector, groupName) != null;
             }
         }
 
-        public bool IsUserActive(int adId, string userName)
+        public bool IsUserActive(int serverID, string userName)
         {
-            using (var connector = _connectorFactory.CreatePrincipalContext(adId))
+            using (var connector = _connectorFactory.CreatePrincipalContext(serverID))
             {
                 using (var user = UserPrincipal.FindByIdentity(connector, userName))
                 {

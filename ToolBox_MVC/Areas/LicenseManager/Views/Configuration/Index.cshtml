@@ -1,18 +1,21 @@
 ﻿@using ToolBox_MVC.Areas.LicenseManager.Models.DBModels
 @using ToolBox_MVC.Services.ActiveDirectory
 @using ToolBox_MVC.Services.DB
+@using ToolBox_MVC.Services.Repository
 @inject IMfilesServerRepository serverRepo;
-@inject IADCredRepository adRepo;
-@inject IGroupRepository groupRepository;
+@inject IADCredentialService adRepo;
+@inject IGroupRepositoryold groupRepository;
+@inject IMfCredentialStore mfCredRepo;
 
 @model MFilesServer;
 
 @{
     ViewData["Title"] = "Configuration M-Files";
-    var adCred = adRepo.GetADCredential(Model.ADCredentialId);
+    var adCred = new ADCredential(Model.ADCredential.Domain, Model.ADCredential.Container, string.Empty, string.Empty);
+
 }
 
-<div class="d-inline-flex gap-3 flex-grow-0">
+<div class="d-inline-flex gap-3 flex-grow-0 content-header">
     <h1 class="align-middle">Configuration - Environnement : </h1>
     <form id="changeServer" asp-area="LicenseManager" asp-controller="Configuration" asp-action="Index" asp-route-serverName="" method="get">
         <a class="dropdown-toggle text-dark text-decoration-none clickable-text title" data-bs-toggle="dropdown" href="#">@Model.Name</a>
@@ -27,8 +30,9 @@
     </form>
 </div>
 <div class="config-grid">
-    <div class="config-grid-item">
+    <form class="config-grid-item" method="post" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeMfServerInfos">
         @*Container for server infos*@
+        <input type="hidden" asp-for="Id" />
         <div class="g-header">
             <h2>Infos de connexion au serveur M-Files</h2>
         </div>
@@ -38,104 +42,104 @@
                     <div class="item-label">
                         Serveur 
                     </div>
-                    <div class="item-value">
-                        @Model.Name
+                    <div class="item-value large">
+                        <input class="form-control" asp-for="Name" value="@Model.Name" />
                     </div>
                 </div>
                 <div class="list-item">
                     <div class="item-label">
                         Adresse
                     </div>
-                    <div class="item-value">
-                        @Model.NetworkAddress
+                    <div class="item-value large">
+                        <input class="form-control" asp-for="NetworkAddress" value="@Model.NetworkAddress" />
                     </div>
                 </div>
                 <div class="list-item">
                     <div class="item-label">
                         Protocole
                     </div>
-                    <div class="item-value">
-                        @Model.ProtocolSequence
+                    <div class="item-value large">
+                        <input class="form-control" asp-for="ProtocolSequence" value="@Model.ProtocolSequence" />
                     </div>
                 </div>
                 <div class="list-item">
                     <div class="item-label">
                         Endpoint
                     </div>
-                    <div class="item-value">
-                        @Model.EndPoint
+                    <div class="item-value large">
+                        <input class="form-control" asp-for="EndPoint" value="@Model.EndPoint" />
                     </div>
                 </div>
                 <div class="list-item">
                     <div class="item-label">
                         GUID du Coffre
                     </div>
-                    <div class="item-value">
-                        @Model.VaultGuid
+                    <div class="item-value large">
+                        <input class="form-control" asp-for="VaultGuid" value="@Model.VaultGuid" />
                     </div>
                 </div>
             </div>
         </div>
         <div class="g-footer justify-content-end">
-            <button class="btn btn-primary">Modifier</button>
-            <button class="btn btn-secondary">Changer identifiant</button>
+            <button type="submit" class="btn btn-primary">Sauvegarder</button>
+            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#mfServerCred">Changer identifiant</a>
         </div>
-    </div>
+    </form>
     <div class="config-grid-item double-row">
         @*Container for M-Files groups list*@
         <div class="g-header">
             <h2>LicenseManager - Groupes M-Files</h2>
         </div>
         <div class="g-body">
-        <div class="tableView area-wrapper">
-            <div class="table-header">
-                <div class="table-cell check">
+            <div class="tableView area-wrapper">
+                <div class="table-header">
+                    <div class="table-cell check">
                         <input type="checkbox" id="account-select-all" onclick="checkAllAccountCheckBoxes()" />
-                </div>
-                <div class="table-cell">
-                    Nom
-                </div>
-                <div class="table-cell maintained">
-                    État
-                </div>
-            </div>
-            @{
-                var groupList = (await groupRepository.GetGroupsAsync(Model.Id)).OrderByDescending(g => g.Maintained);
-                var lastMaintained = true;
-                foreach (var group in groupList)
-                {
-                    if (lastMaintained && !group.Maintained)
-                    {
-                        <div class="table-group-seperator"></div>
-                    }
-                    lastMaintained = group.Maintained;
-                    <div class="table-row">
-                        <div class="table-cell check">
-                                <input type="checkbox" class="account-check" name="@group.Name" value="true" onclick="updateViewSelectAll()" />
-                        </div>
-                        <div class="table-cell">
-                            @group.Name
-                        </div>
-                        <div class="table-cell maintained">
-                            @{
-                                if (group.Maintained)
-                                {
-                                    <button class="status active no-border clickable" @*Mettre asp lien vers action*@>
-                                        Garder licences
-                                    </button>
-                                }
-                                else
-                                {
-                                    <button class="status disabled no-border clickable">
-                                        Retirer licences
-                                    </button>
-                                }
-                            }
-                        </div>
                     </div>
+                    <div class="table-cell">
+                        Nom
+                    </div>
+                    <div class="table-cell maintained">
+                        État
+                    </div>
+                </div>
+                @{
+                    var groupList = (await groupRepository.GetGroupsAsync(Model.Id)).OrderByDescending(g => g.Maintained);
+                    var lastMaintained = true;
+                    foreach (var group in groupList)
+                    {
+                        if (lastMaintained && !group.Maintained)
+                        {
+                            <div class="table-group-seperator"></div>
+                        }
+                        lastMaintained = group.Maintained;
+                        <div class="table-row">
+                            <div class="table-cell check">
+                                <input type="checkbox" class="account-check" name="@group.Name" value="true" onclick="updateViewSelectAll()" />
+                            </div>
+                            <div class="table-cell">
+                                @group.Name
+                            </div>
+                            <div class="table-cell maintained">
+                                @{
+                                    if (group.Maintained)
+                                    {
+                                        <button class="status active no-border clickable" @*Mettre asp lien vers action*@>
+                                            Garder licences
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="status disabled no-border clickable">
+                                            Retirer licences
+                                        </button>
+                                    }
+                                }
+                            </div>
+                        </div>
 
+                    }
                 }
-            }
                 <div class="table-footer">
                     <div class="table-cell counter">
                         Nombre de comptes sélectionnés :<span class="selectionNumber">0</span>
@@ -145,7 +149,7 @@
                         <button disabled id="unmaintainSelection" class="selectionButton btn btn-secondary">Retirer les licences</button>
                     </div>
                 </div>
-        </div>
+            </div>
         </div>
     </div>
     <div class="config-grid-item">
@@ -159,26 +163,26 @@
                     <div class="item-label">
                         Domain
                     </div>
-                    <div class="item-value">
-                        @adCred.Domain
+                    <div class="item-value large">
+                        <input class="form-control" asp-for="@adCred.Domain" value="@adCred.Domain" />
                     </div>
                 </div>
                 <div class="list-item">
                     <div class="item-label">
                         Container
                     </div>
-                    <div class="item-value">
-                        @adCred.Container
+                    <div class="item-value large">
+                        <input class="form-control" asp-for="@adCred.Container" value="@adCred.Container" />
                     </div>
                 </div>
             </div>
         </div>
         <div class="g-footer justify-content-end">
             <button class="btn btn-primary">Modifier</button>
-            <button class="btn btn-secondary">Changer identifiant</button>
+            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalAdCred">Changer identifiant</a>
         </div>
     </div>
-    
+
     <form method="post" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeAutoParameters" class="config-grid-item">
         <div class="g-header">
             <h2>Automatisation et synchronisation</h2>
@@ -217,4 +221,80 @@
             <button type="submit" class="btn btn-primary">Sauvegarder</button>
         </div>
     </form>
+</div>
+
+@*Boîtes modales*@
+@{
+    var mfCredentials = new MFilesCredential();
+    mfCredentials.EncryptedUserName = string.Empty;
+    mfCredentials.EncryptedPassword = string.Empty;
+}
+<div class="modal fade" id="mfServerCred" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <form method="post" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeMfCredentials" asp-route-serverId="@Model.Id" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Changement identifiants M-Files</h5>
+                <button type="button" class="btn-close b-0" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="listView">
+                    <div class="list-item">
+                        <div class="item-label">
+                            Nom d'utilisateur
+                        </div>
+                        <div class="item-value">
+                            <input class="form-control" asp-for="@mfCredentials.EncryptedUserName" type="text" required/>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="item-label">
+                            Mot de passe
+                        </div>
+                        <div class="item-value">
+                            <input class="form-control" asp-for="@mfCredentials.EncryptedPassword" type="password" required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button class="btn btn-primary" type="submit">Sauvegarder</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal fade" id="modalAdCred" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <form method="post" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeAdCredentials" asp-route-serverId="@Model.Id" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Changement identifiants AD</h5>
+                <button type="button" class="btn-close b-0" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" asp-for="@adCred.Domain" value ="@adCred.Domain" />
+                <input type="hidden" asp-for="@adCred.Container" value="@adCred.Container" />
+                <div class="listView">
+                    <div class="list-item">
+                        <div class="item-label">
+                            Nom d'utilisateur
+                        </div>
+                        <div class="item-value">
+                            <input class="form-control" asp-for="@adCred.EncryptedUsername" type="text" required />
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="item-label">
+                            Mot de passe
+                        </div>
+                        <div class="item-value">
+                            <input class="form-control" asp-for="@adCred.EncryptedPassword" type="password" required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button class="btn btn-primary" type="submit">Sauvegarder</button>
+            </div>
+        </form>
+    </div>
 </div>

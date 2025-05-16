@@ -1,5 +1,6 @@
 ﻿using MFilesAPI;
 using System.Configuration;
+using System.Threading.Tasks;
 using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Models;
 using ToolBox_MVC.Services.MFiles.Connector;
@@ -21,33 +22,33 @@ namespace ToolBox_MVC.Services.MFiles
             _connectorFactory = connectorFactory;
         }
 
-        public LoginAccounts GetLoginAccounts(int mfilesServerLocalId)
+        public async Task<LoginAccounts> GetLoginAccounts(int mfilesServerLocalId)
         {
-            using var connector = _connectorFactory.CreateConnection(_connexionInfoService.GetConnexionInfos(mfilesServerLocalId));
+            using var connector = await CreateConnector(mfilesServerLocalId);
             return connector.ServerApplication.LoginAccountOperations.GetLoginAccounts();
         }
 
-        public UserGroups GetUserGroups(int mfilesServerLocalId)
+        public async Task<UserGroups> GetUserGroups(int mfilesServerLocalId)
         {
-            using var connector = _connectorFactory.CreateConnection(_connexionInfoService.GetConnexionInfos(mfilesServerLocalId));
+            using var connector = await CreateConnector(mfilesServerLocalId);
             return connector.Vault.UserGroupOperations.GetUserGroups();
         }
 
-        public UserAccounts GetUserAccounts(int mfServerId)
+        public async Task<UserAccounts> GetUserAccounts(int mfServerId)
         {
-            using var connector = _connectorFactory.CreateConnection(_connexionInfoService.GetConnexionInfos(mfServerId));
+            using var connector = await CreateConnector(mfServerId);
             return connector.Vault.UserOperations.GetUserAccounts();
         }
 
-        public LoginAccount GetUserSpecificLoginAccount(int mfilesServerLocalId, int userId)
+        public async Task<LoginAccount> GetUserSpecificLoginAccount(int mfilesServerLocalId, int userId)
         {
-            using var connector = _connectorFactory.CreateConnection(_connexionInfoService.GetConnexionInfos(mfilesServerLocalId));
+            using var connector = await CreateConnector(mfilesServerLocalId);
             return connector.Vault.UserOperations.GetLoginAccountOfUser(userId);
         }
 
-        public bool ChangeAccountLicense(int mfilesServerId, string accountName, MFLicenseType newLicense)
+        public async Task<bool> ChangeAccountLicense(int mfilesServerId, string accountName, MFLicenseType newLicense)
         {
-            using var connector = _connectorFactory.CreateConnection(_connexionInfoService.GetConnexionInfos(mfilesServerId));
+            using var connector = await CreateConnector(mfilesServerId);
 
             LoginAccount targetedAccount;
             ServerLoginAccountOperations lAccountOperator = connector.ServerApplication.LoginAccountOperations;
@@ -66,9 +67,9 @@ namespace ToolBox_MVC.Services.MFiles
             return true;
         }
 
-        public void ChangeAccountStatus(int mfServerId, int userId, bool activeStatus)
+        public async Task ChangeAccountStatus(int mfServerId, int userId, bool activeStatus)
         {
-            using var connector = _connectorFactory.CreateConnection(_connexionInfoService.GetConnexionInfos(mfServerId));
+            using var connector = await CreateConnector(mfServerId);
 
             VaultUserOperations userOperations = connector.Vault.UserOperations;
             ServerLoginAccountOperations loginOperations = connector.ServerApplication.LoginAccountOperations;
@@ -88,6 +89,11 @@ namespace ToolBox_MVC.Services.MFiles
             {
                 throw new Exception("Error during status change");
             }
+        }
+
+        private async Task<IMFilesConnector> CreateConnector(int serverID)
+        {
+            return _connectorFactory.CreateConnection(await _connexionInfoService.GetConnexionInfos(serverID));
         }
     }
 }

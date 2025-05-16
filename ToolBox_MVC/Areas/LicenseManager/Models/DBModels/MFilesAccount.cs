@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MFilesAPI;
+using System.ComponentModel.DataAnnotations;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
 {
@@ -26,6 +27,23 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
         public virtual ICollection<MFilesGroup> Groups { get; set; }
 
         public MFilesAccount() { }
+
+        public MFilesAccount(LoginAccount logAccount, int serverID)
+        {
+            ServerId = serverID;
+            AccountName = logAccount.AccountName;
+            Domain = logAccount.DomainName;
+            EmailAddress = logAccount.EmailAddress;
+            FullName = logAccount.FullName;
+            UserName = logAccount.UserName;
+            Enabled = logAccount.Enabled;
+            ServerRole = (int)logAccount.ServerRoles;
+            License = (int)logAccount.LicenseType;
+            AccountType = (int)logAccount.AccountType;
+            Maintained = false;
+            Active = false;
+            UserId = 0;
+        }
         
     }
 }

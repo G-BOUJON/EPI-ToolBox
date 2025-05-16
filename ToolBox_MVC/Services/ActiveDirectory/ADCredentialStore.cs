@@ -1,66 +1,52 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.EntityFrameworkCore;
 using ToolBox_MVC.Data;
 using ToolBox_MVC.Models;
+using ToolBox_MVC.Repositories;
 
 namespace ToolBox_MVC.Services.ActiveDirectory
 {
-    public interface IADCredRepository
+    public interface IADCredentialService
     {
-        ADConnexionInfos GetADCredential(int adId);
-        void AddOrUpdateCredential(ADConnexionInfos newCred);
+        Task<ADCredential> GetCredential(int serverID);
+        Task UpdateCredentials(int serverID, ADCredential credential);
     }
 
-    public class ADCredentialStore : IADCredRepository
+    public class ADCredentialStore : IADCredentialService
     {
-        private readonly ToolBoxDbContext _dbContext;
+        private readonly IServerRepository _serverRepo;
         private readonly IDataProtector _dataProtector;
 
-        public ADCredentialStore(ToolBoxDbContext dbContext, IDataProtectionProvider dataProtectionProvider)
+        public ADCredentialStore(IServerRepository serverRepo, IDataProtectionProvider dataProtectionProvider)
         {
-            _dbContext = dbContext;
+            _serverRepo = serverRepo;
             _dataProtector = dataProtectionProvider.CreateProtector("AD.Credential");
         }
 
-        public ADConnexionInfos GetADCredential(int adId)
+        public async Task<ADCredential> GetCredential(int serverID)
         {
-            var cred = _dbContext.ADCredentials.FirstOrDefault(c => c.Id == adId);
+            var server = await _serverRepo.GetByIDAsync(serverID);
+            ArgumentNullException.ThrowIfNull(server);
 
-            ArgumentNullException.ThrowIfNull(cred);
+            var cred = new ADCredential(
+                server.ADCredential.Domain,
+                server.ADCredential.Container,
+                _dataProtector.Unprotect(server.ADCredential.EncryptedUsername),
+                _dataProtector.Unprotect(server.ADCredential.EncryptedPassword));
 
-            return new ADConnexionInfos()
-            {
-                Domain = cred.Domain,
-                Container = cred.Container,
-                Username = _dataProtector.Unprotect(cred.EncryptedUsername),
-                Password = _dataProtector.Unprotect(cred.EncryptedPassword)
-            };
+            return cred;
         }
 
-        public void AddOrUpdateCredential(ADConnexionInfos newCred)
+        public async Task UpdateCredentials(int serverID, ADCredential credential)
         {
-            var oldCred = _dbContext.ADCredentials.FirstOrDefault(c => c.Domain == newCred.Domain);
+            var server = await _serverRepo.GetByIDAsync(serverID);
+            ArgumentNullException.ThrowIfNull(server);
 
-            if (oldCred != null)
-            {
-                oldCred.Container = newCred.Container;
-                oldCred.EncryptedUsername = _dataProtector.Protect(newCred.Username);
-                oldCred.EncryptedPassword = _dataProtector.Protect(newCred.Password);
+            credential.EncryptedUsername = _dataProtector.Protect(credential.EncryptedUsername);
+            credential.EncryptedPassword = _dataProtector.Protect(credential.EncryptedPassword);
 
-                _dbContext.ADCredentials.Update(oldCred);
-            }
-            else
-            {
-                _dbContext.ADCredentials.Add(new ADCredential()
-                {
-                    Domain = newCred.Domain,
-                    Container = newCred.Container,
-                    EncryptedUsername = _dataProtector.Protect(newCred.Username),
-                    EncryptedPassword = _dataProtector.Protect(newCred.Password)
-                });
-            }
-
-            _dbContext.SaveChanges();
-
+            server.ADCredential = credential;
+            await _serverRepo.SaveChangesAsync();
         }
     }
 

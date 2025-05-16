@@ -4,7 +4,7 @@ using ToolBox_MVC.Data;
 
 namespace ToolBox_MVC.Services.DB
 {
-    public class MFilesGroupsRepository : IGroupRepository
+    public class MFilesGroupsRepository : IGroupRepositoryold
     {
         private readonly ToolBoxDbContext _dbContext;
 
@@ -52,6 +52,42 @@ namespace ToolBox_MVC.Services.DB
                 .Include(g => g.Accounts)
                 .Where(g => g.ServerId == serverId)
                 .ToListAsync();
+        }
+
+        public async Task<MFilesGroup> GetGroupAsync(int groupID)
+        {
+            var group = await _dbContext.MFilesGroups.FindAsync(groupID);
+            ArgumentNullException.ThrowIfNull(group);
+            return group;
+        }
+
+        public async Task<MFilesGroup> GetGroupAsync(int serverID, string groupName)
+        {
+            var group = await _dbContext.MFilesGroups.FirstOrDefaultAsync(g => g.ServerId == serverID && g.Name == groupName);
+            ArgumentNullException.ThrowIfNull(group);
+            return group;
+        }
+
+        public async Task UpdateOrAddGroupAsync(MFilesGroup group)
+        {
+            try
+            {
+                MFilesGroup dbGroup;
+                if (group.ServerId != null)
+                {
+                    dbGroup = await GetGroupAsync((int)group.ServerId, group.Name);
+                }
+                else
+                {
+                    dbGroup = await GetGroupAsync(group.Id);
+                }
+                _dbContext.MFilesGroups.Update(group);
+            }
+            catch (ArgumentNullException)
+            {
+                _dbContext.MFilesGroups.Add(group);
+            }
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

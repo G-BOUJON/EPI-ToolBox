@@ -4,6 +4,6 @@ namespace ToolBox_MVC.Services.Repository
 {
     public interface IMFilesConnexionInfosService
     {
-        MFilesConnexionInfo GetConnexionInfos(int serverId);
+        Task<MFilesConnexionInfo> GetConnexionInfos(int serverId);
     }
 }

@@ -13,9 +13,7 @@ namespace ToolBox_MVC.Data
 
         public DbSet<MFilesServer> MFilesServers { get; set; }
         public DbSet<MFilesAccount> MFilesAccounts { get; set; }
-        public DbSet<MFilesCredential> MFilesCredentials { get; set; }
         public DbSet<MFilesGroup> MFilesGroups { get; set; }
-        public DbSet<ADCredential> ADCredentials { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,31 +27,21 @@ namespace ToolBox_MVC.Data
                 .HasDefaultValue(false);
 
             builder.Entity<MFilesServer>()
-                .HasOne(s => s.Credential)
-                .WithOne(c => c.MFilesServer)
-                .HasForeignKey<MFilesCredential>(c => c.ServerId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
+                .OwnsOne(s => s.MfCredential);
 
             // 2 serveurs ne doivent pas partager le même nom
             builder.Entity<MFilesServer>()
                 .HasIndex(s => s.Name)
                 .IsUnique();
 
-            builder.Entity<ADCredential>()
-                .HasMany<MFilesServer>()
-                .WithOne()
-                .HasForeignKey(s => s.ADCredentialId)
-                .IsRequired(false);
+            builder.Entity<MFilesServer>()
+                .OwnsOne(s => s.ADCredential);
 
             builder.Entity<MFilesServer>()
                 .HasMany<MFilesAccount>()
                 .WithOne()
                 .HasForeignKey(a => a.ServerId)
                 .IsRequired();
-
-            builder.Entity<ADCredential>()
-                .HasIndex(p => new { p.Domain }).IsUnique();
 
             builder.Entity<MFilesAccount>()
                 .Property(a => a.UserId)

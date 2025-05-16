@@ -11,10 +11,11 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
         public string EndPoint {  get; set; }
         public string ProtocolSequence { get; set; }
         public string VaultGuid { get; set; }
-        public int ADCredentialId { get; set; }
+        public string Domain { get; set; }
         public TimeOnly SyncTime { get; set; }
 
-        public MFilesCredential Credential { get; set; }
+        public ADCredential ADCredential { get; set; }
+        public MFilesCredential MfCredential { get; set; }
         
 
         public MFilesServer() { }

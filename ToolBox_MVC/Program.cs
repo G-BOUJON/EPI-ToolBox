@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ToolBox_MVC.Areas.LicenseManager.Data;
 using ToolBox_MVC.Areas.LicenseManager.Services;
 using ToolBox_MVC.Data;
+using ToolBox_MVC.Repositories;
 using ToolBox_MVC.Services;
 using ToolBox_MVC.Services.ActiveDirectory;
 using ToolBox_MVC.Services.DB;
@@ -57,15 +58,18 @@ builder.Services.AddScoped<IAdService,ActiveDirectoryService>();
 
 builder.Services.AddScoped<IMFilesService, MFilesService>();
 builder.Services.AddScoped<IMfilesServerRepository, MFilesServerRepository>();
-builder.Services.AddScoped<ICredentialRepository, MFilesCredentialStore>();
-builder.Services.AddScoped<ISyncService, MFilesSyncService>();
+builder.Services.AddScoped<IMfCredentialStore, MFilesCredentialStore>();
+builder.Services.AddScoped<ISyncService, SyncService>();
 builder.Services.AddScoped<IGroupAccountRepository,MFilesAccountGroupRepository>();
 builder.Services.AddScoped<IAccountsRepository, MFilesAccountsRepository>();
-builder.Services.AddScoped<IGroupRepository, MFilesGroupsRepository>();
+builder.Services.AddScoped<IGroupRepositoryold, MFilesGroupsRepository>();
 builder.Services.AddScoped<IActiveDirectoryUsersHandler, ADUserHandlerTest>(); //test class
-builder.Services.AddScoped<IADCredRepository, ADCredentialStore>();
+builder.Services.AddScoped<IADCredentialService, ADCredentialStore>();
 builder.Services.AddScoped<ILicenseMangagerService, LicenseManager>();
 
+builder.Services.AddScoped<IServerRepository, ServerRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 
 var app = builder.Build();
 
@@ -80,7 +84,7 @@ if (!app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    ServerSeedData.Initialize(services);
+    await ServerSeedData.Initialize(services);
 }
 
     app.UseHttpsRedirection();

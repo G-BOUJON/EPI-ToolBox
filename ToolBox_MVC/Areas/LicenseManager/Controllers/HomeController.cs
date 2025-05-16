@@ -41,9 +41,8 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             var id = server.Id;
 
             await _syncService.SyncAccountsAsync(id);
-            await _syncService.SyncUserAccountAsync(id);
             await _syncService.SyncGroupsAsync(id);
-            await _syncService.SyncGroupsAccountsLinksAsync(id);
+            
 
             return RedirectToAction("Details", new { serverName });
         }

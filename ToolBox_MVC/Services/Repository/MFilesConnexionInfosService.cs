@@ -1,29 +1,31 @@
 ﻿using ToolBox_MVC.Models;
+using ToolBox_MVC.Repositories;
 using ToolBox_MVC.Services.DB;
 
 namespace ToolBox_MVC.Services.Repository
 {
     public class MFilesConnexionInfosService : IMFilesConnexionInfosService
     {
-        private readonly ICredentialRepository _credentialRepository;
-        private readonly IMfilesServerRepository _serverRepository;
+        private readonly IMfCredentialStore _credentialRepository;
+        private readonly IServerRepository _serverRepository;
 
-        public MFilesConnexionInfosService(ICredentialRepository credentialRepository, IMfilesServerRepository serverRepository)
+        public MFilesConnexionInfosService(IMfCredentialStore credentialRepository, IServerRepository serverRepository)
         {
             _credentialRepository = credentialRepository;
             _serverRepository = serverRepository;
         }
 
-        public MFilesConnexionInfo GetConnexionInfos(int serverId)
+        public async Task<MFilesConnexionInfo> GetConnexionInfos(int serverId)
         {
-            var credentials = _credentialRepository.GetCredentials(serverId);
-            var server = _serverRepository.GetServerInfos(serverId);
-
+            var server = await _serverRepository.GetByIDAsync(serverId);
+            ArgumentNullException.ThrowIfNull(server);
+            var credentials = await _credentialRepository.GetCredentials(serverId);
+            
             return new MFilesConnexionInfo
             {
-                Username = credentials.Username,
-                Password = credentials.Password,
-                Domain = credentials.Domain,
+                Username = credentials.EncryptedUserName,
+                Password = credentials.EncryptedPassword,
+                Domain = server.Domain,
                 ProtocolSequence = server.ProtocolSequence,
                 NetworkAddress = server.NetworkAddress,
                 EndPoint = server.EndPoint,
