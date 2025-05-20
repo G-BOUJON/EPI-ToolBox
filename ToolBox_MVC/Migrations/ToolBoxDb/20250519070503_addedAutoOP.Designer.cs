@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToolBox_MVC.Data;
 
@@ -11,9 +12,11 @@ using ToolBox_MVC.Data;
 namespace ToolBox_MVC.Migrations.ToolBoxDb
 {
     [DbContext(typeof(ToolBoxDbContext))]
-    partial class ToolBoxDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250519070503_addedAutoOP")]
+    partial class addedAutoOP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,28 +216,6 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
             modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesServer", b =>
                 {
-                    b.OwnsOne("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.AutomaticOperations", "AutomaticOP", b1 =>
-                        {
-                            b1.Property<int>("MFilesServerId")
-                                .HasColumnType("int");
-
-                            b1.Property<bool>("AutoActivationHandling")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("AutoRemove")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("AutoRestore")
-                                .HasColumnType("bit");
-
-                            b1.HasKey("MFilesServerId");
-
-                            b1.ToTable("MFilesServers");
-
-                            b1.WithOwner()
-                                .HasForeignKey("MFilesServerId");
-                        });
-
                     b.OwnsOne("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesCredential", "MfCredential", b1 =>
                         {
                             b1.Property<int>("MFilesServerId")
@@ -285,10 +266,23 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                                 .HasForeignKey("MFilesServerId");
                         });
 
+                    b.OwnsOne("ToolBox_MVC.Models.AutomaticOperations", "AutomaticOperations", b1 =>
+                        {
+                            b1.Property<int>("MFilesServerId")
+                                .HasColumnType("int");
+
+                            b1.HasKey("MFilesServerId");
+
+                            b1.ToTable("MFilesServers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MFilesServerId");
+                        });
+
                     b.Navigation("ADCredential")
                         .IsRequired();
 
-                    b.Navigation("AutomaticOP")
+                    b.Navigation("AutomaticOperations")
                         .IsRequired();
 
                     b.Navigation("MfCredential")

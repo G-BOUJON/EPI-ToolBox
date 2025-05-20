@@ -84,8 +84,8 @@ namespace ToolBox_MVC.Services.MFiles
         public async Task SyncAccountsAsync(int serverId)
         {
 
-            var incomingLogAccounts = await _mFilesService.GetLoginAccounts(serverId);
-            var incomingUserAccounts = await _mFilesService.GetUserAccounts(serverId);
+            var incomingLogAccounts = _mFilesService.GetLoginAccounts(serverId);
+            var incomingUserAccounts = _mFilesService.GetUserAccounts(serverId);
             var existingAccounts = await _accountRepository.GetAllInServerAsync(serverId);
 
             Dictionary<string,MFilesAccount> existingByAccountName = existingAccounts.ToDictionary(a => a.AccountName);
@@ -159,29 +159,13 @@ namespace ToolBox_MVC.Services.MFiles
             await _accountRepository.SaveChangesAsync();
         }
 
-        public async Task SyncGroupsAccountsLinksAsync(int serverId)
-        {
-            var incomingTask = _mFilesService.GetUserGroups(serverId);
-            var groupTask = _groupRepository.GetAllInServerIncludeAccountsAsync(serverId);
-            var accountTask = _accountRepository.GetAllInServerAsync(serverId);
-
-            await Task.WhenAll(incomingTask, groupTask, accountTask);
-
-            var incomingGroups = incomingTask.Result;
-            var groupsIncluded = groupTask.Result;
-            var accounts = accountTask.Result;
-
-            foreach (var group in incomingGroups)
-            {
-                
-            }
-        }
+        
 
         public async Task SyncGroupsAsync(int serverId)
         {
             
 
-            var incomingGroups = await _mFilesService.GetUserGroups(serverId);
+            var incomingGroups = _mFilesService.GetUserGroups(serverId);
             var accountDict = (await _accountRepository.GetAllInServerAsync(serverId)).Where(a => a.UserId != 0).ToDictionary(a => a.UserId);
             var existingGroups = await _groupRepository.GetAllInServerIncludeAccountsAsync(serverId);
 
@@ -236,26 +220,6 @@ namespace ToolBox_MVC.Services.MFiles
             await _groupRepository.SaveChangesAsync();
         }
 
-        public async Task SyncUserAccountAsync(int serverId)
-        {
-            var incomingTask = _mFilesService.GetUserAccounts(serverId);
-            var existingTask = _accountRepository.GetAllInServerAsync(serverId);
-
-            await Task.WhenAll(incomingTask, existingTask);
-
-            var incomingUsers = incomingTask.Result;
-            var existingAccounts = existingTask.Result;
-
-            foreach(UserAccount user in incomingUsers)
-            {
-                var currentAccount = await _accountRepository.GetByAccountNameAsync(serverId,user.LoginName);
-
-                if (currentAccount != null)
-                {
-                    currentAccount.UserId = user.ID;
-                    currentAccount.Enabled = currentAccount.Enabled || user.Enabled;
-                }
-            }
-        }
+        
     }
 }

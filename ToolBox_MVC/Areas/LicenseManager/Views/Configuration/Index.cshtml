@@ -85,7 +85,7 @@
             <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#mfServerCred">Changer identifiant</a>
         </div>
     </form>
-    <div class="config-grid-item double-row">
+    <form method="post" class="config-grid-item double-row" asp-area="LicenseManager" asp-controller="Configuration" asp-route-serverId="@Model.Id">
         @*Container for M-Files groups list*@
         <div class="g-header">
             <h2>LicenseManager - Groupes M-Files</h2>
@@ -124,13 +124,13 @@
                                 @{
                                     if (group.Maintained)
                                     {
-                                        <button class="status active no-border clickable" @*Mettre asp lien vers action*@>
+                                        <button class="status active no-border clickable" type="submit" asp-route-serverId="@Model.Id" asp-route-groupId="@group.Id" asp-action="UnmaintainGroup">
                                             Garder licences
                                         </button>
                                     }
                                     else
                                     {
-                                        <button class="status disabled no-border clickable">
+                                        <button class="status disabled no-border clickable" type="submit" asp-route-serverId="@Model.Id" asp-route-groupId="@group.Id" asp-action="MaintainGroup">
                                             Retirer licences
                                         </button>
                                     }
@@ -145,13 +145,13 @@
                         Nombre de comptes sélectionnés :<span class="selectionNumber">0</span>
                     </div>
                     <div class="table-cell buttons">
-                        <button disabled id="maintainSelection" class="selectionButton btn btn-primary">Garder les licences</button>
-                        <button disabled id="unmaintainSelection" class="selectionButton btn btn-secondary">Retirer les licences</button>
+                        <button disabled id="maintainSelection" class="selectionButton btn btn-primary" type="submit" asp-action="MaintainSelection" asp-route-serverId="@Model.Id">Garder les licences</button>
+                        <button disabled id="unmaintainSelection" class="selectionButton btn btn-secondary" type="submit" asp-action="UnmaintainSelection" asp-route-serverId="@Model.Id">Retirer les licences</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
     <div class="config-grid-item">
         <div class="g-header">
             <h2>Infos de connexion à l'Active Directory</h2>
@@ -183,6 +183,10 @@
         </div>
     </div>
 
+    @{
+        var autoParams = Model.AutomaticOP.Clone();
+    }
+
     <form method="post" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeAutoParameters" class="config-grid-item">
         <div class="g-header">
             <h2>Automatisation et synchronisation</h2>
@@ -204,7 +208,7 @@
                         LM - Retrait automatique
                     </div>
                     <div class="item-value">
-                        <input type="checkbox" @*mettre asp-for="AutoRemove"*@/>
+                        <input asp-for="@autoParams.AutoRemove"/>
                     </div>
                 </div>
                 <div class="list-item">
@@ -212,7 +216,15 @@
                         LM - Restauration automatique
                     </div>
                     <div class="item-value">
-                        <input type="checkbox" @*mettre asp-for="AutoRestore"*@ />
+                        <input asp-for="@autoParams.AutoRestore"/>
+                    </div>
+                </div>
+                <div class="list-item">
+                    <div class="item-label">
+                        Cohérence automatique status AD et M-Files
+                    </div>
+                    <div class="item-value">
+                        <input asp-for="@autoParams.AutoActivationHandling" />
                     </div>
                 </div>
             </div>

@@ -4,7 +4,5 @@
     {
         Task SyncAccountsAsync(int serverId);
         Task SyncGroupsAsync(int serverId);
-        Task SyncGroupsAccountsLinksAsync(int serverId);
-        Task SyncUserAccountAsync(int serverId);
     }
 }

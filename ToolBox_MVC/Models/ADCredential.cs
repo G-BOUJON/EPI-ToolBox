@@ -25,5 +25,14 @@ namespace ToolBox_MVC.Models
             EncryptedUsername = adcred.EncryptedUsername;
             EncryptedPassword = adcred.EncryptedPassword;
         }
+
+        public ADCredential Clone()
+        {
+            return new ADCredential(
+                this.Domain,
+                this.Container,
+                this.EncryptedUsername,
+                this.EncryptedPassword);
+        }
     }
 }

@@ -4,14 +4,14 @@ namespace ToolBox_MVC.Services.MFiles
 {
     public interface IMFilesService
     {
-        Task<LoginAccounts> GetLoginAccounts(int mfilesServerLocalId);
-        Task<UserGroups> GetUserGroups(int mfilesServerLocalId);
-        Task<LoginAccount> GetUserSpecificLoginAccount(int mfilesServerLocalId, int userId);
+        LoginAccounts GetLoginAccounts(int mfilesServerLocalId);
+        UserGroups GetUserGroups(int mfilesServerLocalId);
+        LoginAccount GetUserSpecificLoginAccount(int mfilesServerLocalId, int userId);
 
-        Task<bool> ChangeAccountLicense(int mfilesServerId, string accountName, MFLicenseType newLicense);
+        bool ChangeAccountLicense(int mfilesServerId, string accountName, MFLicenseType newLicense);
         
-        Task<UserAccounts> GetUserAccounts(int mfServerId);
+        UserAccounts GetUserAccounts(int mfServerId);
 
-        Task ChangeAccountStatus(int mfServerId, int userId, bool activeStatus);
+        void ChangeAccountStatus(int mfServerId, int userId, bool activeStatus);
     }
 }

@@ -30,7 +30,11 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
 
             var selectedGroups = (await _groupRepo.GetAllInServerIncludeAccountsAsync(serverId)).Where(g => g.Maintained).ToHashSet();
 
-            var toRemoveAccounts = licensedAccounts.Where(a => !selectedGroups.Any(g => g.Accounts.Contains(a)) || !(a.Enabled && a.Active));
+            var toRemoveAccounts = licensedAccounts.Where(a 
+                => (!selectedGroups.Any(g => g.Accounts.Contains(a)) 
+                || !(a.Enabled && a.Active)) 
+                && !(a.AccountType == (int)MFLoginAccountType.MFLoginAccountTypeMFiles)
+                );
 
             return toRemoveAccounts;
         }
@@ -42,7 +46,12 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
 
             var selectedGroups = (await _groupRepo.GetAllInServerIncludeAccountsAsync(serverId)).Where(g => g.Maintained).ToHashSet();
 
-            var toRestoreAccounts = unlicensedAccounts.Where(a => selectedGroups.Any(g => g.Accounts.Contains(a)) && a.Active && a.Enabled && !string.IsNullOrEmpty(a.EmailAddress));
+            var toRestoreAccounts = unlicensedAccounts.Where(a 
+                => (selectedGroups.Any(g => g.Accounts.Contains(a)) 
+                && a.Active 
+                && a.Enabled && !string.IsNullOrEmpty(a.EmailAddress))
+                || a.AccountType == (int)MFLoginAccountType.MFLoginAccountTypeMFiles
+                );
 
             return toRestoreAccounts;
         }
@@ -55,7 +64,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
                 return;
             }
 
-            if (await _mFilesService.ChangeAccountLicense(serverId, accountName, MFLicenseType.MFLicenseTypeNone))
+            if ( _mFilesService.ChangeAccountLicense(serverId, accountName, MFLicenseType.MFLicenseTypeNone))
             {
                 
                 account.License = (int)MFLicenseType.MFLicenseTypeNone;
@@ -78,7 +87,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
                 return;
             }
 
-            if (await _mFilesService.ChangeAccountLicense(serverId, accountName, MFLicenseType.MFLicenseTypeReadOnlyLicense)) 
+            if (_mFilesService.ChangeAccountLicense(serverId, accountName, MFLicenseType.MFLicenseTypeReadOnlyLicense)) 
             {
                 
                 account.License = (int)MFLicenseType.MFLicenseTypeReadOnlyLicense;

@@ -18,12 +18,14 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         private readonly IServerRepository _serverRepo;
         private readonly IMfCredentialStore _credentialRepo;
         private readonly IADCredentialService _adCredrepo;
+        private readonly IGroupRepository _groupRepo;
 
-        public ConfigurationController(IServerRepository mfilesServerRepository, IMfCredentialStore credentialRepository,IADCredentialService aDCredRepository)
+        public ConfigurationController(IServerRepository mfilesServerRepository, IMfCredentialStore credentialRepository,IADCredentialService aDCredRepository, IGroupRepository groupRepository)
         {
             _serverRepo = mfilesServerRepository;
             _credentialRepo = credentialRepository;
             _adCredrepo = aDCredRepository;
+            _groupRepo = groupRepository;
         }
 
 
@@ -33,10 +35,12 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             return View(await _serverRepo.GetByNameAsync(serverName));
         }
 
-        public async Task<IActionResult> ChangeAutoParameters(MFilesServer server)
+        [HttpPost]
+        public async Task<IActionResult> ChangeAutoParameters(MFilesServer server, AutomaticOperations autoParams)
         {
             var dbServer = await _serverRepo.GetByIDAsync(server.Id);
             dbServer.SyncTime = server.SyncTime;
+            dbServer.AutomaticOP = autoParams;
             await _serverRepo.SaveChangesAsync();
             return RedirectToAction("Index", new { serverName = dbServer.Name});
         }
@@ -106,6 +110,79 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             await _adCredrepo.UpdateCredentials(server.Id,adCred);
 
             return RedirectToAction("Index", new { serverName = serverName });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MaintainGroup(int serverId, int groupId)
+        {
+            var server = await _serverRepo.GetByIDAsync(serverId);
+            var group = await _groupRepo.GetByIDAsync(groupId);
+
+            if (group == null)
+            {
+                // TODO inclure message erreur ou gestion ?
+                return RedirectToAction("Index", new { serverName = server.Name });
+            }
+
+            group.Maintained = true;
+            await _groupRepo.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { serverName = server.Name });
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> UnmaintainGroup(int serverId, int groupId)
+        {
+            var server = await _serverRepo.GetByIDAsync(serverId);
+            var group = await _groupRepo.GetByIDAsync(groupId);
+
+            if (group == null)
+            {
+                // TODO inclure message erreur ou gestion ?
+                return RedirectToAction("Index", new { serverName = server.Name });
+            }
+
+            group.Maintained = false;
+            await _groupRepo.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { serverName = server.Name });
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MaintainSelection(int serverId)
+        {
+            var server = await _serverRepo.GetByIDAsync(serverId);
+
+            foreach(var group in await _groupRepo.GetAllInServerAsync(serverId))
+            {
+                if (!string.IsNullOrEmpty(Request.Form[group.Name]))
+                {
+                    group.Maintained = true;
+                }
+            }
+
+            await _groupRepo.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { serverName = server.Name });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UnmaintainSelection(int serverId)
+        {
+            var server = await _serverRepo.GetByIDAsync(serverId);
+
+            foreach (var group in await _groupRepo.GetAllInServerAsync(serverId))
+            {
+                if (!string.IsNullOrEmpty(Request.Form[group.Name]))
+                {
+                    group.Maintained = false;
+                }
+            }
+
+            await _groupRepo.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { serverName = server.Name });
         }
     }
 }

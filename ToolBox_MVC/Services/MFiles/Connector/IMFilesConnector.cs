@@ -1,4 +1,5 @@
 ﻿using MFilesAPI;
+using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Models;
 
 namespace ToolBox_MVC.Services.MFiles.Connector
@@ -19,12 +20,12 @@ namespace ToolBox_MVC.Services.MFiles.Connector
 
         public Vault? Vault { get; set; }
 
-        public MFilesConnector(MFilesConnexionInfo connexionInfo)
+        public MFilesConnector(MFilesServer connexionInfo)
         {
             ServerApplication = new MFilesServerApplication();
             ServerApplication.Connect(AuthType: MFAuthType.MFAuthTypeSpecificWindowsUser,
-                UserName: connexionInfo.Username,
-                Password: connexionInfo.Password,
+                UserName: connexionInfo.MfCredential.EncryptedUserName,
+                Password: connexionInfo.MfCredential.EncryptedPassword,
                 Domain: connexionInfo.Domain,
                 ProtocolSequence: connexionInfo.ProtocolSequence,
                 NetworkAddress: connexionInfo.NetworkAddress,

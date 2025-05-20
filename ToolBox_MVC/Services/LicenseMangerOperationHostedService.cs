@@ -15,12 +15,13 @@ namespace ToolBox_MVC.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using (var scope = Services.CreateScope())
+            while (!stoppingToken.IsCancellationRequested && await Timer.WaitForNextTickAsync(stoppingToken))
             {
-                var scopedService = scope.ServiceProvider.GetService<IPeriodicOperations>();
-
-                while (!stoppingToken.IsCancellationRequested && await Timer.WaitForNextTickAsync(stoppingToken))
+                using (var scope = Services.CreateScope())
                 {
+                    var scopedService = scope.ServiceProvider.GetService<IPeriodicOperations>();
+
+                
                     await scopedService.DoWork();
                 }
             }

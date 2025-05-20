@@ -11,5 +11,14 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
         
 
         public MFilesCredential() { }
+
+        public MFilesCredential Clone()
+        {
+            return new MFilesCredential
+            {
+                EncryptedUserName = EncryptedUserName,
+                EncryptedPassword = EncryptedPassword
+            };
+        }
     }
 }

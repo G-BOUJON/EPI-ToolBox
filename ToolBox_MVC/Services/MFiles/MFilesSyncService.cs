@@ -34,7 +34,7 @@ namespace ToolBox_MVC.Services.MFiles
 
             var sawedNames = new HashSet<string>();
 
-            foreach (LoginAccount loginAccount in await _mfilesService.GetLoginAccounts(serverId))
+            foreach (LoginAccount loginAccount in _mfilesService.GetLoginAccounts(serverId))
             {
                 var account = new MFilesAccount
                 {
@@ -90,7 +90,7 @@ namespace ToolBox_MVC.Services.MFiles
 
         public async Task SyncUserAccountAsync(int serverId)
         {
-            foreach (UserAccount userAccount in await _mfilesService.GetUserAccounts(serverId))
+            foreach (UserAccount userAccount in _mfilesService.GetUserAccounts(serverId))
             {
                 var mfAccount = _accountsRepository.GetAccount(serverId, userAccount.LoginName);
                 if (mfAccount != null)
@@ -105,7 +105,7 @@ namespace ToolBox_MVC.Services.MFiles
         {
             List<MFilesGroup> mFilesGroups = new List<MFilesGroup>();
 
-            foreach (UserGroup userGroup in await _mfilesService.GetUserGroups(serverId))
+            foreach (UserGroup userGroup in _mfilesService.GetUserGroups(serverId))
             {
                 if (userGroup.Predefined)
                 {
@@ -129,7 +129,7 @@ namespace ToolBox_MVC.Services.MFiles
             var userIds = new HashSet<int>();
            
 
-            foreach (UserGroup userGroup in await _mfilesService.GetUserGroups(serverId))
+            foreach (UserGroup userGroup in _mfilesService.GetUserGroups(serverId))
             {
                 if (userGroup.Predefined)
                 {

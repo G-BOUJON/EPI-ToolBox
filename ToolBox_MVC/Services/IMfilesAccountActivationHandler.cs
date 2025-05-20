@@ -10,7 +10,8 @@ namespace ToolBox_MVC.Services
         /// <param name="serverID">The ID of the server to inspect</param>
         /// <returns>A container of all the fetched accounts</returns>
         Task<IEnumerable<MFilesAccount>> GetAllAccountsToModify(int serverID);
-        
+        Task ModifyAllIncorrectAccounts(int serverID);
+
         /// <summary>
         /// Modifiy an account's status on a M-Files server
         /// </summary>

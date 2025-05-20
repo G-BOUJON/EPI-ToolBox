@@ -35,7 +35,7 @@ builder.Services.AddAuthentication("CookieAuth").AddCookie("CookieAuth", options
 builder.Services.AddDbContext<LicenseManagerDBContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("LicenseManagerDB")), ServiceLifetime.Singleton);
 builder.Services.AddDbContext<ToolBoxDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ToolBoxDb")), ServiceLifetime.Singleton);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ToolBoxDb")), ServiceLifetime.Scoped);
 
 builder.Services.AddSingleton<IConfigurationHandlerFactory, ConfigurationHandlerFactory>();
 builder.Services.AddSingleton<IMFilesUsersHandlerFactory, MFilesAccountHandlerFactory>();
@@ -46,7 +46,7 @@ builder.Services.AddSingleton<IAccountsListHandlerFactory, DbAccountsServiceFact
 
 builder.Services.AddSingleton<IADUsersHandlerFactory, ActiveDirectoryUserHandlerFactory>();
 
-builder.Services.AddSingleton<IPeriodicOperations,PeriodicLicenseMangerJob>();
+builder.Services.AddScoped<IPeriodicOperations,LicenseManagerPeriodicOperations>();
 builder.Services.AddHostedService<LicenseMangerOperationHostedService>();
 
 builder.Services.AddScoped<IMFilesConnectorFactory, MFConnectorFactory>();

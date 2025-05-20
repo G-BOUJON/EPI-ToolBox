@@ -29,6 +29,9 @@ namespace ToolBox_MVC.Data
             builder.Entity<MFilesServer>()
                 .OwnsOne(s => s.MfCredential);
 
+            builder.Entity<MFilesServer>()
+                .OwnsOne(s => s.AutomaticOP);
+
             // 2 serveurs ne doivent pas partager le même nom
             builder.Entity<MFilesServer>()
                 .HasIndex(s => s.Name)
