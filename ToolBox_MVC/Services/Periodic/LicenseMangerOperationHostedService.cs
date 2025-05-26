@@ -1,6 +1,4 @@
-﻿using ToolBox_MVC.Services.Factories;
-
-namespace ToolBox_MVC.Services
+﻿namespace ToolBox_MVC.Services.Periodic
 {
     public class LicenseMangerOperationHostedService : BackgroundService
     {

@@ -1,9 +1,10 @@
 ﻿using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
-using ToolBox_MVC.Services.DB;
+
 using System.Linq;
 using MFilesAPI;
 using ToolBox_MVC.Services.MFiles;
 using ToolBox_MVC.Repositories;
+using ToolBox_MVC.Services.MFiles.Connector;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Services
 {
@@ -112,6 +113,11 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
             var accountToMaintain = await _accountsRepo.GetByIDAsync(accountId);
             accountToMaintain.Maintained = false;
             await _accountsRepo.SaveChangesAsync();
+        }
+
+        public bool TryConnection(int serverId)
+        {
+            return _mFilesService.TryServerConnection(serverId) == MfConnexionResult.Success;
         }
 
         

@@ -4,5 +4,6 @@
     {
         Task SyncAccountsAsync(int serverId);
         Task SyncGroupsAsync(int serverId);
+        bool TryConnections(int serverId);
     }
 }

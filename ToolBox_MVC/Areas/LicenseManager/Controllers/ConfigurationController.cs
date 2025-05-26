@@ -5,9 +5,7 @@ using ToolBox_MVC.Models;
 using ToolBox_MVC.Repositories;
 using ToolBox_MVC.Services;
 using ToolBox_MVC.Services.ActiveDirectory;
-using ToolBox_MVC.Services.DB;
-using ToolBox_MVC.Services.Factories;
-using ToolBox_MVC.Services.Repository;
+using ToolBox_MVC.Services.MFiles;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 {
@@ -36,11 +34,11 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeAutoParameters(MFilesServer server, AutomaticOperations autoParams)
+        public async Task<IActionResult> ChangeAutoParameters(MFilesServer server)
         {
             var dbServer = await _serverRepo.GetByIDAsync(server.Id);
             dbServer.SyncTime = server.SyncTime;
-            dbServer.AutomaticOP = autoParams;
+            dbServer.AutomaticOP = server.AutomaticOP;
             await _serverRepo.SaveChangesAsync();
             return RedirectToAction("Index", new { serverName = dbServer.Name});
         }
@@ -98,16 +96,16 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> ChangeAdCredentials(string serverName, ADCredential adCred)
+        public async Task<IActionResult> ChangeAdCredentials(string serverName, ADCredential adCredential)
         {
             var server = await _serverRepo.GetByNameAsync(serverName);
 
             if (server == null)
             {
-                return RedirectToRoute("LicenseManage/");
+                return RedirectToRoute("LicenseManager/");
             }
 
-            await _adCredrepo.UpdateCredentials(server.Id,adCred);
+            await _adCredrepo.UpdateCredentials(server.Id,adCredential);
 
             return RedirectToAction("Index", new { serverName = serverName });
         }

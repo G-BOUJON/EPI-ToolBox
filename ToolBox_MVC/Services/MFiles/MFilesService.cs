@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Models;
 using ToolBox_MVC.Services.MFiles.Connector;
-using ToolBox_MVC.Services.Repository;
 
 namespace ToolBox_MVC.Services.MFiles
 {
@@ -92,6 +91,13 @@ namespace ToolBox_MVC.Services.MFiles
         private IMFilesConnector CreateConnector(int serverID)
         {
             return _connectorFactory.CreateConnection(serverID);
+        }
+
+        public MfConnexionResult TryServerConnection(int mfServerId)
+        {
+            using var connector = CreateConnector(mfServerId);
+
+            return connector.ConnectionResult;
         }
     }
 }

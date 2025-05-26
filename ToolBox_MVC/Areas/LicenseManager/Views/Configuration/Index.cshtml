@@ -1,18 +1,21 @@
 ﻿@using ToolBox_MVC.Areas.LicenseManager.Models.DBModels
+@using ToolBox_MVC.Repositories
 @using ToolBox_MVC.Services.ActiveDirectory
-@using ToolBox_MVC.Services.DB
-@using ToolBox_MVC.Services.Repository
-@inject IMfilesServerRepository serverRepo;
+@using ToolBox_MVC.Services.MFiles
+@using ToolBox_MVC.Services.MFiles.Connector
+
+@inject IServerRepository serverRepo;
 @inject IADCredentialService adRepo;
-@inject IGroupRepositoryold groupRepository;
+@inject IGroupRepository groupRepository;
 @inject IMfCredentialStore mfCredRepo;
+@inject IMFilesService mfService;
+@inject IAdService adService;
 
 @model MFilesServer;
 
 @{
     ViewData["Title"] = "Configuration M-Files";
-    var adCred = new ADCredential(Model.ADCredential.Domain, Model.ADCredential.Container, string.Empty, string.Empty);
-
+    var adCred = Model.ADCredential;
 }
 
 <div class="d-inline-flex gap-3 flex-grow-0 content-header">
@@ -21,7 +24,7 @@
         <a class="dropdown-toggle text-dark text-decoration-none clickable-text title" data-bs-toggle="dropdown" href="#">@Model.Name</a>
         <ul class="dropdown-menu">
             @{
-                foreach (var server in serverRepo.GetServers())
+                foreach (var server in await serverRepo.GetAllAsync())
                 {
                     <li><a class="dropdown-item text-dark" asp-controller="Configuration" asp-action="Index" asp-route-serverName="@server.Name">@server.Name</a></li>
                 }
@@ -78,14 +81,48 @@
                         <input class="form-control" asp-for="VaultGuid" value="@Model.VaultGuid" />
                     </div>
                 </div>
+                <div class="list-item">
+                    <div class="item-label">
+                        État de la connexion
+                    </div>
+                    <div class="item-value large">
+                        @{
+                            var mfConnectionResults = mfService.TryServerConnection(Model.Id);
+
+                            if (mfConnectionResults == MfConnexionResult.Success)
+                            {
+                                <span class="status active no-border">Connexion réussie</span>
+                            }
+                            else
+                            {
+                                <span class="status disabled no-border">
+                                    @{
+                                        switch (mfConnectionResults)
+                                        {
+                                            case MfConnexionResult.IncorrectInfos:
+                                                <text>Informations de connexion invalides</text>
+                                                break;
+                                            case MfConnexionResult.IncorrectCredentials :
+                                                <text>Identifiants invalides</text>
+                                                break;
+                                            default:
+                                                <text>GUID du coffre invalide</text>
+                                                break;
+                                        }
+                                    }
+                                </span>
+                            }
+                        }
+                    </div>
+                </div>
             </div>
         </div>
         <div class="g-footer justify-content-end">
             <button type="submit" class="btn btn-primary">Sauvegarder</button>
-            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#mfServerCred">Changer identifiant</a>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#mfServerCred">Changer identifiant</button>
         </div>
     </form>
-    <form method="post" class="config-grid-item double-row" asp-area="LicenseManager" asp-controller="Configuration" asp-route-serverId="@Model.Id">
+    <form class="config-grid-item double-row" asp-area="LicenseManager" asp-controller="Configuration">
         @*Container for M-Files groups list*@
         <div class="g-header">
             <h2>LicenseManager - Groupes M-Files</h2>
@@ -104,7 +141,7 @@
                     </div>
                 </div>
                 @{
-                    var groupList = (await groupRepository.GetGroupsAsync(Model.Id)).OrderByDescending(g => g.Maintained);
+                    var groupList = (await groupRepository.GetAllInServerAsync(Model.Id)).OrderByDescending(g => g.Maintained);
                     var lastMaintained = true;
                     foreach (var group in groupList)
                     {
@@ -124,13 +161,13 @@
                                 @{
                                     if (group.Maintained)
                                     {
-                                        <button class="status active no-border clickable" type="submit" asp-route-serverId="@Model.Id" asp-route-groupId="@group.Id" asp-action="UnmaintainGroup">
+                                        <button type="submit" class="status active no-border clickable" asp-action="UnmaintainGroup" asp-route-serverId="@Model.Id" asp-route-groupId="@group.Id">
                                             Garder licences
                                         </button>
                                     }
                                     else
                                     {
-                                        <button class="status disabled no-border clickable" type="submit" asp-route-serverId="@Model.Id" asp-route-groupId="@group.Id" asp-action="MaintainGroup">
+                                        <button type="submit" class="status disabled no-border clickable" asp-action="MaintainGroup" asp-route-serverId="@Model.Id" asp-route-groupId="@group.Id">
                                             Retirer licences
                                         </button>
                                     }
@@ -145,14 +182,14 @@
                         Nombre de comptes sélectionnés :<span class="selectionNumber">0</span>
                     </div>
                     <div class="table-cell buttons">
-                        <button disabled id="maintainSelection" class="selectionButton btn btn-primary" type="submit" asp-action="MaintainSelection" asp-route-serverId="@Model.Id">Garder les licences</button>
-                        <button disabled id="unmaintainSelection" class="selectionButton btn btn-secondary" type="submit" asp-action="UnmaintainSelection" asp-route-serverId="@Model.Id">Retirer les licences</button>
+                        <button type="submit" disabled id="maintainSelection" class="selectionButton btn btn-primary" asp-action="MaintainSelection" asp-route-serverId="@Model.Id">Garder les licences</button>
+                        <button type="submit" disabled id="unmaintainSelection" class="selectionButton btn btn-secondary" asp-action="UnmaintainSelection" asp-route-serverId="@Model.Id">Retirer les licences</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-    <div class="config-grid-item">
+    <form class="config-grid-item" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeADInfos" asp-route-serverName="@Model.Name">
         <div class="g-header">
             <h2>Infos de connexion à l'Active Directory</h2>
         </div>
@@ -175,17 +212,42 @@
                         <input class="form-control" asp-for="@adCred.Container" value="@adCred.Container" />
                     </div>
                 </div>
+                <div class="list-item">
+                    <div class="item-label">
+                        État de la connexion
+                    </div>
+                    <div class="item-value large">
+                        @{
+                            var adConnectResults = adService.TryConnection(Model.Id);
+                            if (adConnectResults == ADConnectionResult.Success)
+                            {
+                                <span class="status active no-border">Connexion Réussie</span>
+                            }
+                            else
+                            {
+                                <span class="status disabled no-border">
+                                    @{
+                                        if (adConnectResults == ADConnectionResult.Failed)
+                                        {
+                                            <text>Connexion échouée, vérifiez les informations de connexion</text>
+                                        }
+                                        else
+                                        {
+                                            <text>Connexion échouée, identifiants de connexions invalides</text>
+                                        }
+                                    }
+                                </span>
+                            }
+                        }
+                    </div>
+                </div>
             </div>
         </div>
         <div class="g-footer justify-content-end">
-            <button class="btn btn-primary">Modifier</button>
-            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalAdCred">Changer identifiant</a>
+            <button type="submit" class="btn btn-primary">Sauvegarder</button>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#adCred">Changer identifiant</button>
         </div>
-    </div>
-
-    @{
-        var autoParams = Model.AutomaticOP.Clone();
-    }
+    </form>
 
     <form method="post" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeAutoParameters" class="config-grid-item">
         <div class="g-header">
@@ -208,7 +270,7 @@
                         LM - Retrait automatique
                     </div>
                     <div class="item-value">
-                        <input asp-for="@autoParams.AutoRemove"/>
+                        <input asp-for="AutomaticOP.AutoRemove">
                     </div>
                 </div>
                 <div class="list-item">
@@ -216,15 +278,15 @@
                         LM - Restauration automatique
                     </div>
                     <div class="item-value">
-                        <input asp-for="@autoParams.AutoRestore"/>
+                        <input asp-for="AutomaticOP.AutoRestore">
                     </div>
                 </div>
                 <div class="list-item">
                     <div class="item-label">
-                        Cohérence automatique status AD et M-Files
+                        Cohérence entre état actif AD et état actif M-Files
                     </div>
                     <div class="item-value">
-                        <input asp-for="@autoParams.AutoActivationHandling" />
+                        <input asp-for="AutomaticOP.AutoActivationHandling">
                     </div>
                 </div>
             </div>
@@ -249,7 +311,7 @@
                 <button type="button" class="btn-close b-0" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                
+
                 <div class="listView">
                     <div class="list-item">
                         <div class="item-label">
@@ -275,23 +337,28 @@
         </form>
     </div>
 </div>
-<div class="modal fade" id="modalAdCred" tabindex="-1">
+@{
+    ADCredential adCredential = Model.ADCredential.Clone();
+    adCredential.EncryptedUsername = string.Empty;
+    adCredential.EncryptedPassword = string.Empty;
+}
+<div class="modal fade" id="adCred" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <form method="post" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeAdCredentials" asp-route-serverId="@Model.Id" class="modal-content">
+        <form method="post" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeAdCredentials" asp-route-serverName="@Model.Name" class="modal-content">
+            <input type="hidden" asp-for="@adCredential.Domain" value="@adCredential.Domain" />
+            <input type="hidden" asp-for="@adCredential.Container" value="@adCredential.Container" />
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Changement identifiants AD</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Changement identifiants Active Directory</h5>
                 <button type="button" class="btn-close b-0" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" asp-for="@adCred.Domain" value ="@adCred.Domain" />
-                <input type="hidden" asp-for="@adCred.Container" value="@adCred.Container" />
                 <div class="listView">
                     <div class="list-item">
                         <div class="item-label">
                             Nom d'utilisateur
                         </div>
                         <div class="item-value">
-                            <input class="form-control" asp-for="@adCred.EncryptedUsername" type="text" required />
+                            <input class="form-control" asp-for="@adCredential.EncryptedUsername" type="text" required />
                         </div>
                     </div>
                     <div class="list-item">
@@ -299,7 +366,7 @@
                             Mot de passe
                         </div>
                         <div class="item-value">
-                            <input class="form-control" asp-for="@adCred.EncryptedPassword" type="password" required />
+                            <input class="form-control" asp-for="@adCredential.EncryptedPassword" type="password" required />
                         </div>
                     </div>
                 </div>

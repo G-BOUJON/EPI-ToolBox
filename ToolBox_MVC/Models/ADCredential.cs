@@ -10,6 +10,8 @@ namespace ToolBox_MVC.Models
         public string EncryptedUsername { get; set; }
         public string EncryptedPassword { get; set; }
 
+        public ADCredential() { }
+
         public ADCredential(string domain, string container, string encryptedUsername, string encryptedPassword)
         {
             Domain = domain;

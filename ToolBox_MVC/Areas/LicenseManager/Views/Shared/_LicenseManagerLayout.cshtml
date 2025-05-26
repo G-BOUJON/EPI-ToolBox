@@ -1,7 +1,6 @@
 ﻿@using ToolBox_MVC.Services
-@using ToolBox_MVC.Services.DB
-@using ToolBox_MVC.Services.Repository
-@inject IMfilesServerRepository serverRepository
+@using ToolBox_MVC.Repositories
+@inject IServerRepository serverRepository
 
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,7 +9,7 @@
     Layout = "_Layout";
     if (string.IsNullOrEmpty(ViewBag.ServerName))
     {
-        ViewBag.ServerName = serverRepository.GetServerInfos(1).Name;
+        ViewBag.ServerName = (await serverRepository.GetByIDAsync(1)).Name;
     }
 }
 <aside class="sidebar">

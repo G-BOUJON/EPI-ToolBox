@@ -1,7 +1,7 @@
 ﻿using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Models;
 
-namespace ToolBox_MVC.Services.Repository
+namespace ToolBox_MVC.Services.MFiles
 {
     public interface IMfCredentialStore
     {

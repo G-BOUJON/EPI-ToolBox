@@ -10,5 +10,6 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
         Task RestoreLicenseAsync(int serverId, string accountName);
         void MaintainAccount(int accountId);
         void UnmaintainAccount(int accountId);
+        bool TryConnection(int serverId);
     }
 }

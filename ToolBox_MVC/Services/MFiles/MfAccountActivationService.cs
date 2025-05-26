@@ -1,9 +1,7 @@
 ﻿using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Repositories;
-using ToolBox_MVC.Services.DB;
-using ToolBox_MVC.Services.MFiles;
 
-namespace ToolBox_MVC.Services
+namespace ToolBox_MVC.Services.MFiles
 {
     public class MfAccountActivationService : IMfilesAccountActivationHandler
     {

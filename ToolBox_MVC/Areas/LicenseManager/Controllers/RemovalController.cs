@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Areas.LicenseManager.Services;
-using ToolBox_MVC.Services.DB;
+using ToolBox_MVC.Repositories;
+
 using ToolBox_MVC.Services.MFiles.Sync;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Controllers
@@ -13,9 +14,9 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
     {
         private readonly ILicenseMangagerService _licenseManager;
         
-        private readonly IMfilesServerRepository _serverRepo;
+        private readonly IServerRepository _serverRepo;
 
-        public RemovalController(ILicenseMangagerService licenseManager, IMfilesServerRepository serverRepo)
+        public RemovalController(ILicenseMangagerService licenseManager, IServerRepository serverRepo)
         {
             _licenseManager = licenseManager;
             
@@ -29,7 +30,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         /// <returns>The <c>Index</c> view with the list of phatom accounts as a model</returns>
         public async Task<IActionResult> Index(string serverName)
         {
-            MFilesServer server = _serverRepo.GetServerInfos(serverName);
+            var server = await _serverRepo.GetByNameAsync(serverName);
             var accountsToRemove = await _licenseManager.GetAccountsToRemoveLicenseAsync(server.Id);
             ViewBag.ServerName = serverName;
             return View(accountsToRemove.OrderBy(a => a.UserName));
@@ -64,7 +65,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public async Task<IActionResult> MaintainSelection(string serverName)
         {
-            var server = _serverRepo.GetServerInfos(serverName);
+            var server = await _serverRepo.GetByNameAsync(serverName);
 
             foreach(var account in await _licenseManager.GetAccountsToRemoveLicenseAsync(server.Id))
             {
@@ -79,7 +80,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public async Task<IActionResult> UnmaintainSelection(string serverName)
         {
-            var server = _serverRepo.GetServerInfos(serverName);
+            var server = await _serverRepo.GetByNameAsync(serverName);
 
             foreach (var account in await _licenseManager.GetAccountsToRemoveLicenseAsync(server.Id))
             {
@@ -95,7 +96,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveLicense(string serverName, string accountName)
         {
-            var server = _serverRepo.GetServerInfos(serverName);
+            var server = await _serverRepo.GetByNameAsync(serverName);
 
             await _licenseManager.RemoveLicenseAsync(server.Id, accountName);
             return RedirectToAction("Index", new { serverName });
@@ -104,7 +105,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveSelection(string serverName)
         {
-            var server = _serverRepo.GetServerInfos(serverName);
+            var server = await _serverRepo.GetByNameAsync(serverName);
 
             foreach (var account in await _licenseManager.GetAccountsToRemoveLicenseAsync(server.Id))
             {

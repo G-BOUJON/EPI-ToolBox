@@ -1,16 +1,8 @@
-﻿using MFilesAPI;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using ToolBox_MVC.Areas.LicenseManager.Models;
 using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Areas.LicenseManager.Services;
-using ToolBox_MVC.Models;
-using ToolBox_MVC.Services;
-using ToolBox_MVC.Services.DB;
-using ToolBox_MVC.Services.Factories;
-using ToolBox_MVC.Services.JsonServices;
-using ToolBox_MVC.Services.MFiles.Sync;
+using ToolBox_MVC.Repositories;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 {
@@ -19,10 +11,10 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
     public class RestorationController : Controller
     {
         private readonly ILicenseMangagerService _licenseManager;
-        private readonly IMfilesServerRepository _serverRepo;
+        private readonly IServerRepository _serverRepo;
         
 
-        public RestorationController(ILicenseMangagerService licenseManager, IMfilesServerRepository serverRepo)
+        public RestorationController(ILicenseMangagerService licenseManager, IServerRepository serverRepo)
         {
             _licenseManager = licenseManager;
             _serverRepo = serverRepo;
@@ -31,7 +23,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
 
         public async Task<IActionResult> Index(string serverName)
         {
-            MFilesServer server = _serverRepo.GetServerInfos(serverName);
+            MFilesServer server = await _serverRepo.GetByNameAsync(serverName);
             IEnumerable<MFilesAccount> accountsToRestore = await _licenseManager.GetAccountsToRestoreLicenseAsync(server.Id);
             ViewBag.ServerName = serverName;
             return View(accountsToRestore.OrderBy(a => a.UserName));
@@ -66,7 +58,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public async Task<IActionResult> MaintainSelection(string serverName)
         {
-            var server = _serverRepo.GetServerInfos(serverName);
+            var server = await _serverRepo.GetByNameAsync(serverName);
 
             foreach (var account in await _licenseManager.GetAccountsToRestoreLicenseAsync(server.Id))
             {
@@ -82,7 +74,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public async Task<IActionResult> UnmaintainSelection(string serverName)
         {
-            var server = _serverRepo.GetServerInfos(serverName);
+            var server = await _serverRepo.GetByNameAsync(serverName);
 
             foreach (var account in await _licenseManager.GetAccountsToRestoreLicenseAsync(server.Id))
             {
@@ -98,7 +90,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public async Task<IActionResult> RestoreLicense(string serverName, string accountName)
         {
-            var server = _serverRepo.GetServerInfos(serverName);
+            var server = await _serverRepo.GetByNameAsync(serverName);
 
             await _licenseManager.RestoreLicenseAsync(server.Id, accountName);
             return RedirectToAction("Index", new { serverName });
@@ -107,7 +99,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         [HttpPost]
         public async Task<IActionResult> RestoreSelection(string serverName)
         {
-            var server = _serverRepo.GetServerInfos(serverName);
+            var server = await _serverRepo.GetByNameAsync(serverName);
 
             foreach (var account in await _licenseManager.GetAccountsToRestoreLicenseAsync(server.Id))
             {

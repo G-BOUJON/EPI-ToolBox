@@ -1,4 +1,5 @@
 ﻿using MFilesAPI;
+using ToolBox_MVC.Services.MFiles.Connector;
 
 namespace ToolBox_MVC.Services.MFiles
 {
@@ -13,5 +14,7 @@ namespace ToolBox_MVC.Services.MFiles
         UserAccounts GetUserAccounts(int mfServerId);
 
         void ChangeAccountStatus(int mfServerId, int userId, bool activeStatus);
+
+        MfConnexionResult TryServerConnection(int mfServerId);
     }
 }

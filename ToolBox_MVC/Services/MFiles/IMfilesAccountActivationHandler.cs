@@ -1,6 +1,6 @@
 ﻿using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 
-namespace ToolBox_MVC.Services
+namespace ToolBox_MVC.Services.MFiles
 {
     public interface IMfilesAccountActivationHandler
     {

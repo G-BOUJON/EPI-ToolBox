@@ -3,13 +3,18 @@
     "secrets1": {
       "type": "secrets"
     },
-    "sqlite1": {
-      "type": "sqlite",
-      "connectionId": "ConnectionStrings:LicenseManagerDB"
-    },
     "mssql1": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:ToolBoxDb"
+    },
+    "mssql2": {
+      "ignored": "true",
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:LicenseManagerDB"
+    },
+    "sqlite1": {
+      "ignored": "true",
+      "type": "sqlite"
     }
   }
 }

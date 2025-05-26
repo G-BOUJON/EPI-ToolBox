@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using ToolBox_MVC.Services;
 using ToolBox_MVC.Models;
-using ToolBox_MVC.Services.Factories;
 using ToolBox_MVC.Services.ActiveDirectory;
+using ToolBox_MVC.Repositories;
+using System.DirectoryServices.Protocols;
 
 
 namespace ToolBox_MVC.Controllers
@@ -14,11 +15,13 @@ namespace ToolBox_MVC.Controllers
     public class AccountController : Controller
     {
         
-        private readonly IActiveDirectoryUsersHandler _adHandler;
+        private readonly IAdService _adHandler;
+        private readonly IServerRepository _serverRepo;
 
-        public AccountController(IADUsersHandlerFactory adFactory)
+        public AccountController(IAdService adService,IServerRepository serverRepository)
         {
-            _adHandler = adFactory.Create(ServerType.Prod);
+            _adHandler = adService;
+            _serverRepo = serverRepository;
         }
 
         public IActionResult Index()
@@ -37,22 +40,40 @@ namespace ToolBox_MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string Username, string Password)
         {
-            if (ModelState.IsValid)
-            { 
-                if (_adHandler.AreValidCredentials(Username, Password) || (Username == "gab" && Password == "1234"))
+            var server = (await _serverRepo.GetAllAsync()).First();
+
+            if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
+            {
+                ViewBag.ErrorMessage = "Veuillez remplir les champs";
+                return View();
+            }
+            bool adCheckResult = false;
+            if (_adHandler.TryConnection(server.Id) == ADConnectionResult.Success)
+            {
+                try
                 {
-                    var claims = new List<Claim> {
-                    new Claim(ClaimTypes.Name, "admin"),
-                    new Claim(ClaimTypes.Email, "admin@mywebsite.com")
-                };
-                    var identity = new ClaimsIdentity(claims, "CookieAuth");
-                    ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
-
-                    await HttpContext.SignInAsync("CookieAuth", claimsPrincipal);
-
-                    return RedirectToAction("Index","Home");
+                    adCheckResult = _adHandler.AreValidCredentials(server.Id, Username, Password);
+                }
+                catch (LdapException)
+                {
+                    adCheckResult = false;
                 }
             }
+            if (adCheckResult || (Username == "gab" && Password == "1234")) // Replace second condition with master password check
+            {
+                var claims = new List<Claim> {
+                new Claim(ClaimTypes.Name, "admin"),
+                new Claim(ClaimTypes.Email, "admin@mywebsite.com")
+            };
+                var identity = new ClaimsIdentity(claims, "CookieAuth");
+                ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync("CookieAuth", claimsPrincipal);
+
+                return RedirectToAction("Index","Home");
+            }
+            
+            ViewBag.ErrorMessage = "Nom d'utilisateur ou mot de passe invalide"; 
             return View();
         }
 

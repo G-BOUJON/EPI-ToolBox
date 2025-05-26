@@ -11,7 +11,7 @@ namespace ToolBox_MVC.Models
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-        public string Domain {  get; set; }
+        
 
 
         public Credentials()
@@ -19,11 +19,10 @@ namespace ToolBox_MVC.Models
 
         }
         
-        public Credentials(string username, string password, string domain)
+        public Credentials(string username, string password)
         {
             Username = username;
             Password = password;
-            Domain = domain;
         }
     }
 }

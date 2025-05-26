@@ -2,9 +2,8 @@
 using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Repositories;
 using ToolBox_MVC.Services.ActiveDirectory;
-using ToolBox_MVC.Services.MFiles.Sync;
 
-namespace ToolBox_MVC.Services.MFiles
+namespace ToolBox_MVC.Services.MFiles.Sync
 {
     public class SyncService : ISyncService
     {
@@ -220,6 +219,13 @@ namespace ToolBox_MVC.Services.MFiles
             await _groupRepository.SaveChangesAsync();
         }
 
+        public bool TryConnections(int serverId) 
+        {
+            var adServiceResults = _adService.TryConnection(serverId);
+            var mfServiceResults = _mFilesService.TryServerConnection(serverId);
+
+            return (adServiceResults == ADConnectionResult.Success && mfServiceResults == Connector.MfConnexionResult.Success);
+        }
         
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.Security.Authentication;
 
 namespace ToolBox_MVC.Services.ActiveDirectory
 {
@@ -8,6 +9,7 @@ namespace ToolBox_MVC.Services.ActiveDirectory
         bool IsUserActive(int serverID, string userName);
         bool AreValidCredentials(int serverID, string userName, string password);
         bool GroupExists(int serverID, string groupName);
+        ADConnectionResult TryConnection(int serverId);
     }
 
     public class ActiveDirectoryService : IAdService
@@ -44,7 +46,7 @@ namespace ToolBox_MVC.Services.ActiveDirectory
 
                     if (user == null)
                     {
-                        throw new ArgumentNullException();
+                        throw new ArgumentException("User doesn't exist on this server");
                     }
 
                     using (DirectoryEntry de = user.GetUnderlyingObject() as DirectoryEntry)
@@ -68,5 +70,30 @@ namespace ToolBox_MVC.Services.ActiveDirectory
                 }
             }
         }
+
+        public ADConnectionResult TryConnection(int serverId)
+        {
+            try
+            {
+                using var connector =_connectorFactory.CreatePrincipalContext(serverId);
+                return ADConnectionResult.Success;
+                
+            }
+            catch (PrincipalServerDownException)
+            {
+                return ADConnectionResult.Failed;
+            }
+            catch (AuthenticationException)
+            {
+                return ADConnectionResult.InvalidCredentials;
+            }
+        }
+    }
+
+    public enum ADConnectionResult
+    {
+        Success,
+        InvalidCredentials,
+        Failed
     }
 }

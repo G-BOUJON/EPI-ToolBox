@@ -1,4 +1,4 @@
-﻿namespace ToolBox_MVC.Services
+﻿namespace ToolBox_MVC.Services.Periodic
 {
     public interface IPeriodicOperations
     {
