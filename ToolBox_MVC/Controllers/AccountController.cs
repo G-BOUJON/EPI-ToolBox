@@ -18,9 +18,9 @@ namespace ToolBox_MVC.Controllers
         private readonly IAdService _adHandler;
         private readonly IServerRepository _serverRepo;
 
-        public AccountController(IAdService adService,IServerRepository serverRepository)
+        public AccountController(ValidateCredentialFactory validateCredentialFactory,IServerRepository serverRepository)
         {
-            _adHandler = adService;
+            _adHandler = new ActiveDirectoryService(validateCredentialFactory);
             _serverRepo = serverRepository;
         }
 
@@ -44,7 +44,7 @@ namespace ToolBox_MVC.Controllers
 
             if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
             {
-                ViewBag.ErrorMessage = "Veuillez remplir les champs";
+                ViewBag.ErrorMessage = "Veuillez remplire les champs";
                 return View();
             }
             bool adCheckResult = false;

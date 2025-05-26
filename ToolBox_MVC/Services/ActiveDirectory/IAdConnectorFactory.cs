@@ -77,4 +77,20 @@ namespace ToolBox_MVC.Services.ActiveDirectory
             
         }
     }
+
+
+    public class ValidateCredentialFactory : IAdConnectorFactory
+    {
+        private readonly IConfiguration _config;
+
+        public ValidateCredentialFactory(IConfiguration config)
+        {
+            _config = config;
+        }
+
+        public PrincipalContext CreatePrincipalContext(int serverID)
+        {
+            return new PrincipalContext(ContextType.Domain, name: _config["DomainInfos:Domain"]);
+        }
+    }
 }

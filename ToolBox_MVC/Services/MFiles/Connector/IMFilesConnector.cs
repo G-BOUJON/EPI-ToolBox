@@ -62,6 +62,7 @@ namespace ToolBox_MVC.Services.MFiles.Connector
             }
             catch (COMException)
             {
+                ServerApplication = new MFilesServerApplication();
                 Vault = new Vault();
                 ConnectionResult = MfConnexionResult.IncorrectInfos;
             }

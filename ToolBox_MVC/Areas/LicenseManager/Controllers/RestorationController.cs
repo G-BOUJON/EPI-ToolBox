@@ -26,6 +26,8 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             MFilesServer server = await _serverRepo.GetByNameAsync(serverName);
             IEnumerable<MFilesAccount> accountsToRestore = await _licenseManager.GetAccountsToRestoreLicenseAsync(server.Id);
             ViewBag.ServerName = serverName;
+            ViewBag.ConnectionResult = _licenseManager.TryConnection(server.Id);
+
             return View(accountsToRestore.OrderBy(a => a.UserName));
         }
 

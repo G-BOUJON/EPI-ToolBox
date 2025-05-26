@@ -4,9 +4,18 @@
 *@
 @{
     ViewData["Title"] = "Login";
+
 }
 
-<div class="align-content-center" style="width:100%; display:flex; align-items:center; justify-content:center; ">
+<div class="d-flex flex-column justify-content-center align-items-center gap-1 w-100">
+    @{
+        if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+        {
+            <div class="alert alert-danger">
+                @ViewBag.ErrorMessage
+            </div>
+        }
+    }
     <form style="width: 40%;" asp-action="Login">
         <div style="margin-top: 30px;">
             <label for="nomUtilisateur">Nom d'utilisateur</label>

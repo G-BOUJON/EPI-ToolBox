@@ -55,6 +55,11 @@ namespace ToolBox_MVC.Services.Periodic
                 {
                     return;
                 }
+                if (!scopedSyncService.TryConnections(server.Id))
+                {
+                    _logger.LogError("Connection to server {Server} impossible. Execution aborted.", server.Name);
+                    return;
+                }
 
                 await scopedSyncService.SyncAccountsAsync(server.Id);
                 await scopedSyncService.SyncGroupsAsync(server.Id);

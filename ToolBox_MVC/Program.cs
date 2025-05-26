@@ -37,6 +37,7 @@ builder.Services.AddHostedService<LicenseMangerOperationHostedService>();
 
 builder.Services.AddScoped<IMFilesConnectorFactory, MFConnectorFactory>();
 builder.Services.AddScoped<IAdConnectorFactory, AdConnectorFactory>();
+builder.Services.AddScoped<ValidateCredentialFactory>();
 
 builder.Services.AddScoped<IMfilesAccountActivationHandler, MfAccountActivationService>();
 

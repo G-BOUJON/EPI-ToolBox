@@ -25,6 +25,15 @@
     </form>
 </div>
 <div class="d-flex flex-column flex-nowrap flex-grow-1 overflow-hidden">
+    @if (!ViewBag.ConnectionResult)
+    {
+       <div class="alert alert-danger">
+            <p>Connexion au serveur M-Files impossible, veuillez vérifier les informations de connexions dans la configuration</p>
+            <hr />
+            <p>Les opérations de restauration de licences ne sont pas réalisables</p>
+        </div>
+    }
+    
     <form asp-controller="Restoration" asp-route-serverName="@serverName" method="post" class="d-flex flex-column overflow-hidden">
         <div class="area-wrapper tableView">
             <div class="table-header">
