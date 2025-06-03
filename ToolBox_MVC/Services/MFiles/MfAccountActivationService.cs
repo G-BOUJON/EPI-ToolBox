@@ -1,5 +1,9 @@
-﻿using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
+﻿using MFilesAPI;
+using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
+using ToolBox_MVC.Areas.LicenseManager.Services;
+using ToolBox_MVC.Models;
 using ToolBox_MVC.Repositories;
+using ToolBox_MVC.Services.ActiveDirectory;
 
 namespace ToolBox_MVC.Services.MFiles
 {
@@ -7,47 +11,56 @@ namespace ToolBox_MVC.Services.MFiles
     {
         private IMFilesService _mFilesService;
         private IAccountRepository _mfAccountsRepo;
+        private IGroupRepository _groupRepo;
+        private IADAccountRepository _adAccountRepository;
+        private IADGroupRepository _aDGroupRepository;
+        private IOperationHistoryService _operationHistoryService;
 
-        public MfAccountActivationService(IMFilesService mFilesService, IAccountRepository mfAccountsRepo)
+        public MfAccountActivationService(IMFilesService mFilesService, IAccountRepository mfAccountsRepo, IGroupRepository groupRepo, IADAccountRepository adAccountRepository, IADGroupRepository aDGroupRepository, IOperationHistoryService operationHistoryService)
         {
             _mFilesService = mFilesService;
             _mfAccountsRepo = mfAccountsRepo;
+            _groupRepo = groupRepo;
+            
+            _adAccountRepository = adAccountRepository;
+            _aDGroupRepository = aDGroupRepository;
+            _operationHistoryService = operationHistoryService;
         }
 
-        public async Task<IEnumerable<MFilesAccount>> GetAllAccountsToModify(int serverID)
+        
+        
+
+        public async Task<IEnumerable<MFilesAccount>> GetAccountsToReactivateAsync(int serverID)
         {
-            var allAccounts = await _mfAccountsRepo.GetAllInServerAsync(serverID);
+            var allAccounts = await _mfAccountsRepo.GetAllInServerIncludeAsync(serverID);
+            var maintainedGroups = (await _groupRepo.GetAllInServerIncludeAccountsAsync(serverID)).Where(g => g.Maintained);
+            List<ADGroup> aDGroups = new List<ADGroup>();
 
-            var accountsToModify = allAccounts.Where(a => a.Active != a.Enabled);
-
-            return accountsToModify;
-        }
-
-        public void ModifyMFilesAccountStatus(int serverID, int mfUserID, bool activeStatus)
-        {
-            _mFilesService.ChangeAccountStatus(serverID, mfUserID, activeStatus);
-        }
-
-        public async Task ModifyAllIncorrectAccounts(int serverID)
-        {
-            var accountsToModify = await GetAllAccountsToModify(serverID);
-
-            foreach (var account in accountsToModify)
+            foreach (var mfGroup in maintainedGroups)
             {
-                try
+                if (mfGroup.ADGroup != null)
                 {
-                    ModifyMFilesAccountStatus(serverID,account.UserId,account.Active);
-
-                    account.Enabled = account.Active;
-                }
-                catch (Exception)
-                {
-                    // Message erreur ou traitement d'erreur
+                    aDGroups.Add(await _aDGroupRepository.GetByGUIDAsync(mfGroup.ADGroup.GUID));
                 }
             }
 
-            await _mfAccountsRepo.SaveChangesAsync();
 
+            var accountsToReactivate = allAccounts.
+                Where(a => a.Active != a.Enabled && a.AccountType == (int)MFLoginAccountType.MFLoginAccountTypeWindows && a.Active == true
+                && (maintainedGroups.Any(gm => gm.Accounts.Contains(a)) || aDGroups.Any(ga => ga.Accounts.Contains(a.ADAccount)))
+                );
+
+            return accountsToReactivate;
+        }
+
+        public async Task ModifyMFilesAccountStatus(int serverID, int mfUserID, bool activeStatus, bool automatic = false)
+        {
+            _mFilesService.ChangeAccountStatus(serverID, mfUserID, activeStatus);
+            var account = await _mfAccountsRepo.GetByMfIDAsync(serverID, mfUserID);
+            account.Active = activeStatus;
+
+            await _mfAccountsRepo.SaveChangesAsync();
+            await _operationHistoryService.RegisterNewOperation(account, OperationType.Activation, automatic);
         }
     }
 }

@@ -4,13 +4,7 @@ namespace ToolBox_MVC.Services.MFiles
 {
     public interface IMfilesAccountActivationHandler
     {
-        /// <summary>
-        /// Get all accounts whose status in the AD doesn't match the MFiles status
-        /// </summary>
-        /// <param name="serverID">The ID of the server to inspect</param>
-        /// <returns>A container of all the fetched accounts</returns>
-        Task<IEnumerable<MFilesAccount>> GetAllAccountsToModify(int serverID);
-        Task ModifyAllIncorrectAccounts(int serverID);
+        Task<IEnumerable<MFilesAccount>> GetAccountsToReactivateAsync(int serverID);
 
         /// <summary>
         /// Modifiy an account's status on a M-Files server
@@ -18,6 +12,6 @@ namespace ToolBox_MVC.Services.MFiles
         /// <param name="serverID">The ID of the M-Files server on which to operate</param>
         /// <param name="mfUserID">The UserID of the targeted UserAccount on M-Files</param>
         /// <param name="activeStatus">The targeted status</param>
-        void ModifyMFilesAccountStatus(int serverID, int mfUserID, bool activeStatus);
+        Task ModifyMFilesAccountStatus(int serverID, int mfUserID, bool activeStatus, bool automatic = false);
     }
 }

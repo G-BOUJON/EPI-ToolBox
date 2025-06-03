@@ -14,6 +14,7 @@ namespace ToolBox_MVC.Repositories
     }
     public class GroupRepository : GenericRepository<MFilesGroup>, IGroupRepository
     {
+
         public GroupRepository(ToolBoxDbContext context) : base(context)
         {
         }
@@ -25,12 +26,15 @@ namespace ToolBox_MVC.Repositories
 
         public async Task<List<MFilesGroup>> GetAllInServerIncludeAccountsAsync(int serverID)
         {
-            return await _dbSet.Include(g => g.Accounts).Where(g => g.ServerId == serverID).ToListAsync();
+            return await _dbSet
+                .Include(g => g.Accounts)
+                .Include(g => g.ADGroup)
+                .Where(g => g.ServerId == serverID).ToListAsync();
         }
 
         public async Task<MFilesGroup?> GetByIdIncludeAccountAsync(int id)
         {
-            return await _dbSet.Include(g => g.Accounts).FirstAsync(g => g.Id == id);
+            return await _dbSet.Include(g => g.ADGroup).Include(g => g.Accounts).FirstAsync(g => g.Id == id);
         }
 
         public async Task<MFilesGroup?> GetByMfIDAsync(int serverID, int mfID)
@@ -40,7 +44,23 @@ namespace ToolBox_MVC.Repositories
 
         public async Task<MFilesGroup?> GetByMfIDIncludeAccountsAsync(int serverID, int mfID)
         {
-            return await _dbSet.Include(g=>g.Accounts).FirstAsync(g => g.ServerId == serverID && g.MFilesId == mfID);
+            return await _dbSet.Include(g => g.ADGroup).Include(g=>g.Accounts).FirstAsync(g => g.ServerId == serverID && g.MFilesId == mfID);
+        }
+
+        public override async Task<MFilesGroup?> GetByIDAsync(int id)
+        {
+            MFilesGroup? mFilesGroup;
+
+            try
+            {
+                mFilesGroup = await _dbSet.Include(g => g.ADGroup).Include(g => g.Accounts).FirstAsync(g => g.Id == id);
+            }
+            catch (ArgumentNullException)
+            {
+                mFilesGroup = null;
+            }
+
+            return mFilesGroup;
         }
     }
 }

@@ -1,72 +1,130 @@
 ﻿@using ToolBox_MVC.Areas.LicenseManager.Models.DBModels
+@using ToolBox_MVC.Areas.LicenseManager.Services
+@using ToolBox_MVC.Repositories
+@using ToolBox_MVC.Services.ActiveDirectory
 @using ToolBox_MVC.Services.MFiles
+@using ToolBox_MVC.Services.MFiles.Connector
 
 
 @inject IMFilesService mfService
+@inject IServerRepository serverRepo
+@inject IAdService adService
+@inject ILicenseMangagerService licenseManager
 
 
 @model MFilesServer
 @{
     ViewBag.ServerName = Model.Name;
+
+    bool mfConnect = mfService.TryServerConnection(Model.Id) == MfConnexionResult.Success;
+    bool adConnect = adService.TryConnection(Model.ActiveDirectoryID) == ADConnectionResult.Success;
 }
-<h1>M-Files Tools</h1>
+
+<div class="d-inline-flex gap-3 flex-grow-0">
+    <h1 class="align-middle">Dashboard - Environnement : </h1>
+    <form id="changeServer" asp-area="LicenseManager" asp-controller="Home" asp-action="Details" asp-route-serverName="" method="get">
+        <a class="dropdown-toggle text-dark text-decoration-none clickable-text title" data-bs-toggle="dropdown" href="#">@Model.Name</a>
+        <ul class="dropdown-menu">
+            @{
+                foreach (var server in await serverRepo.GetAllAsync())
+                {
+                    <li><a class="dropdown-item text-dark" asp-controller="Home" asp-action="Details" asp-route-serverName="@server.Name">@server.Name</a></li>
+                }
+            }
+        </ul>
+    </form>
+</div>
 <div class="d-flex flex-column flex-nowrap overflow-hidden align-items-stretch">
     <div class="dashboard-grid">
-        <div class="dashboard-grid-item fullrow">
+        <div class="dashboard-grid-item double-col">
             <div class="g-header">
-                <h2>Configuration de l'environnement : @Model.Name</h2>
+                <h2>Configuration de l'environnement</h2>
             </div>
             <div class="g-body">
                 <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-column">
+                    <div class="d-flex flex-column" style="flex: 1 0 auto; max-width: 600px;">
                         <div class="card-body container">
                             <h5 class="card-title">Information serveur</h5>
-                            <div class="row">
-                                <div class="col fw-bold">
-                                    Nom du serveur
+                            <div class="listView small">
+                                <div class="list-item">
+                                    <div class="item-label">
+                                        Nom
+                                    </div>
+                                    <div class="item-value large">
+                                        @Model.Name
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    @Model.Name
+                                <div class="list-item">
+                                    <div class="item-label">
+                                        Adresse M-Files
+                                    </div>
+                                    <div class="item-value large">
+                                        @Model.NetworkAddress
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col fw-bold">
-                                    Adresse 
+                                <div class="list-item">
+                                    <div class="item-label">
+                                        Connexion M-Files
+                                    </div>
+                                    <div class="item-value large">
+                                        @{
+                                            if (mfConnect)
+                                            {
+                                                <span class="status active no-border">Connecté</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="status disabled no-border">Connexion impossible</span>
+                                            }
+                                        }
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    @Model.NetworkAddress
+                                <div class="list-item">
+                                    <div class="item-label">
+                                        Adresse Active Directory
+                                    </div>
+                                    <div class="item-value large">
+                                        @Model.ActiveDirectory.Name
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col fw-bold">
-                                    Protocole
-                                </div>
-                                <div class="col">
-                                    @Model.ProtocolSequence
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col fw-bold">
-                                    GUID du coffre
-                                </div>
-                                <div class="col">
-                                    @Model.VaultGuid
+                                <div class="list-item">
+                                    <div class="item-label">
+                                        Connexion AD
+                                    </div>
+                                    <div class="item-value large">
+                                        @{
+                                            if (adConnect)
+                                            {
+                                                <span class="status active no-border">Connecté</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="status disabled no-border">Connexion impossible</span>
+                                            }
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 card">
-
-                    </div>
-                    <div class="col-lg-3 d-flex flex-column justify-content-between align-items-end">
-                        <a class="btn btn-secondary fw-bold w-auto" @*Link to config*@>
+                    <div class="d-flex flex-column justify-content-between align-items-end" style="flex:1 1 auto; max-width:400px;">
+                        <a class="btn btn-secondary fw-bold w-auto" asp-controller="Configuration" asp-action="Index" asp-route-serverName="@Model.Name">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
                                 <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
                             </svg>
                             Modifier
                         </a>
-                        <form method="post" asp-area="LicenseManager" asp-controller="Home" asp-action="Sync" asp-route-serverName="@Model.Name">              
-                            <button type="submit" class="btn btn-info fw-bold col-auto">
+                        <form method="post" asp-area="LicenseManager" asp-controller="Home" asp-action="Sync" asp-route-serverName="@Model.Name" class="d-flex flex-column align-items-end">  
+                            @{
+                                string disableSync = "";
+                                if (!(adConnect && mfConnect))
+                                {
+                                    disableSync = "disabled";
+                                    <div class="alert alert-danger">La synchronisation n'est pas possible à cause d'une connexion échouée au serveur M-Files ou à l'AD</div>
+                                }
+
+                            }
+                            <button @disableSync type="submit" class="btn btn-info fw-bold col-auto">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
                                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
@@ -74,6 +132,36 @@
                                 Synchronisation
                             </button>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-grid-item">
+            <div class="g-header">
+                <h2>LicenseManager - Comptes Filtrés</h2>
+            </div>
+            <div class="g-body">
+                <div class="listView">
+                    <div class="list-item">
+                        <a class="item-label big-text fw-bold clickable-text" asp-controller="Removal" asp-action="Index" asp-route-serverName="@Model.Name">
+                            Retraits
+                        </a>
+                        <div class="item-value huge-text fw-bold start">
+                            @((await licenseManager.GetAccountsToRemoveLicenseAsync(Model.Id)).Where(a => !a.Maintained).Count())
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="g-body">
+                <div class="listView">
+                    <div class="list-item">
+                        <a class="item-label big-text fw-bold clickable-text" asp-controller="Restoration" asp-action="Index" asp-route-serverName="@Model.Name">
+                            Restorations
+                        </a>
+                        <div class="item-value huge-text fw-bold start">
+                            @((await licenseManager.GetAccountsToRestoreLicenseAsync(Model.Id)).Count())
+                        </div>
                     </div>
                 </div>
             </div>

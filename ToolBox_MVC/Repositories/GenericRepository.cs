@@ -35,7 +35,7 @@ namespace ToolBox_MVC.Repositories
             return await _dbSet.ToListAsync();
         }
 
-        public async Task<TEntity?> GetByIDAsync(int id)
+        public virtual async Task<TEntity?> GetByIDAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }

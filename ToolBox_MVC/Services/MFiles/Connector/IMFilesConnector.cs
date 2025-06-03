@@ -41,6 +41,8 @@ namespace ToolBox_MVC.Services.MFiles.Connector
                     AllowAnonymousConnection: true
                     );
 
+                var displayinfos = ServerApplication.GetServerVersion().Display;
+
                 if (connectionResult == MFServerConnection.MFServerConnectionAnonymous)
                 {
                     Vault = new Vault();

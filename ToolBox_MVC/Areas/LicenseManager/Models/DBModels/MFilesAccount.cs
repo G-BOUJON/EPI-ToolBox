@@ -1,5 +1,6 @@
 ﻿using MFilesAPI;
 using System.ComponentModel.DataAnnotations;
+using ToolBox_MVC.Models;
 
 namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
 {
@@ -24,7 +25,9 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
         public int ServerId { get; set; }
         
 
-        public virtual ICollection<MFilesGroup> Groups { get; set; }
+        public virtual ICollection<MFilesGroup> Groups { get; set; } 
+        public string? ADAccountGUID { get; set; }
+        public ADAccount? ADAccount { get; set; }
 
         public MFilesAccount() { }
 

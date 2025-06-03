@@ -1,0 +1,90 @@
+﻿@using MFilesAPI
+@using ToolBox_MVC.Areas.LicenseManager.Models.DBModels
+@using ToolBox_MVC.Areas.LicenseManager.Services
+@using ToolBox_MVC.Repositories
+@using ToolBox_MVC.Services
+
+@inject IServerRepository serverRepository;
+
+@model IEnumerable<HistoryOperation>
+@{
+    string serverName = ViewBag.ServerName;
+    MFilesAccount account = ViewBag.Account;
+    ViewData["Title"] = "Historique du " + account.AccountName;
+}
+
+
+<div class="d-inline-flex gap-3 flex-grow-0">
+
+    <h1 class="align-middle">Opérations sur compte @account.AccountName - Environnement : </h1>
+    <div>
+        <a class="dropdown-toggle text-dark text-decoration-none clickable-text title" data-bs-toggle="dropdown" href="#">@serverName</a>
+        <ul class="dropdown-menu">
+            @{
+                foreach (var server in await serverRepository.GetAllAsync())
+                {
+                    <li><a class="dropdown-item text-dark" asp-controller="History" asp-action="Date" asp-route-serverName="@server.Name" asp-route-accountId="@account.Id">@server.Name</a></li>
+                }
+            }
+        </ul>
+    </div>
+</div>
+<div class="d-flex flex-column flex-nowrap flex-grow-1 overflow-hidden">
+    <a class="btn btn-outline-info align-self-start" asp-action="Index" asp-route-serverName="@serverName">
+        &lt;= Retour à la liste
+    </a>
+    <div class="area-wrapper tableView">
+        <div class="table-header">
+            <div class="table-cell">
+                Date
+            </div>
+            <div class="table-cell">
+                Heure
+            </div>
+            <div class="table-cell">
+                Type d'opération
+            </div>
+            <div class="table-cell maintained">
+                Automatique ?
+            </div>
+        </div>
+        @{
+            foreach (var operation in Model)
+            {
+                var modalName = "modal" + operation.ID;
+
+                <div class="table-row">
+                    <div class="table-cell">
+                        @operation.Date
+                    </div>
+                    <div class="table-cell">
+                        @operation.Time
+                    </div>
+                    <div class="table-cell">
+                        @TranslatorService.OperationTypeDictionnary[(OperationType)operation.OperationType]
+                    </div>
+                    <div class="table-cell maintained">
+                        @{
+                            if (operation.Automatic)
+                            {
+                                <span>
+                                    Automatique
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    Manuelle
+                                </span>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+
+
+

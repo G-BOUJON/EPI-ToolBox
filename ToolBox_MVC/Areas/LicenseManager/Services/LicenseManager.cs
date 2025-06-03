@@ -14,14 +14,16 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
         private readonly IAccountRepository _accountsRepo;
         private readonly IGroupRepository _groupRepo;
         private readonly IMFilesService _mFilesService;
+        private readonly IOperationHistoryService _operationHistoryService;
 
 
 
-        public LicenseManager(IAccountRepository accountsRepo, IGroupRepository groupRepository, IMFilesService mFilesService)
+        public LicenseManager(IAccountRepository accountsRepo, IGroupRepository groupRepository, IMFilesService mFilesService, IOperationHistoryService operationHistoryService)
         {
             _accountsRepo = accountsRepo;
             _groupRepo = groupRepository;
             _mFilesService = mFilesService;
+            _operationHistoryService = operationHistoryService;
         }
 
         public async Task<IEnumerable<MFilesAccount>> GetAccountsToRemoveLicenseAsync(int serverId)
@@ -48,16 +50,14 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
             var selectedGroups = (await _groupRepo.GetAllInServerIncludeAccountsAsync(serverId)).Where(g => g.Maintained).ToHashSet();
 
             var toRestoreAccounts = unlicensedAccounts.Where(a 
-                => (selectedGroups.Any(g => g.Accounts.Contains(a)) 
-                && a.Active 
-                && a.Enabled && !string.IsNullOrEmpty(a.EmailAddress))
-                || a.AccountType == (int)MFLoginAccountType.MFLoginAccountTypeMFiles
+                => (selectedGroups.Any(g => g.Accounts.Contains(a)) && a.Active && !string.IsNullOrEmpty(a.EmailAddress))
+                || (a.AccountType == (int)MFLoginAccountType.MFLoginAccountTypeMFiles && a.Enabled)
                 );
 
             return toRestoreAccounts;
         }
 
-        public async Task RemoveLicenseAsync(int serverId, string accountName)
+        public async Task RemoveLicenseAsync(int serverId, string accountName, bool automatic = false)
         {
             var account = await _accountsRepo.GetByAccountNameAsync(serverId, accountName);
             if (account == null || account.Maintained)
@@ -71,7 +71,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
                 account.License = (int)MFLicenseType.MFLicenseTypeNone;
                 await _accountsRepo.SaveChangesAsync();
 
-                // gestion historique
+                await _operationHistoryService.RegisterNewOperation(account, OperationType.Removal, automatic);
             }
             else
             {
@@ -80,10 +80,10 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
             }
         }
 
-        public async Task RestoreLicenseAsync(int serverId, string accountName)
+        public async Task RestoreLicenseAsync(int serverId, string accountName, bool automatic = false)
         {
             var account = await _accountsRepo.GetByAccountNameAsync(serverId, accountName);
-            if (account == null || account.Maintained)
+            if (account == null)
             {
                 return;
             }
@@ -93,6 +93,8 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
                 
                 account.License = (int)MFLicenseType.MFLicenseTypeReadOnlyLicense;
                 await _accountsRepo.SaveChangesAsync();
+
+                await _operationHistoryService.RegisterNewOperation(account, OperationType.Restoration, automatic);
             }
             else
             {

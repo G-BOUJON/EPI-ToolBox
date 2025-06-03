@@ -16,6 +16,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         
         private readonly IServerRepository _serverRepo;
 
+
         public RemovalController(ILicenseMangagerService licenseManager, IServerRepository serverRepo)
         {
             _licenseManager = licenseManager;
@@ -33,6 +34,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             var server = await _serverRepo.GetByNameAsync(serverName);
             var accountsToRemove = await _licenseManager.GetAccountsToRemoveLicenseAsync(server.Id);
             ViewBag.ServerName = serverName;
+            ViewBag.ConnectionResult = _licenseManager.TryConnection(server.Id);
             return View(accountsToRemove.OrderBy(a => a.UserName));
         }
 

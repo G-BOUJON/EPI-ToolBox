@@ -9,13 +9,14 @@
 @inject IGroupRepository groupRepository;
 @inject IMfCredentialStore mfCredRepo;
 @inject IMFilesService mfService;
+@inject IGenericRepository<ActiveDirectory> adRepository;
 @inject IAdService adService;
 
 @model MFilesServer;
 
 @{
     ViewData["Title"] = "Configuration M-Files";
-    var adCred = Model.ADCredential;
+    
 }
 
 <div class="d-inline-flex gap-3 flex-grow-0 content-header">
@@ -190,26 +191,37 @@
         </div>
     </form>
     <form class="config-grid-item" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeADInfos" asp-route-serverName="@Model.Name">
+        <input type="hidden" asp-for="Name" value="@Model.Name" />
+        <input type="hidden" asp-for="Id" value="@Model.Id" />
         <div class="g-header">
             <h2>Infos de connexion à l'Active Directory</h2>
         </div>
         @*Container for AD infos*@
+        @{
+            var adList = await adRepository.GetAllAsync();
+        }
         <div class="g-body">
             <div class="listView">
                 <div class="list-item">
                     <div class="item-label">
-                        Domain
+                        Adresse du domaine
                     </div>
                     <div class="item-value large">
-                        <input class="form-control" asp-for="@adCred.Domain" value="@adCred.Domain" />
-                    </div>
-                </div>
-                <div class="list-item">
-                    <div class="item-label">
-                        Container
-                    </div>
-                    <div class="item-value large">
-                        <input class="form-control" asp-for="@adCred.Container" value="@adCred.Container" />
+                        <select class="form-select" asp-for="ActiveDirectoryID">
+                            @{
+                                foreach (var ad in adList)
+                                {
+                                    if (ad.ID == Model.ActiveDirectoryID)
+                                    {
+                                        <option selected value="@ad.ID">@ad.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@ad.ID">@ad.Name</option>
+                                    }
+                                }
+                            }
+                        </select>
                     </div>
                 </div>
                 <div class="list-item">
@@ -218,7 +230,7 @@
                     </div>
                     <div class="item-value large">
                         @{
-                            var adConnectResults = adService.TryConnection(Model.Id);
+                            var adConnectResults = adService.TryConnection(Model.ActiveDirectoryID);
                             if (adConnectResults == ADConnectionResult.Success)
                             {
                                 <span class="status active no-border">Connexion Réussie</span>
@@ -337,16 +349,14 @@
         </form>
     </div>
 </div>
+
 @{
-    ADCredential adCredential = Model.ADCredential.Clone();
-    adCredential.EncryptedUsername = string.Empty;
-    adCredential.EncryptedPassword = string.Empty;
+    ActiveDirectory activeDirectory = new();
 }
 <div class="modal fade" id="adCred" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <form method="post" asp-area="LicenseManager" asp-controller="Configuration" asp-action="ChangeAdCredentials" asp-route-serverName="@Model.Name" class="modal-content">
-            <input type="hidden" asp-for="@adCredential.Domain" value="@adCredential.Domain" />
-            <input type="hidden" asp-for="@adCredential.Container" value="@adCredential.Container" />
+            <input type="hidden" asp-for="@activeDirectory.ID" value="@Model.ActiveDirectory.ID" />
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Changement identifiants Active Directory</h5>
                 <button type="button" class="btn-close b-0" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -358,7 +368,7 @@
                             Nom d'utilisateur
                         </div>
                         <div class="item-value">
-                            <input class="form-control" asp-for="@adCredential.EncryptedUsername" type="text" required />
+                            <input class="form-control" asp-for="@activeDirectory.EncryptedCredentials.Username" type="text" required />
                         </div>
                     </div>
                     <div class="list-item">
@@ -366,7 +376,7 @@
                             Mot de passe
                         </div>
                         <div class="item-value">
-                            <input class="form-control" asp-for="@adCredential.EncryptedPassword" type="password" required />
+                            <input class="form-control" asp-for="@activeDirectory.EncryptedCredentials.Password" type="password" required />
                         </div>
                     </div>
                 </div>

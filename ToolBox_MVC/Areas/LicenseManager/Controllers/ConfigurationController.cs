@@ -17,13 +17,15 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         private readonly IMfCredentialStore _credentialRepo;
         private readonly IADCredentialService _adCredrepo;
         private readonly IGroupRepository _groupRepo;
+        private readonly IGenericRepository<ActiveDirectory> _activeDirectoryRepo;
 
-        public ConfigurationController(IServerRepository mfilesServerRepository, IMfCredentialStore credentialRepository,IADCredentialService aDCredRepository, IGroupRepository groupRepository)
+        public ConfigurationController(IServerRepository mfilesServerRepository, IMfCredentialStore credentialRepository,IADCredentialService aDCredRepository, IGroupRepository groupRepository, IGenericRepository<ActiveDirectory> adRepo)
         {
             _serverRepo = mfilesServerRepository;
             _credentialRepo = credentialRepository;
             _adCredrepo = aDCredRepository;
             _groupRepo = groupRepository;
+            _activeDirectoryRepo = adRepo;
         }
 
 
@@ -77,35 +79,38 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeADInfos(string serverName, ADCredential adCred)
+        public async Task<IActionResult> ChangeADInfos(MFilesServer serv)
         {
-            var server = await _serverRepo.GetByNameAsync(serverName);
+            var server = await _serverRepo.GetByNameAsync(serv.Name);
 
             if (server == null)
             {
                 // Redirect somewhere
             }
 
-            server.ADCredential.Container = adCred.Container;
-            server.ADCredential.Domain = adCred.Domain;
+            server.ActiveDirectoryID = serv.ActiveDirectoryID;
 
             await _serverRepo.SaveChangesAsync();
 
-            return RedirectToAction("Index", new { serverName = serverName });
+            return RedirectToAction("Index", new { serverName = serv.Name });
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> ChangeAdCredentials(string serverName, ADCredential adCredential)
+        public async Task<IActionResult> ChangeAdCredentials(string serverName, ActiveDirectory activeDirectory)
         {
-            var server = await _serverRepo.GetByNameAsync(serverName);
+            var ad = await _activeDirectoryRepo.GetByIDAsync(activeDirectory.ID);
 
-            if (server == null)
+            if (ad == null)
             {
-                return RedirectToRoute("LicenseManager/");
+                return RedirectToRoute("MFiles/");
             }
 
-            await _adCredrepo.UpdateCredentials(server.Id,adCredential);
+            _adCredrepo.ProtectCredentials(activeDirectory);
+
+            ad.EncryptedCredentials = activeDirectory.EncryptedCredentials;
+
+            await _activeDirectoryRepo.SaveChangesAsync();
 
             return RedirectToAction("Index", new { serverName = serverName });
         }

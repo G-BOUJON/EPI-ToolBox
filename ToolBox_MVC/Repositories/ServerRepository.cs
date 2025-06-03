@@ -16,7 +16,7 @@ namespace ToolBox_MVC.Repositories
 
         public async Task<MFilesServer?> GetByNameAsync(string serverName)
         {
-            return await _dbSet.FirstAsync(s => s.Name == serverName);
+            return await _dbSet.Include(s=> s.ActiveDirectory).FirstAsync(s => s.Name == serverName);
         }
     }
 }

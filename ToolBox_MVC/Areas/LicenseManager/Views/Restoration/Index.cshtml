@@ -112,6 +112,10 @@
                                         <div class="col-6">@TranslatorService.TranslateMFLicense((MFLicenseType)account.License)</div>
                                     </div>
                                     <div class="row mt-1">
+                                        <div class="col-5 fw-bold text-end">Type de compte</div>
+                                        <div class="col-6">@TranslatorService.TranslateMFAccountType((MFLoginAccountType)account.AccountType)</div>
+                                    </div>
+                                    <div class="row mt-1">
                                         <div class="col-5 fw-bold text-end">Statut M-Files</div>
                                         <div class="col-auto pe-none">
                                             @{

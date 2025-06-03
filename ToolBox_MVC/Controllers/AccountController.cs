@@ -48,11 +48,11 @@ namespace ToolBox_MVC.Controllers
                 return View();
             }
             bool adCheckResult = false;
-            if (_adHandler.TryConnection(server.Id) == ADConnectionResult.Success)
+            if (_adHandler.TryConnection(server.ActiveDirectoryID) == ADConnectionResult.Success)
             {
                 try
                 {
-                    adCheckResult = _adHandler.AreValidCredentials(server.Id, Username, Password);
+                    adCheckResult = _adHandler.AreValidCredentials(server.ActiveDirectoryID, Username, Password);
                 }
                 catch (LdapException)
                 {

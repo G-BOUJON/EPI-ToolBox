@@ -14,8 +14,8 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
         public string Domain { get; set; }
         public TimeOnly SyncTime { get; set; }
         
-
-        public ADCredential ADCredential { get; set; }
+        public int ActiveDirectoryID { get; set; }
+        public ActiveDirectory ActiveDirectory { get; set; }
         public MFilesCredential MfCredential { get; set; }
         /// <summary>
         /// Status of activation of each automatic operations that can be performed on this server
@@ -37,7 +37,6 @@ namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
                 VaultGuid = this.VaultGuid,
                 Domain = this.Domain,
                 SyncTime = this.SyncTime,
-                ADCredential = this.ADCredential.Clone(),
                 MfCredential = this.MfCredential.Clone(),
                 AutomaticOP = this.AutomaticOP.Clone()
             };

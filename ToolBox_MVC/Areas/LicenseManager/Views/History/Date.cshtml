@@ -1,0 +1,123 @@
+﻿@using MFilesAPI
+@using ToolBox_MVC.Areas.LicenseManager.Models.DBModels
+@using ToolBox_MVC.Areas.LicenseManager.Services
+@using ToolBox_MVC.Repositories
+@using ToolBox_MVC.Services
+
+@inject IServerRepository serverRepository;
+
+@model IEnumerable<HistoryOperation>
+@{
+    string serverName = ViewBag.ServerName;
+    DateOnly date = ViewBag.Date;
+    ViewData["Title"] = "Historique du " + date.ToString();
+}
+
+
+<div class="d-inline-flex gap-3 flex-grow-0">
+    
+    <h1 class="align-middle">Opérations du @date - Environnement : </h1>
+    <div>
+        <a class="dropdown-toggle text-dark text-decoration-none clickable-text title" data-bs-toggle="dropdown" href="#">@serverName</a>
+        <ul class="dropdown-menu">
+            @{
+                foreach (var server in await serverRepository.GetAllAsync())
+                {
+                    <li><a class="dropdown-item text-dark" asp-controller="History" asp-action="Date" asp-route-serverName="@server.Name" asp-route-dateInt="@date.DayNumber">@server.Name</a></li>
+                }
+            }
+        </ul>
+    </div>
+</div>
+<div class="d-flex flex-column flex-nowrap flex-grow-1 overflow-hidden">
+    <a class="btn btn-outline-info align-self-start" asp-action="Index" asp-route-serverName="@serverName">
+        &lt;= Retour à la liste
+    </a>
+    <div class="area-wrapper tableView">
+        <div class="table-header">
+            <div class="table-cell">
+                Heure
+            </div>
+            <div class="table-cell">
+                Compte
+            </div>
+            <div class="table-cell">
+                Type d'opération
+            </div>
+            <div class="table-cell maintained">
+                Automatique ?
+            </div>
+        </div>
+        @{
+            foreach (var operation in Model)
+            {
+                var modalName = "modal" + operation.ID;
+
+                <div class="table-row">
+                    <div class="table-cell">
+                        @operation.Time
+                    </div>
+                    <button type="button" class="table-cell bg-transparent border-0 clickable-text" data-bs-toggle="modal" data-bs-target="#@modalName">
+                        @operation.Account.UserName
+                    </button>
+                    <div class="table-cell">
+                        @TranslatorService.OperationTypeDictionnary[(OperationType)operation.OperationType]
+                    </div>
+                    <div class="table-cell maintained">
+                        @{
+                            if (operation.Automatic)
+                            {
+                                <span>
+                                    Automatique
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    Manuelle
+                                </span>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="modal fade" id="@modalName" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">@operation.Account.AccountName</h5>
+                                <button type="button" class="btn-close b-0" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body container text-start">
+                                <div class="row mt-1">
+                                    <div class="col-5 fw-bold text-end">Nom d'utilisateur</div>
+                                    <div class="col-6">@operation.Account.UserName</div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col-5 fw-bold text-end">Nom complet</div>
+                                    <div class="col-6">@operation.Account.FullName</div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col-5 fw-bold text-end">Adresse Mail</div>
+                                    <div class="col-6">@operation.Account.EmailAddress</div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col-5 fw-bold text-end">Type de compte</div>
+                                    <div class="col-6">@TranslatorService.AccountTypeDictionnary[(MFLoginAccountType)operation.Account.AccountType]</div>
+                                </div>
+                            </div>
+                            <div class="modal-footer container justify-content-center">
+                                <a class="btn btn-info fw-bold align-middle p-0 px-1" asp-action="Account" asp-route-serverName="@serverName" asp-route-accountId="@operation.Account.Id">
+                                    Historique du compte
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+
+

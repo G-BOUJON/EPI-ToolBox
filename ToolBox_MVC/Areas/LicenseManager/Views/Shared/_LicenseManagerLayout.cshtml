@@ -9,25 +9,37 @@
     Layout = "_Layout";
     if (string.IsNullOrEmpty(ViewBag.ServerName))
     {
-        ViewBag.ServerName = (await serverRepository.GetByIDAsync(1)).Name;
+        ViewBag.ServerName = (await serverRepository.GetAllAsync()).First().Name;
     }
 }
 <aside class="sidebar">
     <div class="sidebar-header">
-        <a class="fw-bold" asp-area="LicenseManager" asp-controller="Home" asp-action="Index">Gestion M-Files</a>
+        <span class="title">M-Files Tools</span>
     </div>
     <ul class="sidebar-list">
         <li class="sidebar-list-item">
             <a asp-area="LicenseManager" asp-controller="Home" asp-action="Details" asp-route-serverName="@ViewBag.ServerName">Dashboard</a>
         </li>
         <li class="sidebar-list-item">
+            <a asp-area="LicenseManager" asp-controller="Configuration" asp-action="Index" asp-route-serverName="@ViewBag.ServerName">Configuration</a>
+        </li>
+        <li class="sidebar-list-item">
+            <a asp-area="LicenseManager" asp-controller="History" asp-action="Index" asp-route-serverName="@ViewBag.ServerName">Historique</a>
+        </li>
+        <li class="sidebar-list-item section-title">
+            <p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pass" viewBox="0 0 16 16">
+                    <path d="M5.5 5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1z" />
+                    <path d="M8 2a2 2 0 0 0 2-2h2.5A1.5 1.5 0 0 1 14 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-13A1.5 1.5 0 0 1 3.5 0H6a2 2 0 0 0 2 2m0 1a3 3 0 0 1-2.83-2H3.5a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-13a.5.5 0 0 0-.5-.5h-1.67A3 3 0 0 1 8 3" />
+                </svg>
+                License Manager
+            </p>
+        </li>
+        <li class="sidebar-list-item">
             <a asp-area="LicenseManager" asp-controller="Removal" asp-action="Index" asp-route-serverName="@ViewBag.ServerName">Retrait</a>
         </li>
         <li class="sidebar-list-item">
             <a asp-area="LicenseManager" asp-controller="Restoration" asp-action="Index" asp-route-serverName="@ViewBag.ServerName">Restauration</a>
-        </li>  
-        <li class="sidebar-list-item">
-            <a asp-area="LicenseManager" asp-controller="Configuration" asp-action="Index" asp-route-serverName="@ViewBag.ServerName">Configuration</a>
         </li>
     </ul>
 

@@ -1,4 +1,6 @@
-﻿namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
+﻿using ToolBox_MVC.Models;
+
+namespace ToolBox_MVC.Areas.LicenseManager.Models.DBModels
 {
     public class MFilesGroup
     {
@@ -10,5 +12,8 @@
 
         public ICollection<MFilesAccount> Accounts { get; set; }
         public MFilesServer Server { get; set; }
+        
+        public string ADGroupGUID { get; set; }
+        public ADGroup? ADGroup { get; set; }
     }
 }

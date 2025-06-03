@@ -23,6 +23,12 @@ $navbarHeight: 60px;
 $smallTextFontSize: 14px;
 $tinyFontSize: 12px;
 
+$largeFontSize: 20px;
+$XLfontSize: 24px;
+
+$bigFontSize: 28px;
+$hugeFontSize:40px;
+
 html {
   font-size: 14px;
 }
@@ -71,7 +77,12 @@ body {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 16px;
+        padding: 0px;
+
+        .title {
+            font-size: $XLfontSize;
+            font-weight: bolder;
+        }
     }
 
     &-list{
@@ -81,7 +92,7 @@ body {
         &-item{
             position: relative;
             margin-bottom: 4px;
-
+            padding-left: 10px;
             a {
                 display: flex;
                 align-items: center;
@@ -90,10 +101,17 @@ body {
                 color: $clickableTextColor;
                 text-decoration: none;
                 line-height: 24px;
+    
+                &:hover {
+                    background-color: white;
+                }
             }
 
-            &:hover {
-                background-color: white;
+            &.section-title {
+                padding-left: 0;
+                font-weight: bold;
+                margin-top: 25px;
+                font-size: $largeFontSize;
             }
         }
     }
@@ -143,6 +161,16 @@ body {
 
         &:hover {
             background-color: $bgPrimary;
+        }
+
+        &.clickable {
+            &:hover {
+                
+
+                background-color: $modalBg;
+            }
+
+            
         }
     }
 
@@ -222,6 +250,18 @@ body {
             &.small{
                 flex-grow: 0.5;
             }
+
+            &.start{
+                justify-content: flex-start;
+            }
+        }
+    }
+
+    &.small {
+        font-size: $smallTextFontSize;
+
+        .item-label {
+            min-width: 200px;
         }
     }
 }
@@ -244,6 +284,10 @@ body {
         &.fullrow{
             grid-column: span 3;
         }
+
+        &.double-col {
+            grid-column: span 2;
+        }
     }
 }
 
@@ -255,6 +299,11 @@ body {
     flex-shrink:0;
     padding: 5px;
     gap: 5px;
+}
+
+.g-seperator {
+    width: 100%;
+    border-bottom: 2px solid black;
 }
 
 .g-body {
@@ -305,6 +354,7 @@ body {
         }
     }
 }
+
 
 /*CSS pour dropdown submenu*/
 .dropdown-menu li {
@@ -391,13 +441,14 @@ body {
 .clickable-text {
     color: $clickableTextColor;
     font-weight: bold;
+    text-decoration: none;
 
-    &:hover{
+    &:hover {
         transform: translateX(3px);
-        
+        color: $clickableTextColor;
     }
 
-    &.title{
+    &.title {
         font-size: 2.5em;
     }
 }
@@ -416,3 +467,14 @@ body {
     background-color: transparent;    
 }
 
+.tiny-text {
+    font-size: $tinyFontSize;
+}
+
+.big-text {
+    font-size: $bigFontSize;
+}
+
+.huge-text {
+    font-size: $hugeFontSize;
+}

@@ -22,6 +22,21 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ADAccountADGroup", b =>
+                {
+                    b.Property<int>("AccountsID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupsID")
+                        .HasColumnType("int");
+
+                    b.HasKey("AccountsID", "GroupsID");
+
+                    b.HasIndex("GroupsID");
+
+                    b.ToTable("ADAccountADGroup");
+                });
+
             modelBuilder.Entity("MFilesAccountMFilesGroup", b =>
                 {
                     b.Property<int>("AccountsId")
@@ -37,6 +52,36 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                     b.ToTable("MFilesAccountMFilesGroup");
                 });
 
+            modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.HistoryOperation", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("AccountID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Automatic")
+                        .HasColumnType("bit");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<int>("OperationType")
+                        .HasColumnType("int");
+
+                    b.Property<TimeOnly>("Time")
+                        .HasColumnType("time");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AccountID");
+
+                    b.ToTable("HistoryOperations");
+                });
+
             modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesAccount", b =>
                 {
                     b.Property<int>("Id")
@@ -44,6 +89,9 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ADAccountGUID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AccountName")
                         .IsRequired()
@@ -93,6 +141,8 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ADAccountGUID");
+
                     b.HasIndex("ServerId");
 
                     b.HasIndex("AccountName", "ServerId")
@@ -108,6 +158,9 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ADGroupGUID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("MFilesId")
                         .HasColumnType("int");
@@ -126,6 +179,8 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ADGroupGUID");
+
                     b.HasIndex("ServerId");
 
                     b.HasIndex("MFilesId", "ServerId")
@@ -142,6 +197,9 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActiveDirectoryID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Domain")
                         .IsRequired()
@@ -172,10 +230,117 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ActiveDirectoryID");
+
                     b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("MFilesServers");
+                });
+
+            modelBuilder.Entity("ToolBox_MVC.Models.ADAccount", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("ActiveDirectoryID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailAdress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("GUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ActiveDirectoryID");
+
+                    b.ToTable("ADAccounts");
+                });
+
+            modelBuilder.Entity("ToolBox_MVC.Models.ADGroup", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("ActiveDirectoryID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("GUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ActiveDirectoryID");
+
+                    b.ToTable("ADGroups");
+                });
+
+            modelBuilder.Entity("ToolBox_MVC.Models.ActiveDirectory", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Container")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ContextType")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("LastSync")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("ActiveDirectories");
+                });
+
+            modelBuilder.Entity("ADAccountADGroup", b =>
+                {
+                    b.HasOne("ToolBox_MVC.Models.ADAccount", null)
+                        .WithMany()
+                        .HasForeignKey("AccountsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ToolBox_MVC.Models.ADGroup", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MFilesAccountMFilesGroup", b =>
@@ -193,26 +358,57 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.HistoryOperation", b =>
+                {
+                    b.HasOne("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesAccount", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesAccount", b =>
                 {
+                    b.HasOne("ToolBox_MVC.Models.ADAccount", "ADAccount")
+                        .WithMany()
+                        .HasForeignKey("ADAccountGUID")
+                        .HasPrincipalKey("GUID");
+
                     b.HasOne("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesServer", null)
                         .WithMany()
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ADAccount");
                 });
 
             modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesGroup", b =>
                 {
+                    b.HasOne("ToolBox_MVC.Models.ADGroup", "ADGroup")
+                        .WithMany()
+                        .HasForeignKey("ADGroupGUID")
+                        .HasPrincipalKey("GUID");
+
                     b.HasOne("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesServer", "Server")
                         .WithMany()
                         .HasForeignKey("ServerId");
+
+                    b.Navigation("ADGroup");
 
                     b.Navigation("Server");
                 });
 
             modelBuilder.Entity("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.MFilesServer", b =>
                 {
+                    b.HasOne("ToolBox_MVC.Models.ActiveDirectory", "ActiveDirectory")
+                        .WithMany()
+                        .HasForeignKey("ActiveDirectoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("ToolBox_MVC.Areas.LicenseManager.Models.DBModels.AutomaticOperations", "AutomaticOP", b1 =>
                         {
                             b1.Property<int>("MFilesServerId")
@@ -256,42 +452,61 @@ namespace ToolBox_MVC.Migrations.ToolBoxDb
                                 .HasForeignKey("MFilesServerId");
                         });
 
-                    b.OwnsOne("ToolBox_MVC.Models.ADCredential", "ADCredential", b1 =>
-                        {
-                            b1.Property<int>("MFilesServerId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("Container")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Domain")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("EncryptedPassword")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("EncryptedUsername")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("MFilesServerId");
-
-                            b1.ToTable("MFilesServers");
-
-                            b1.WithOwner()
-                                .HasForeignKey("MFilesServerId");
-                        });
-
-                    b.Navigation("ADCredential")
-                        .IsRequired();
+                    b.Navigation("ActiveDirectory");
 
                     b.Navigation("AutomaticOP")
                         .IsRequired();
 
                     b.Navigation("MfCredential")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ToolBox_MVC.Models.ADAccount", b =>
+                {
+                    b.HasOne("ToolBox_MVC.Models.ActiveDirectory", "ActiveDirectory")
+                        .WithMany()
+                        .HasForeignKey("ActiveDirectoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ActiveDirectory");
+                });
+
+            modelBuilder.Entity("ToolBox_MVC.Models.ADGroup", b =>
+                {
+                    b.HasOne("ToolBox_MVC.Models.ActiveDirectory", "ActiveDirectory")
+                        .WithMany()
+                        .HasForeignKey("ActiveDirectoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ActiveDirectory");
+                });
+
+            modelBuilder.Entity("ToolBox_MVC.Models.ActiveDirectory", b =>
+                {
+                    b.OwnsOne("ToolBox_MVC.Models.Credentials", "EncryptedCredentials", b1 =>
+                        {
+                            b1.Property<int>("ActiveDirectoryID")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Password")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Username")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("ActiveDirectoryID");
+
+                            b1.ToTable("ActiveDirectories");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ActiveDirectoryID");
+                        });
+
+                    b.Navigation("EncryptedCredentials")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

@@ -14,6 +14,11 @@ namespace ToolBox_MVC.Data
         public DbSet<MFilesServer> MFilesServers { get; set; }
         public DbSet<MFilesAccount> MFilesAccounts { get; set; }
         public DbSet<MFilesGroup> MFilesGroups { get; set; }
+        public DbSet<HistoryOperation> HistoryOperations { get; set; }
+
+        public DbSet<ActiveDirectory> ActiveDirectories { get; set; }
+        public DbSet<ADAccount> ADAccounts { get; set; }
+        public DbSet<ADGroup> ADGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -38,9 +43,6 @@ namespace ToolBox_MVC.Data
                 .IsUnique();
 
             builder.Entity<MFilesServer>()
-                .OwnsOne(s => s.ADCredential);
-
-            builder.Entity<MFilesServer>()
                 .HasMany<MFilesAccount>()
                 .WithOne()
                 .HasForeignKey(a => a.ServerId)
@@ -49,6 +51,43 @@ namespace ToolBox_MVC.Data
             builder.Entity<MFilesAccount>()
                 .Property(a => a.UserId)
                 .HasDefaultValue(0);
+
+            builder.Entity<ADAccount>()
+                .HasAlternateKey(a => a.GUID);
+
+            builder.Entity<ADGroup>()
+                .HasAlternateKey(g => g.GUID);
+
+            builder.Entity<ActiveDirectory>()
+                .OwnsOne(s => s.EncryptedCredentials);
+
+            builder.Entity<HistoryOperation>()
+                .HasOne(h => h.Account)
+                .WithMany()
+                .HasForeignKey(h => h.AccountID)
+                .IsRequired(true);
+
+            builder.Entity<MFilesAccount>()
+                .HasOne(m => m.ADAccount)
+                .WithMany()
+                .HasForeignKey(m => m.ADAccountGUID)
+                .HasPrincipalKey(a => a.GUID)
+                .IsRequired(false);
+            
+
+            builder.Entity<MFilesGroup>()
+                .HasOne(m => m.ADGroup)
+                .WithMany()
+                .HasForeignKey(m => m.ADGroupGUID)
+                .HasPrincipalKey(a => a.GUID)
+                .IsRequired(false);
+
+            builder.Entity<MFilesServer>()
+                .HasOne(s => s.ActiveDirectory)
+                .WithMany()
+                .HasForeignKey(s => s.ActiveDirectoryID)
+                .HasPrincipalKey(a => a.ID)
+                .IsRequired(true);
         }
     }
 }

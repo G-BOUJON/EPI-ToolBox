@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.EntityFrameworkCore;
 using ToolBox_MVC.Areas.LicenseManager.Services;
 using ToolBox_MVC.Data;
+using ToolBox_MVC.Models;
 using ToolBox_MVC.Repositories;
 using ToolBox_MVC.Services.ActiveDirectory;
+using ToolBox_MVC.Services.ActiveDirectory.Sync;
 using ToolBox_MVC.Services.MFiles;
 using ToolBox_MVC.Services.MFiles.Connector;
 using ToolBox_MVC.Services.MFiles.Sync;
@@ -46,15 +48,21 @@ builder.Services.AddScoped<IAdService,ActiveDirectoryService>();
 builder.Services.AddScoped<IMFilesService, MFilesService>();
 
 builder.Services.AddScoped<IMfCredentialStore, MFilesCredentialStore>();
-builder.Services.AddScoped<ISyncService, SyncService>();
+builder.Services.AddScoped<IMfSyncService, MfSyncService>();
+builder.Services.AddScoped<IActiveDirectorySyncService, ActiveDirectorySyncService>();
 
 
 builder.Services.AddScoped<IADCredentialService, ADCredentialStore>();
 builder.Services.AddScoped<ILicenseMangagerService, LicenseManager>();
+builder.Services.AddScoped<IOperationHistoryService, OperationHistoryService>();
 
+builder.Services.AddScoped<IGenericRepository<ActiveDirectory>, GenericRepository<ActiveDirectory>>();
 builder.Services.AddScoped<IServerRepository, ServerRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.AddScoped<IHistoryOperationRepository, HistoryOperationRepository>();
+builder.Services.AddScoped<IADAccountRepository, ADAccountRepository>();
+builder.Services.AddScoped<IADGroupRepository, ADGroupRepository>();
 
 var app = builder.Build();
 
@@ -83,20 +91,20 @@ app.UseAuthorization();
 app.MapAreaControllerRoute(
     name: "LM_Home",
     areaName: "LicenseManager",
-    pattern: "LicenseManager/Home",
+    pattern: "MFiles/Home",
     defaults: new {area = "LicenseManager",controller = "Home", action="Index"});
 //pattern: "LicenseManager/{controller=Home}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
     name: "LM_ServerDahsboard",
     areaName: "LicenseManager",
-    pattern: "LicenseManager/{serverName}",
+    pattern: "MFiles/{serverName}",
     defaults : new {controller = "Home", action="Details"});
 
 app.MapAreaControllerRoute(
     name: "LM_ServerSpecific",
     areaName: "LicenseManager",
-    pattern: "LicenseManager/{serverName}/{controller}/{action}",
+    pattern: "MFiles/{serverName}/{controller}/{action}",
     defaults : new {area = "LicenseManager", controller = "Home", action="Index"});
 
 

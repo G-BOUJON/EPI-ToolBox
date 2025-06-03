@@ -6,8 +6,8 @@ namespace ToolBox_MVC.Areas.LicenseManager.Services
     {
         Task<IEnumerable<MFilesAccount>> GetAccountsToRemoveLicenseAsync(int serverId);
         Task<IEnumerable<MFilesAccount>> GetAccountsToRestoreLicenseAsync(int serverId);
-        Task RemoveLicenseAsync(int serverId, string accountName);
-        Task RestoreLicenseAsync(int serverId, string accountName);
+        Task RemoveLicenseAsync(int serverId, string accountName, bool automatic = false);
+        Task RestoreLicenseAsync(int serverId, string accountName, bool automatic = false);
         void MaintainAccount(int accountId);
         void UnmaintainAccount(int accountId);
         bool TryConnection(int serverId);

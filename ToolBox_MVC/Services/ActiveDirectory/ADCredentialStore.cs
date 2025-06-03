@@ -8,8 +8,10 @@ namespace ToolBox_MVC.Services.ActiveDirectory
 {
     public interface IADCredentialService
     {
-        Task<ADCredential> GetCredential(int serverID);
-        Task UpdateCredentials(int serverID, ADCredential credential);
+        
+        void ProtectCredentials(Models.ActiveDirectory ad);
+        void UnprotectCredentials(Models.ActiveDirectory ad);
+        
     }
 
     public class ADCredentialStore : IADCredentialService
@@ -23,30 +25,20 @@ namespace ToolBox_MVC.Services.ActiveDirectory
             _dataProtector = dataProtectionProvider.CreateProtector("AD.Credential");
         }
 
-        public async Task<ADCredential> GetCredential(int serverID)
+        
+
+        
+
+        public void ProtectCredentials(Models.ActiveDirectory ad)
         {
-            var server = await _serverRepo.GetByIDAsync(serverID);
-            ArgumentNullException.ThrowIfNull(server);
-
-            var cred = new ADCredential(
-                server.ADCredential.Domain,
-                server.ADCredential.Container,
-                _dataProtector.Unprotect(server.ADCredential.EncryptedUsername),
-                _dataProtector.Unprotect(server.ADCredential.EncryptedPassword));
-
-            return cred;
+            ad.EncryptedCredentials.Username = _dataProtector.Protect(ad.EncryptedCredentials.Username);
+            ad.EncryptedCredentials.Password = _dataProtector.Protect(ad.EncryptedCredentials.Password);
         }
 
-        public async Task UpdateCredentials(int serverID, ADCredential credential)
+        public void UnprotectCredentials(Models.ActiveDirectory ad)
         {
-            var server = await _serverRepo.GetByIDAsync(serverID);
-            ArgumentNullException.ThrowIfNull(server);
-
-            credential.EncryptedUsername = _dataProtector.Protect(credential.EncryptedUsername);
-            credential.EncryptedPassword = _dataProtector.Protect(credential.EncryptedPassword);
-
-            server.ADCredential = credential;
-            await _serverRepo.SaveChangesAsync();
+            ad.EncryptedCredentials.Username = _dataProtector.Unprotect(ad.EncryptedCredentials.Username);
+            ad.EncryptedCredentials.Password = _dataProtector.Unprotect(ad.EncryptedCredentials.Password);
         }
     }
 

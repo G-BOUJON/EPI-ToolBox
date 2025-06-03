@@ -11,13 +11,17 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
     public class RestorationController : Controller
     {
         private readonly ILicenseMangagerService _licenseManager;
+        
         private readonly IServerRepository _serverRepo;
+        
         
 
         public RestorationController(ILicenseMangagerService licenseManager, IServerRepository serverRepo)
         {
             _licenseManager = licenseManager;
             _serverRepo = serverRepo;
+            
+            
             
         }
 
@@ -95,6 +99,7 @@ namespace ToolBox_MVC.Areas.LicenseManager.Controllers
             var server = await _serverRepo.GetByNameAsync(serverName);
 
             await _licenseManager.RestoreLicenseAsync(server.Id, accountName);
+
             return RedirectToAction("Index", new { serverName });
         }
 

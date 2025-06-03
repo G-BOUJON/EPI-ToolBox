@@ -1,5 +1,6 @@
 ﻿using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Repositories;
+using ToolBox_MVC.Services.ActiveDirectory.Sync;
 using ToolBox_MVC.Services.MFiles;
 using ToolBox_MVC.Services.MFiles.Sync;
 
@@ -29,6 +30,8 @@ namespace ToolBox_MVC.Services.Periodic
             {
                 if (RightHour(server, currentTime))
                 {
+                    await ExecuteSyncOnActiveDirectories();
+
                     taskList.Add(ExecuteJobsOnServerAsync(server));
                     _logger.LogInformation("{Time} : Operation started on server {Server}",TimeOnly.FromDateTime(DateTime.Now), server.Name);
                 }
@@ -48,7 +51,7 @@ namespace ToolBox_MVC.Services.Periodic
         {
             using (var scope = _serviceScope.CreateScope())
             {
-                var scopedSyncService = scope.ServiceProvider.GetRequiredService<ISyncService>();
+                var scopedSyncService = scope.ServiceProvider.GetRequiredService<IMfSyncService>();
                 var scopedActivationService = scope.ServiceProvider.GetRequiredService<IMfilesAccountActivationHandler>();
 
                 if (scopedSyncService == null)
@@ -64,15 +67,44 @@ namespace ToolBox_MVC.Services.Periodic
                 await scopedSyncService.SyncAccountsAsync(server.Id);
                 await scopedSyncService.SyncGroupsAsync(server.Id);
 
-                // VOIR COMMENT GERER LES COMPTES QUI DOIVENT RESTER ACTIF MAIS N'EXISTE QUE SUR MFILES
-                //if (server.AutomaticOP.AutoActivationHandling)
-                //{
-                //    await scopedActivationService.ModifyAllIncorrectAccounts(server.Id);
-                //}
+                if (server.AutomaticOP.AutoActivationHandling)
+                {
+                    foreach (var account in await scopedActivationService.GetAccountsToReactivateAsync(server.Id))
+                    {
+                        try
+                        {
+                            await scopedActivationService.ModifyMFilesAccountStatus(server.Id, account.UserId, true, true);
+                            
+                        }
+                        catch
+                        {
+                            // error handling
+                        }
+                    }
+                    _logger.LogInformation("{Time} : Reativation finished on server {Server}", TimeOnly.FromDateTime(DateTime.Now), server.Name);
+                }
             
             }
 
             _logger.LogInformation("{Time} : Operation finished on server {Server}", TimeOnly.FromDateTime(DateTime.Now), server.Name);
+        }
+
+        private async Task ExecuteSyncOnActiveDirectories()
+        {
+            using (var scope = _serviceScope.CreateScope())
+            {
+                var adRepo = scope.ServiceProvider.GetRequiredService<IGenericRepository<Models.ActiveDirectory>>();
+                var syncAd = scope.ServiceProvider.GetRequiredService<IActiveDirectorySyncService>();
+
+                foreach (var ad in await adRepo.GetAllAsync())
+                {
+                    if (ad.LastSync < DateOnly.FromDateTime(DateTime.Now))
+                    {
+                        _logger.LogInformation("{Time} : Sync started on AD {Server}", TimeOnly.FromDateTime(DateTime.Now), ad.Name);
+                        await syncAd.SyncActiveDirectory(ad.ID);
+                    }
+                }
+            }
         }
     }
 }

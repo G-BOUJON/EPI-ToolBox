@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ToolBox_MVC.Models
 {
+    
     public class Credentials
     {
         [Required]

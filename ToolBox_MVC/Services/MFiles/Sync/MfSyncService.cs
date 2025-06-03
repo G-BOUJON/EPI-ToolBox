@@ -1,42 +1,49 @@
 ﻿using MFilesAPI;
 using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
+using ToolBox_MVC.Models;
 using ToolBox_MVC.Repositories;
 using ToolBox_MVC.Services.ActiveDirectory;
 
 namespace ToolBox_MVC.Services.MFiles.Sync
 {
-    public class SyncService : ISyncService
+    public class MfSyncService : IMfSyncService
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IGroupRepository _groupRepository;
-        private readonly IAdService _adService;
+        
         private readonly IMFilesService _mFilesService;
+        private readonly IADAccountRepository _adAccountRepository;
+        private readonly IADGroupRepository _adGroupRepository;
 
-        public SyncService(IAccountRepository accountRepository, IGroupRepository groupRepository, IAdService adService, IMFilesService mFilesService)
+        public MfSyncService(IAccountRepository accountRepository, IGroupRepository groupRepository, IMFilesService mFilesService, IADAccountRepository adAccountRepository, IADGroupRepository adGroupRepository)
         {
             _accountRepository = accountRepository;
             _groupRepository = groupRepository;
-            _adService = adService;
+            
             _mFilesService = mFilesService;
+            _adAccountRepository = adAccountRepository;
+            _adGroupRepository = adGroupRepository;
         }
 
-        private MFilesAccount ProcessLoginAccount(LoginAccount logAccount, int serverId, Dictionary<string,(int id,bool enabled)> userAccounts)
+        private MFilesAccount ProcessLoginAccount(LoginAccount logAccount, int serverId, Dictionary<string,(int id,bool enabled)> userAccounts, Dictionary<string, ADAccount> adAccDict)
         {
             var processedAccount = new MFilesAccount(logAccount,serverId);
 
-            try
+            if (adAccDict.TryGetValue(processedAccount.UserName, out var adAccount))
             {
-                processedAccount.Active = _adService.IsUserActive(serverId, logAccount.UserName);
+                processedAccount.ADAccount = adAccount;
+                processedAccount.Active = adAccount.Enabled;
             }
-            catch (Exception)
+            else
             {
+                processedAccount.ADAccount = null;
                 processedAccount.Active = false;
             }
 
             if (userAccounts.TryGetValue(logAccount.AccountName, out var user))
             {
                 processedAccount.UserId = user.id;
-                processedAccount.Enabled = user.enabled || processedAccount.Enabled;
+                processedAccount.Enabled = user.enabled && processedAccount.Enabled;
             }
             else
             {
@@ -46,12 +53,12 @@ namespace ToolBox_MVC.Services.MFiles.Sync
             return processedAccount;
         }
 
-        private Task<MFilesAccount> ProcessLoginAccountAsync(LoginAccount logAccount, int serverId, Dictionary<string,(int,bool)> userAccounts)
+        private Task<MFilesAccount> ProcessLoginAccountAsync(LoginAccount logAccount, int serverId, Dictionary<string,(int,bool)> userAccounts, Dictionary<string, ADAccount> adAccDict)
         {
-            return Task.Run(() => ProcessLoginAccount(logAccount, serverId, userAccounts));
+            return Task.Run(() => ProcessLoginAccount(logAccount, serverId, userAccounts, adAccDict));
         }
 
-        private MFilesGroup ProcessUserGroup(UserGroup usrGroup, int serverId, Dictionary<int, MFilesAccount> accountDict)
+        private MFilesGroup ProcessUserGroup(UserGroup usrGroup, int serverId, Dictionary<int, MFilesAccount> accountDict, Dictionary<string, ADGroup> adGroupDict)
         {
             var processedGroup = new MFilesGroup
             {
@@ -60,6 +67,11 @@ namespace ToolBox_MVC.Services.MFiles.Sync
                 ServerId = serverId,
                 Accounts = new List<MFilesAccount>()
             };
+
+            if (adGroupDict.TryGetValue(processedGroup.Name.Replace("EPI\\",""),out var existing))
+            {
+                processedGroup.ADGroup = existing;
+            }
 
             foreach (int memberID in usrGroup.Members)
             {
@@ -75,9 +87,9 @@ namespace ToolBox_MVC.Services.MFiles.Sync
             return processedGroup;
         }
 
-        private Task<MFilesGroup> ProcessUserGroupAsync(UserGroup usrGroup, int serverId, Dictionary<int, MFilesAccount> accountDict)
+        private Task<MFilesGroup> ProcessUserGroupAsync(UserGroup usrGroup, int serverId, Dictionary<int, MFilesAccount> accountDict, Dictionary<string, ADGroup> adGroupDict)
         {
-            return Task.Run(() => ProcessUserGroup(usrGroup, serverId, accountDict));
+            return Task.Run(() => ProcessUserGroup(usrGroup, serverId, accountDict, adGroupDict));
         }
 
         public async Task SyncAccountsAsync(int serverId)
@@ -86,8 +98,10 @@ namespace ToolBox_MVC.Services.MFiles.Sync
             var incomingLogAccounts = _mFilesService.GetLoginAccounts(serverId);
             var incomingUserAccounts = _mFilesService.GetUserAccounts(serverId);
             var existingAccounts = await _accountRepository.GetAllInServerAsync(serverId);
+            var existingADAccounts = await _adAccountRepository.GetAllAsync();
 
             Dictionary<string,MFilesAccount> existingByAccountName = existingAccounts.ToDictionary(a => a.AccountName);
+            Dictionary<string, ADAccount> adAccDict = existingADAccounts.ToDictionary(a => a.Name);
 
             var userAccDict = new Dictionary<string, (int,bool)>();
 
@@ -100,7 +114,7 @@ namespace ToolBox_MVC.Services.MFiles.Sync
 
             foreach (LoginAccount loginAccount in incomingLogAccounts)
             {
-                processTaks.Add(ProcessLoginAccountAsync(loginAccount, serverId, userAccDict));
+                processTaks.Add(ProcessLoginAccountAsync(loginAccount, serverId, userAccDict, adAccDict));
             }
 
             await Task.WhenAll(processTaks);
@@ -146,6 +160,10 @@ namespace ToolBox_MVC.Services.MFiles.Sync
                 existing.UserName = incoming.UserName;
                 existing.Domain = incoming.Domain;
 
+                if (incoming.ADAccount != null)
+                {
+                    existing.ADAccount = incoming.ADAccount;
+                }
                 
             }
 
@@ -167,14 +185,16 @@ namespace ToolBox_MVC.Services.MFiles.Sync
             var incomingGroups = _mFilesService.GetUserGroups(serverId);
             var accountDict = (await _accountRepository.GetAllInServerAsync(serverId)).Where(a => a.UserId != 0).ToDictionary(a => a.UserId);
             var existingGroups = await _groupRepository.GetAllInServerIncludeAccountsAsync(serverId);
+            var existADGroups = await _adGroupRepository.GetAllAsync();
 
             Dictionary<int, MFilesGroup> existingByMfID = existingGroups.ToDictionary(g => g.MFilesId);
+            Dictionary<string, ADGroup> adGroupDict = existADGroups.ToDictionary(g => g.Name);
 
             var processTasks = new List<Task<MFilesGroup>>();
 
             foreach (UserGroup group in incomingGroups)
             {
-                processTasks.Add(ProcessUserGroupAsync(group, serverId, accountDict));
+                processTasks.Add(ProcessUserGroupAsync(group, serverId, accountDict, adGroupDict));
             }
 
             await Task.WhenAll(processTasks);
@@ -209,6 +229,10 @@ namespace ToolBox_MVC.Services.MFiles.Sync
             {
                 existing.Name = updated.Name;
                 existing.Accounts = updated.Accounts;
+                if (updated.ADGroup != null)
+                {
+                    existing.ADGroup = updated.ADGroup;
+                }
             }
 
             foreach( var  group in toDelete)
@@ -221,10 +245,10 @@ namespace ToolBox_MVC.Services.MFiles.Sync
 
         public bool TryConnections(int serverId) 
         {
-            var adServiceResults = _adService.TryConnection(serverId);
+   
             var mfServiceResults = _mFilesService.TryServerConnection(serverId);
 
-            return (adServiceResults == ADConnectionResult.Success && mfServiceResults == Connector.MfConnexionResult.Success);
+            return mfServiceResults == Connector.MfConnexionResult.Success;
         }
         
     }

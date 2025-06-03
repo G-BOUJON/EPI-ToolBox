@@ -1,0 +1,49 @@
+﻿@using ToolBox_MVC.Repositories
+
+@model Dictionary<DateOnly, int>
+@inject IServerRepository serverRepository
+
+@{
+    string serverName = ViewBag.ServerName;
+    ViewData["Title"] = "Historique";
+}
+
+<div class="d-inline-flex gap-3 flex-grow-0">
+    <h1 class="align-middle">Liste des dates - Environnement : </h1>
+    <div>
+        <a class="dropdown-toggle text-dark text-decoration-none clickable-text title" data-bs-toggle="dropdown" href="#">@serverName</a>
+        <ul class="dropdown-menu">
+            @{
+                foreach (var server in await serverRepository.GetAllAsync())
+                {
+                    <li><a class="dropdown-item text-dark" asp-controller="History" asp-action="Index" asp-route-serverName="@server.Name">@server.Name</a></li>
+                }
+            }
+        </ul>
+    </div>
+</div>
+<div class="d-flex flex-column flex-nowrap flex-grow-1 overflow-hidden">
+    <div class="area-wrapper tableView">
+        <div class="table-header">
+            <div class="table-cell">
+                Date d'opérations
+            </div>
+            <div class="table-cell">
+                Nombre d'opérations
+            </div>
+        </div>
+        @{
+            foreach (var dictEntry in Model)
+            {
+                <a class="table-row text-black text-decoration-none clickable" asp-action="Date" asp-route-dateInt="@dictEntry.Key.DayNumber" asp-route-serverName="@serverName">
+                    <div class="table-cell fw-bold">
+                        @dictEntry.Key
+                    </div>
+                    <div class="table-cell big-text fw-bold">
+                        @dictEntry.Value
+                    </div>
+                </a>
+            }
+        }
+    </div>
+</div>

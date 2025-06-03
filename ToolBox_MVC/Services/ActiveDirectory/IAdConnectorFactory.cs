@@ -9,59 +9,58 @@ namespace ToolBox_MVC.Services.ActiveDirectory
     public interface IAdConnectorFactory
     {
         /// <summary>
-        /// Creates a new PrincipalContext based on the MFilesServer with the corresponding ID
+        /// Creates a new PrincipalContext based on the ActiveDirectory with the corresponding ID
         /// </summary>
-        /// <param name="serverId"></param>
+        /// <param name="id">The local ID of the selected AD</param>
         /// <returns></returns>
         /// <exception cref="AuthenticationException"></exception>
         /// <exception cref="PrincipalServerDownException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        PrincipalContext CreatePrincipalContext(int serverID);
+        PrincipalContext CreatePrincipalContext(int id);
     }
 
     public class AdConnectorFactory : IAdConnectorFactory
     {
-        private readonly Dictionary<int,ADCredential> allCredentials;
+        private readonly Dictionary<int,Models.ActiveDirectory> allCredentials;
 
-        public AdConnectorFactory(IADCredentialService credRepo, IServerRepository servRepo) 
+        public AdConnectorFactory(IADCredentialService credRepo, IGenericRepository<Models.ActiveDirectory> servRepo) 
         {
             var allServer = Task.Run(servRepo.GetAllAsync).Result;
 
             allCredentials = new();
             foreach (var server in allServer)
             {
-                allCredentials.Add(server.Id,Task.Run(() => credRepo.GetCredential(server.Id)).Result);
+                var copyServer = server.Clone();
+                credRepo.UnprotectCredentials(copyServer);
+                allCredentials.Add(copyServer.ID,copyServer);
             }
         }
 
         /// <summary>
-        /// Creates a new PrincipalContext based on the MFilesServer with the corresponding ID
+        /// Creates a new PrincipalContext based on the ActiveDirectory with the corresponding ID
         /// </summary>
-        /// <param name="serverId"></param>
+        /// <param name="id">The local ID of the selected AD</param>
         /// <returns></returns>
         /// <exception cref="AuthenticationException"></exception>
         /// <exception cref="PrincipalServerDownException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public PrincipalContext CreatePrincipalContext(int serverId)
+        public PrincipalContext CreatePrincipalContext(int id)
         {
-            if (!allCredentials.ContainsKey(serverId))
-            {
-                throw new ArgumentException("No server with the corresponding ID");
-            }
 
-            ADCredential credentials = allCredentials[serverId];
+
+            Models.ActiveDirectory credentials = allCredentials[id];
 
             try
             {
                 var principal = new PrincipalContext(
                 contextType: ContextType.Domain,
-                name: credentials.Domain,
+                name: credentials.Name,
                 container: credentials.Container,
-                userName: credentials.EncryptedUsername,
-                password: credentials.EncryptedPassword
+                userName: credentials.EncryptedCredentials.Username,
+                password: credentials.EncryptedCredentials.Password
                 );
 
-                if (!principal.ValidateCredentials(credentials.EncryptedUsername, credentials.EncryptedPassword))
+                if (!principal.ValidateCredentials(credentials.EncryptedCredentials.Username, credentials.EncryptedCredentials.Password))
                 {
                     throw new AuthenticationException("Invalid Credentials");
                 }

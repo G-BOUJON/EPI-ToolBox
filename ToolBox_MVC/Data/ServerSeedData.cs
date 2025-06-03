@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using System.DirectoryServices.AccountManagement;
 using ToolBox_MVC.Areas.LicenseManager.Models.DBModels;
 using ToolBox_MVC.Models;
 using ToolBox_MVC.Repositories;
@@ -18,6 +19,20 @@ namespace ToolBox_MVC.Data
                 var serverRepo = new ServerRepository(context);
                 var adCredStore = new ADCredentialStore(serverRepo, serviceProvider.GetRequiredService<IDataProtectionProvider>());
                 var mfCredStore = new MFilesCredentialStore(serverRepo, serviceProvider.GetRequiredService<IDataProtectionProvider>());
+                var adRepo = new GenericRepository<ActiveDirectory>(context);
+
+                if ((await adRepo.GetAllAsync()).Count() < 1)
+                {
+                    ActiveDirectory ad = new ActiveDirectory("epi-srv-dc.epidom.ch", (int)ContextType.Domain, "DC=epidom,DC=ch", "S_MFiles_T", "Epi2@22");
+                    adCredStore.ProtectCredentials(ad);
+                    await adRepo.AddAsync(ad);
+                    await adRepo.SaveChangesAsync();
+                }
+
+                var dbAD = await adRepo.GetByIDAsync(1);
+                dbAD.EncryptedCredentials = new Credentials("S_MFiles_T", "Epi2@22");
+                adCredStore.ProtectCredentials(dbAD);
+                await adRepo.SaveChangesAsync();
 
                 // Code pour initialisé les valeurs de MFilesServer
                 /*
